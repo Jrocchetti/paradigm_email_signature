@@ -1682,8 +1682,35 @@
                 cleanFilename = decodeURIComponent(lastPart.split('?')[0]) || 'download';
             }
             
-            // Show download modal immediately
-            showDownloadModal(url, cleanFilename);
+            // Try automatic download first (works on HTTPS/hosted sites)
+            if (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname.includes('netlify')) {
+                console.log('🚀 Attempting automatic download...');
+                
+                // Create a temporary link element for download
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = cleanFilename;
+                link.style.display = 'none';
+                
+                // Add to DOM, click, and remove
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Show success message
+                showStatus(`📥 Downloading ${cleanFilename}...`, 'success');
+                
+                // Fall back to modal if download doesn't work after 2 seconds
+                setTimeout(() => {
+                    console.log('⚠️ Automatic download may have failed, showing modal fallback...');
+                    showDownloadModal(url, cleanFilename);
+                }, 2000);
+                
+            } else {
+                // Show download modal for file:// protocol or unsupported environments
+                console.log('📋 Using modal download (file:// protocol detected)');
+                showDownloadModal(url, cleanFilename);
+            }
         }
 
         // Show download modal with multiple options
