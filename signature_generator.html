@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Email Signature Generator</title>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #1F1633;
+            color: #FFFFFF;
+            padding: 20px;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .center-ui {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-top: 20px;
+        }
+
+        .main-content {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            margin-top: 20px;
+        }
+
+        .form-fields {
+            width: 350px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .preview-container {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            padding: 8px;
+            font-size: 16px;
+        }
+
+        label {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: left;
+            font-size: 18px;
+        }
+
+        #preview {
+            background: #1F1633;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #3FCBFF;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #copyBtn, #saveBtn {
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 8px 16px;
+            background: #3FCBFF;
+            color: #1F1633;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .button-group {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #copyMsg, #saveMsg {
+            margin-left: 10px;
+            color: #3FCBFF;
+            font-size: 14px;
+            display: none;
+        }
+
+        #headshot-controls {
+            margin-bottom: 20px;
+            background: #2a2044;
+            padding: 12px;
+            border-radius: 8px;
+            width: 320px;
+        }
+
+        #headshot-preview-container {
+            width: 70px;
+            height: 70px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            background: #eee;
+            border-radius: 16px 0 16px 0;
+            margin-right: 10px;
+        }
+
+        #headshot-preview {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            user-select: none;
+            pointer-events: none;
+        }
+
+        .slider-label {
+            font-size: 13px;
+            margin-right: 6px;
+        }
+
+        .slider {
+            width: 120px;
+            vertical-align: middle;
+        }
+
+        #savedSignatures {
+            margin-top: 40px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            
+            .preview-container {
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+
+        .collapsible-header {
+            background: #3FCBFF;
+            color: #1F1633;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .collapsible-header:hover {
+            background: #2db8e8;
+        }
+
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: rgba(63, 203, 255, 0.1);
+            border-radius: 0 0 8px 8px;
+        }
+
+        .collapsible-content.active {
+            max-height: 400px;
+            padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar styling */
+        .collapsible-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .collapsible-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .collapsible-content::-webkit-scrollbar-thumb {
+            background: #3FCBFF;
+            border-radius: 4px;
+        }
+
+        .collapsible-content::-webkit-scrollbar-thumb:hover {
+            background: #2db8e8;
+        }
+
+        .collapse-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .collapse-icon.rotated {
+            transform: rotate(180deg);
+        }
+
+        .signature-card {
+            background: #fff;
+            color: #222;
+            padding: 16px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(31,22,51,0.08);
+        }
+
+            .signature-card img {
+                width: 50px;
+                height: 50px;
+                border-radius: 8px;
+                margin-top: 8px;
+                object-fit: cover;
+            }
+    </style>
+</head>
+<body>
+    <div class="center-ui">
+        <h1>Email Signature Generator</h1>
+        
+        <div class="main-content">
+            <div class="form-fields">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="Your Name" oninput="generateSignature()">
+                <label for="title">Job Title</label>
+                <input type="text" id="title" placeholder="Your Title" oninput="generateSignature()">
+                <label for="phone">Cell</label>
+                <input type="text" id="phone" placeholder="(555) 123-4567" oninput="generateSignature()">
+                <label for="emailUser">Email Username</label>
+                <input type="text" id="emailUser" placeholder="john" oninput="generateSignature()">
+                <label for="headshot">Headshot</label>
+                <input type="file" id="headshot" accept="image/*">
+
+                <div id="headshot-controls" style="display:none;">
+                    <div>
+                        <span class="slider-label">Zoom:</span>
+                        <input type="range" id="zoomSlider" class="slider" min="1" max="3" step="0.01" value="1">
+                    </div>
+                    <div>
+                        <span class="slider-label">Pan X:</span>
+                        <input type="range" id="panXSlider" class="slider" min="-35" max="35" step="1" value="0">
+                    </div>
+                    <div>
+                        <span class="slider-label">Pan Y:</span>
+                        <input type="range" id="panYSlider" class="slider" min="-35" max="35" step="1" value="0">
+                    </div>
+                    <div style="margin-top:8px;">
+                        <div id="headshot-preview-container">
+                            <canvas id="headshot-preview" width="70" height="70"></canvas>
+                        </div>
+                        <button type="button" onclick="applyHeadshot()" style="vertical-align:middle;">Apply Headshot</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="preview-container">
+                <div id="preview"></div>
+                
+                <div class="button-group">
+                    <button id="copyBtn" onclick="copySignature()" style="display:none;">Copy to Clipboard</button>
+                    <span id="copyMsg">Copied!</span>
+                    <button id="saveBtn" style="display:inline-block;">Save Signature</button>
+                    <span id="saveMsg">Saved!</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hidden canvas for name/title/company box rendering -->
+        <canvas id="nameTitleCanvas" width="220" height="70" style="display:none;"></canvas>
+
+        <div id="savedSignatures">
+            <button class="collapsible-header" onclick="toggleSavedSignatures()">
+                <span>Saved Signatures</span>
+                <span class="collapse-icon">▼</span>
+            </button>
+            <div class="collapsible-content" id="savedSignaturesContent">
+                <!-- Saved signatures will be loaded here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        let headshotImage = null;
+        let headshotDataUrl = "";
+        let tempHeadshotDataUrl = "";
+        let zoom = 1, panX = 0, panY = 0;
+
+        // Make headshotDataUrl globally accessible
+        window.headshotDataUrl = "";
+
+        document.getElementById("headshot").addEventListener("change", function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (evt) {
+                    tempHeadshotDataUrl = evt.target.result;
+                    showHeadshotControls();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                tempHeadshotDataUrl = "";
+                headshotDataUrl = "";
+                document.getElementById("headshot-controls").style.display = "none";
+                generateSignature();
+            }
+        });
+
+        function showHeadshotControls() {
+            document.getElementById("headshot-controls").style.display = "block";
+            panX = 0; panY = 0;
+            document.getElementById("panXSlider").value = 0;
+            document.getElementById("panYSlider").value = 0;
+            loadHeadshotImage(tempHeadshotDataUrl);
+        }
+
+        function loadHeadshotImage(src) {
+            headshotImage = new window.Image();
+            headshotImage.onload = function () {
+                // Calculate minimum zoom to fit the image in 70x70
+                const zoomX = 70 / headshotImage.width;
+                const zoomY = 70 / headshotImage.height;
+                const minZoom = Math.max(zoomX, zoomY); // fill the area
+                zoom = minZoom;
+                document.getElementById("zoomSlider").min = minZoom;
+                document.getElementById("zoomSlider").max = Math.max(minZoom * 3, 3);
+                document.getElementById("zoomSlider").step = 0.01;
+                document.getElementById("zoomSlider").value = zoom;
+                drawHeadshotPreview();
+            };
+            headshotImage.src = src;
+        }
+
+        function drawHeadshotPreview() {
+            const canvas = document.getElementById("headshot-preview");
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, 70, 70);
+
+            if (!headshotImage) return;
+
+            // Calculate scaled size
+            const scaledW = headshotImage.width * zoom;
+            const scaledH = headshotImage.height * zoom;
+            const offsetX = (70 - scaledW) / 2 + panX;
+            const offsetY = (70 - scaledH) / 2 + panY;
+
+            // Draw with custom border radius
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(16, 0);
+            ctx.lineTo(54, 0);
+            ctx.quadraticCurveTo(70, 0, 70, 16); // top right rounded
+            ctx.lineTo(70, 54);
+            ctx.quadraticCurveTo(70, 70, 54, 70);
+            ctx.lineTo(16, 70);
+            ctx.lineTo(0, 70);
+            ctx.lineTo(0, 16);
+            ctx.quadraticCurveTo(0, 0, 16, 0);
+            ctx.closePath();
+            ctx.clip();
+
+            ctx.drawImage(headshotImage, offsetX, offsetY, scaledW, scaledH);
+            ctx.restore();
+        }
+
+        document.getElementById("zoomSlider").addEventListener("input", function (e) {
+            zoom = parseFloat(e.target.value);
+            drawHeadshotPreview();
+        });
+        document.getElementById("panXSlider").addEventListener("input", function (e) {
+            panX = parseInt(e.target.value, 10);
+            drawHeadshotPreview();
+        });
+        document.getElementById("panYSlider").addEventListener("input", function (e) {
+            panY = parseInt(e.target.value, 10);
+            drawHeadshotPreview();
+        });
+
+        function applyHeadshot() {
+            // Render the cropped/panned/zoomed image to a new canvas and get data URL
+            const canvas = document.createElement("canvas");
+            canvas.width = 70;
+            canvas.height = 70;
+            const ctx = canvas.getContext("2d");
+
+            // Draw with custom border radius
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(16, 0);
+            ctx.lineTo(54, 0);
+            ctx.quadraticCurveTo(70, 0, 70, 16); // top right rounded
+            ctx.lineTo(70, 54);
+            ctx.quadraticCurveTo(70, 70, 54, 70);
+            ctx.lineTo(16, 70);
+            ctx.lineTo(0, 70);
+            ctx.lineTo(0, 16);
+            ctx.quadraticCurveTo(0, 0, 16, 0);
+            ctx.closePath();
+            ctx.clip();
+
+            const scaledW = headshotImage.width * zoom;
+            const scaledH = headshotImage.height * zoom;
+            const offsetX = (70 - scaledW) / 2 + panX;
+            const offsetY = (70 - scaledH) / 2 + panY;
+            ctx.drawImage(headshotImage, offsetX, offsetY, scaledW, scaledH);
+            ctx.restore();
+
+            headshotDataUrl = canvas.toDataURL("image/png");
+            window.headshotDataUrl = headshotDataUrl; // Update global reference
+            document.getElementById("headshot-controls").style.display = "none";
+            generateSignature();
+        }
+
+        // Phone number formatter
+        function formatPhoneNumber(phone) {
+            const digits = phone.replace(/\D/g, '');
+            if (digits.length === 10) {
+                return `(${digits.substr(0, 3)}) ${digits.substr(3, 3)} - ${digits.substr(6, 4)}`;
+            }
+            return phone;
+        }
+
+        // Render the name/title/company box as a PNG with top right and bottom left rounded corners
+        function renderNameTitleBoxAsImage(name, title, callback) {
+            const canvas = document.getElementById("nameTitleCanvas");
+            const ctx = canvas.getContext("2d");
+
+            // Calculate required width based on text content
+            ctx.font = "bold 18px 'Manrope', Arial, sans-serif";
+            const nameWidth = ctx.measureText(name).width;
+            
+            ctx.font = "14px 'Manrope', Arial, sans-serif";
+            const titleWidth = ctx.measureText(title).width;
+            
+            ctx.font = "13px 'Manrope', Arial, sans-serif";
+            const companyWidth = ctx.measureText("Paradigm Productions Group").width;
+            
+            // Find the widest text and add padding
+            const maxTextWidth = Math.max(nameWidth, titleWidth, companyWidth);
+            const requiredWidth = Math.max(220, maxTextWidth + 32); // 16px padding on each side, minimum 220px
+            
+            // Resize canvas to fit content
+            canvas.width = requiredWidth;
+            canvas.height = 70;
+
+            // Clear
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw rounded rectangle (top right and bottom left rounded)
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(0, 0); // top left
+            ctx.lineTo(canvas.width - 16, 0); // top edge
+            ctx.quadraticCurveTo(canvas.width, 0, canvas.width, 16); // top right corner (rounded)
+            ctx.lineTo(canvas.width, canvas.height); // right edge
+            ctx.lineTo(16, canvas.height); // bottom edge
+            ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - 16); // bottom left corner (rounded)
+            ctx.lineTo(0, 0); // left edge
+            ctx.closePath();
+            ctx.fillStyle = "#1F1633";
+            ctx.fill();
+            ctx.restore();
+
+            // Draw text with increased spacing between lines
+            ctx.font = "bold 18px 'Manrope', Arial, sans-serif";
+            ctx.fillStyle = "#fff";
+            ctx.textBaseline = "top";
+            ctx.fillText(name, 16, 12);
+
+            ctx.font = "14px 'Manrope', Arial, sans-serif";
+            ctx.fillText(title, 16, 34);
+
+            ctx.font = "13px 'Manrope', Arial, sans-serif";
+            ctx.fillText("Paradigm Productions Group", 16, 53);
+
+            // Return PNG data URL and width
+            callback(canvas.toDataURL("image/png"), requiredWidth);
+        }
+
+        function generateCombinedLogoImage(bannerWidth, callback) {
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            
+            // Set canvas dimensions to accommodate logo, tagline, and button alignment
+            // Canvas should be wide enough to fit the banner width plus some extra space for the logo
+            canvas.width = Math.max(bannerWidth + 80, 400); // Ensure button can align with banner
+            canvas.height = 65;
+            
+            // Clear canvas with white background
+            ctx.fillStyle = "#FFFFFF";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Load the Paradigm logo
+            const logoImg = new Image();
+            logoImg.crossOrigin = "anonymous";
+            logoImg.onload = function() {
+                // Draw the logo at the left
+                const logoWidth = 150;
+                const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
+                const logoY = 5;
+                ctx.drawImage(logoImg, 0, logoY, logoWidth, logoHeight);
+                
+                // Draw the tagline
+                ctx.fillStyle = "#444444";
+                ctx.font = "italic 13px Arial, sans-serif";
+                ctx.textAlign = "left";
+                ctx.textBaseline = "top";
+                const taglineY = logoY + logoHeight + 6;
+                ctx.fillText("Production that Moves People", 0, taglineY);
+                
+                // Calculate total height of logo + gap + tagline for button height
+                const totalContentHeight = logoHeight + 6 + 15; // logo + gap + tagline height (approx 15px for 13px font)
+                
+                // Position button to align with the right edge of the banner
+                // Since the headshot is 70px + 6px gap = 76px, we need to account for that offset
+                const headshotOffset = window.headshotDataUrl ? 76 : 0;
+                const buttonWidth = 80;
+                const buttonX = headshotOffset + bannerWidth - buttonWidth; // Right-align with banner's right edge
+                const buttonY = logoY; // Start at same Y as logo
+                const buttonHeight = totalContentHeight;
+                const cornerRadius = 8;
+                
+                // Draw rounded rectangle for button (top-left and bottom-right corners only)
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(buttonX + cornerRadius, buttonY); // start at top-left rounded corner
+                ctx.lineTo(buttonX + buttonWidth, buttonY); // top edge (no rounding on top-right)
+                ctx.lineTo(buttonX + buttonWidth, buttonY + buttonHeight - cornerRadius); // right edge
+                ctx.quadraticCurveTo(buttonX + buttonWidth, buttonY + buttonHeight, buttonX + buttonWidth - cornerRadius, buttonY + buttonHeight); // bottom-right corner (rounded)
+                ctx.lineTo(buttonX, buttonY + buttonHeight); // bottom edge (no rounding on bottom-left)
+                ctx.lineTo(buttonX, buttonY + cornerRadius); // left edge
+                ctx.quadraticCurveTo(buttonX, buttonY, buttonX + cornerRadius, buttonY); // top-left corner (rounded)
+                ctx.closePath();
+                
+                // Fill button background (white)
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fill();
+                
+                // Button border (purple)
+                ctx.strokeStyle = "#8B5A9F";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+                
+                // Button text
+                ctx.fillStyle = "#222222";
+                ctx.font = "bold 8px Arial, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                // Multi-line button text
+                const lines = ["GET STARTED", "WITH", "PARADIGM"];
+                const lineHeight = Math.max(8, buttonHeight / 5); // Adjust line height based on button height
+                const startY = buttonY + buttonHeight/2 - (lines.length-1) * lineHeight/2;
+                
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, buttonX + buttonWidth/2, startY + index * lineHeight);
+                });
+                
+                // Return the canvas as data URL
+                callback(canvas.toDataURL("image/png"));
+            };
+            
+            logoImg.onerror = function() {
+                // If logo fails to load, create a simplified version
+                ctx.fillStyle = "#444444";
+                ctx.font = "bold 16px Arial, sans-serif";
+                ctx.textAlign = "left";
+                ctx.textBaseline = "top";
+                ctx.fillText("PARADIGM", 0, 10);
+                
+                ctx.font = "italic 13px Arial, sans-serif";
+                ctx.fillText("Production that Moves People", 0, 40);
+                
+                // Position button to align with the right edge of the banner
+                // Account for headshot offset if present
+                const headshotOffset = window.headshotDataUrl ? 76 : 0;
+                const buttonWidth = 80;
+                const buttonX = headshotOffset + bannerWidth - buttonWidth; // Right-align with banner's right edge
+                const buttonY = 10; // Start at same Y as PARADIGM text
+                const buttonHeight = 40; // Height to cover both PARADIGM and tagline
+                const cornerRadius = 8;
+                
+                // Draw rounded rectangle for button (top-left and bottom-right corners only)
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(buttonX + cornerRadius, buttonY); // start at top-left rounded corner
+                ctx.lineTo(buttonX + buttonWidth, buttonY); // top edge (no rounding on top-right)
+                ctx.lineTo(buttonX + buttonWidth, buttonY + buttonHeight - cornerRadius); // right edge
+                ctx.quadraticCurveTo(buttonX + buttonWidth, buttonY + buttonHeight, buttonX + buttonWidth - cornerRadius, buttonY + buttonHeight); // bottom-right corner (rounded)
+                ctx.lineTo(buttonX, buttonY + buttonHeight); // bottom edge (no rounding on bottom-left)
+                ctx.lineTo(buttonX, buttonY + cornerRadius); // left edge
+                ctx.quadraticCurveTo(buttonX, buttonY, buttonX + cornerRadius, buttonY); // top-left corner (rounded)
+                ctx.closePath();
+                
+                // Fill button background (white)
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fill();
+                
+                // Button border (purple)
+                ctx.strokeStyle = "#8B5A9F";
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+                
+                ctx.fillStyle = "#222222";
+                ctx.font = "bold 8px Arial, sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                const lines = ["GET STARTED", "WITH", "PARADIGM"];
+                const lineHeight = Math.max(8, buttonHeight / 5); // Adjust line height based on button height
+                const startY = buttonY + buttonHeight/2 - (lines.length-1) * lineHeight/2;
+                
+                lines.forEach((line, index) => {
+                    ctx.fillText(line, buttonX + buttonWidth/2, startY + index * lineHeight);
+                });
+                
+                callback(canvas.toDataURL("image/png"));
+            };
+            
+            logoImg.src = "https://paradigmpg.wpenginepowered.com/wp-content/uploads/2025/04/Rectangle-336-300x74.png";
+        }
+
+        function generateSignature() {
+            const name = document.getElementById("fullName").value;
+            const title = document.getElementById("title").value;
+            const phone = document.getElementById("phone").value;
+            const emailUser = document.getElementById("emailUser").value;
+            const domain = "@paradigmproductionsgroup.com";
+            const emailFull = emailUser + domain;
+            
+            // Get the current headshot data URL
+            const currentHeadshotDataUrl = window.headshotDataUrl || headshotDataUrl || "";
+
+            renderNameTitleBoxAsImage(name, title, function (nameTitleBoxDataUrl, bannerWidth) {
+                // Store banner width globally for copy function
+                window.currentBannerWidth = bannerWidth;
+                
+                // Generate a visible placeholder for the combined logo
+                generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
+                    // Headshot + name/title/company in a styled box, side by side, bottom-aligned
+                    let headshotNameTitle = `
+                                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
+                                                <tr>
+                                                    <td style="vertical-align:bottom; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
+                                                        ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0 16px 0; display:block;">` : ""}
+                                                    </td>
+                                                    <td style="vertical-align:bottom;">
+                                                        <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        `;
+
+                    // Phone numbers (show nothing if empty)
+                    let phoneBlock = "";
+                    if (phone) {
+                        phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Cell: ${formatPhoneNumber(phone)}</div>`;
+                    }
+                    // Always show office number
+                    phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Office: (407) 909 - 1338</div>`;
+
+                    // Signature layout with generated combined logo
+                    const signatureHTML = `
+                                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; box-sizing: border-box;">
+                                                <!-- Top row: Headshot and Name/Title Banner -->
+                                                <tr>
+                                                    <td style="vertical-align:bottom; padding: 20px; padding-bottom: 12px;">
+                                                        ${headshotNameTitle}
+                                                    </td>
+                                                </tr>
+                                                <!-- Contact info row -->
+                                                <tr>
+                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
+                                                        ${phoneBlock}
+                                                        <div style="font-size:12px; color:#222; margin-bottom:4px;">
+                                                            <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
+                                                        </div>
+                                                        <div style="font-size:12px; color:#222; margin-bottom:4px;">
+                                                            <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <!-- Address row -->
+                                                <tr>
+                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px;">
+                                                        <div style="font-size:12px; color:#222;">
+                                                            215 E Main Street, Leesburg, Florida 34748
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <!-- Combined Logo/Tagline/Button PNG row -->
+                                                <tr>
+                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
+                                                        <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
+                                                            <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Production that Moves People - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        `;
+
+                    document.getElementById("preview").innerHTML = signatureHTML;
+                    document.getElementById("copyBtn").style.display = "inline-block";
+                    document.getElementById("copyMsg").style.display = "none";
+                });
+            });
+        }
+
+        window.onload = generateSignature;
+
+        // Toggle saved signatures panel
+        function toggleSavedSignatures() {
+            const content = document.getElementById("savedSignaturesContent");
+            const icon = document.querySelector(".collapse-icon");
+            
+            content.classList.toggle("active");
+            icon.classList.toggle("rotated");
+        }
+
+        function copySignature() {
+            const preview = document.getElementById("preview");
+            if (!preview.innerHTML.trim()) return;
+
+            // Generate the combined logo with current banner width
+            const bannerWidth = window.currentBannerWidth || 220;
+            generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
+                // Create a temporary element to select and copy HTML
+                const tempDiv = document.createElement("div");
+                tempDiv.innerHTML = preview.innerHTML;
+                
+                // Replace the placeholder with the actual combined logo and ensure no borders
+                const placeholderImg = tempDiv.querySelector("#combinedLogoPlaceholder");
+                if (placeholderImg) {
+                    placeholderImg.src = combinedLogoDataUrl;
+                    placeholderImg.removeAttribute("id"); // Remove ID to avoid conflicts
+                    placeholderImg.style.border = "0";
+                    placeholderImg.style.outline = "none";
+                    placeholderImg.style.textDecoration = "none";
+                    placeholderImg.setAttribute("border", "0");
+                }
+                
+                // Also ensure the link has no borders
+                const linkElement = tempDiv.querySelector("a[href*='paradigmproductionsgroup.com']");
+                if (linkElement) {
+                    linkElement.style.border = "none";
+                    linkElement.style.outline = "none";
+                    linkElement.style.textDecoration = "none";
+                }
+                
+                document.body.appendChild(tempDiv);
+
+                // Create a range and select the node
+                const range = document.createRange();
+                range.selectNodeContents(tempDiv);
+
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+
+                try {
+                    document.execCommand('copy');
+                    document.getElementById("copyMsg").style.display = "inline";
+                } catch (err) {
+                    alert('Copy failed. Please select and copy manually.');
+                }
+
+                // Cleanup
+                document.body.removeChild(tempDiv);
+                selection.removeAllRanges();
+            });
+        }
+
+        // Save signature handler (calls Firestore via module)
+        document.getElementById("saveBtn").addEventListener("click", async function () {
+            console.log("Save button clicked");
+            console.log("window.saveSignatureToFirestore available:", typeof window.saveSignatureToFirestore);
+            
+            if (!window.saveSignatureToFirestore) {
+                console.error("saveSignatureToFirestore not available");
+                alert("Firestore not loaded yet. Please wait a moment and try again.");
+                return;
+            }
+            try {
+                console.log("Calling saveSignatureToFirestore");
+                await window.saveSignatureToFirestore();
+                console.log("saveSignatureToFirestore completed");
+            } catch (error) {
+                console.error("Error saving signature:", error);
+                alert("Error saving signature: " + error.message);
+            }
+        });
+    </script>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
+            authDomain: "email-signature-generato-10c84.firebaseapp.com",
+            projectId: "email-signature-generato-10c84",
+            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
+            messagingSenderId: "1047646901753",
+            appId: "1:1047646901753:web:63afbed550484949bc1928",
+            measurementId: "G-LRGGTL0599"
+        };
+
+        // Initialize Firebase
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase app initialized successfully");
+            db = firebase.firestore();
+            console.log("Firestore initialized successfully");
+            
+            // Test Firebase connection
+            db.enableNetwork().then(() => {
+                console.log("Firestore network enabled");
+            }).catch((error) => {
+                console.error("Firestore network error:", error);
+            });
+            
+        } catch (error) {
+            console.error("Firebase initialization failed:", error);
+            alert("Firebase initialization failed. Save functionality will not work.");
+        }
+
+        // Save signature to Firestore
+        window.saveSignatureToFirestore = async function () {
+            console.log("saveSignatureToFirestore called");
+            const name = document.getElementById("fullName").value;
+            const title = document.getElementById("title").value;
+            const phone = document.getElementById("phone").value;
+            const emailUser = document.getElementById("emailUser").value;
+            const headshot = window.headshotDataUrl || headshotDataUrl || "";
+
+            console.log("Form data:", { name, title, phone, emailUser, hasHeadshot: !!headshot });
+
+            if (!name && !title && !phone && !emailUser && !headshot) {
+                alert("Please fill in at least one field before saving.");
+                return;
+            }
+
+            try {
+                console.log("Adding document to Firestore...");
+                const docRef = await db.collection("signatures").add({
+                    name: name || "",
+                    title: title || "",
+                    phone: phone || "",
+                    emailUser: emailUser || "",
+                    headshot: headshot,
+                    created: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log("Document written with ID: ", docRef.id);
+                document.getElementById("saveMsg").style.display = "inline";
+                setTimeout(() => document.getElementById("saveMsg").style.display = "none", 2000);
+                await displaySavedSignatures();
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                
+                // More specific error messages
+                if (e.code === 'permission-denied') {
+                    alert("Permission denied. Please check Firestore security rules.");
+                } else if (e.code === 'unavailable') {
+                    alert("Firestore is currently unavailable. Please check your internet connection and try again.");
+                } else if (e.code === 'unauthenticated') {
+                    alert("Authentication required. Please set up Firebase Authentication.");
+                } else {
+                    alert("Error saving signature: " + e.message);
+                }
+            }
+        };
+
+        // Display saved signatures
+        async function displaySavedSignatures() {
+            const container = document.getElementById("savedSignaturesContent");
+            container.innerHTML = "";
+            
+            if (!db) {
+                container.innerHTML += "<div style='color:#ff6b6b;'>Firebase not initialized. Cannot load saved signatures.</div>";
+                return;
+            }
+            
+            try {
+                console.log("Loading saved signatures...");
+                const querySnapshot = await db.collection("signatures").orderBy("created", "desc").get();
+                console.log("Query completed. Found", querySnapshot.size, "documents");
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML += "<div style='color:#ccc;'>No saved signatures found.</div>";
+                    return;
+                }
+                
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    console.log("Document data:", data);
+                    container.innerHTML += `
+                        <div class="signature-card">
+                            <div><strong>Name:</strong> ${data.name || "Not specified"}</div>
+                            <div><strong>Title:</strong> ${data.title || "Not specified"}</div>
+                            <div><strong>Phone:</strong> ${data.phone || "Not specified"}</div>
+                            <div><strong>Email Username:</strong> ${data.emailUser || "Not specified"}</div>
+                            ${data.headshot ? `<img src="${data.headshot}" alt="Headshot">` : "<div style='color:#999;'>No headshot</div>"}
+                            <div style="margin-top:8px;">
+                                <button onclick="loadSignature('${doc.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
+                                <button onclick="deleteSignature('${doc.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } catch (error) {
+                console.error("Error loading saved signatures:", error);
+                
+                // More specific error messages for loading
+                if (error.code === 'permission-denied') {
+                    container.innerHTML += "<div style='color:#ff6b6b;'>Permission denied. Please check Firestore security rules.</div>";
+                } else if (error.code === 'unavailable') {
+                    container.innerHTML += "<div style='color:#ff6b6b;'>Firestore unavailable. Please check your internet connection.</div>";
+                } else {
+                    container.innerHTML += "<div style='color:#ff6b6b;'>Error loading saved signatures: " + error.message + "</div>";
+                }
+            }
+        }
+
+        // Expose for main script to call after save
+        window.displaySavedSignatures = displaySavedSignatures;
+
+        // Load a saved signature into the form
+        window.loadSignature = async function(id) {
+            console.log("Loading signature with ID:", id);
+            
+            if (!db) {
+                alert("Firebase not initialized!");
+                return;
+            }
+            
+            try {
+                const doc = await db.collection("signatures").doc(id).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    console.log("Loaded signature data:", data);
+                    
+                    document.getElementById("fullName").value = data.name || "";
+                    document.getElementById("title").value = data.title || "";
+                    document.getElementById("phone").value = data.phone || "";
+                    document.getElementById("emailUser").value = data.emailUser || "";
+                    
+                    if (data.headshot) {
+                        headshotDataUrl = data.headshot;
+                        window.headshotDataUrl = data.headshot;
+                    } else {
+                        headshotDataUrl = "";
+                        window.headshotDataUrl = "";
+                    }
+                    
+                    generateSignature();
+                } else {
+                    console.error("Document not found!");
+                    alert("Signature not found!");
+                }
+            } catch (error) {
+                console.error("Error loading signature:", error);
+                alert("Error loading signature: " + error.message);
+            }
+        };
+
+        // Delete signature function
+        window.deleteSignature = async function(docId) {
+            if (!db) {
+                alert("Firebase not initialized!");
+                return;
+            }
+            
+            // Confirm deletion
+            if (!confirm("Are you sure you want to delete this signature? This action cannot be undone.")) {
+                return;
+            }
+            
+            try {
+                console.log("Deleting signature with ID:", docId);
+                await db.collection("signatures").doc(docId).delete();
+                console.log("Signature deleted successfully!");
+                alert("Signature deleted successfully!");
+                
+                // Refresh the saved signatures display
+                displaySavedSignatures();
+            } catch (error) {
+                console.error("Error deleting signature:", error);
+                
+                // More specific error messages for deletion
+                if (error.code === 'permission-denied') {
+                    alert("Permission denied. Please check Firestore security rules.");
+                } else if (error.code === 'unavailable') {
+                    alert("Firestore is currently unavailable. Please check your internet connection and try again.");
+                } else if (error.code === 'not-found') {
+                    alert("Signature not found. It may have already been deleted.");
+                } else {
+                    alert("Error deleting signature: " + error.message);
+                }
+            }
+        };
+
+        // Initial load - wait a bit for Firebase to initialize
+        setTimeout(displaySavedSignatures, 1000);
+    </script>
+
+    <!-- Firebase Auth SDK (Firebase app already loaded above) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
+    <!-- Authentication helper -->
+    <script src="auth.js"></script>
+
+    <script>
+        // Require admin access for signature generator
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for auth to initialize, then check admin access
+            function checkAdminAccess() {
+                if (window.brandCentralAuth) {
+                    if (window.brandCentralAuth.isInitialized()) {
+                        console.log('Auth initialized, checking admin access...');
+                        window.brandCentralAuth.requireAdmin();
+                    } else {
+                        console.log('Auth not initialized yet, retrying...');
+                        setTimeout(checkAdminAccess, 500);
+                    }
+                } else {
+                    console.log('BrandCentralAuth not available yet, retrying...');
+                    setTimeout(checkAdminAccess, 500);
+                }
+            }
+            
+            setTimeout(checkAdminAccess, 100);
+        });
+    </script>
+</body>
+</html>

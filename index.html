@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Central - Paradigm Productions Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #1F1633;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(63, 203, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(63, 203, 255, 0.05) 0%, transparent 50%);
+            color: #FFFFFF;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(31, 22, 51, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #3FCBFF;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #3FCBFF;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3FCBFF;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #FFFFFF;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 20px 50px;
+            background: linear-gradient(135deg, #1F1633 0%, #2a1b4d 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%233FCBFF" stroke-width="0.5" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-logo {
+            margin-bottom: -60px;
+            animation: fadeInDown 1s ease-out;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero-logo img {
+            max-width: 224px !important;
+            min-width: 140px !important;
+            width: 90% !important;
+            height: auto !important;
+            min-height: 42px !important;
+            filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4));
+            transform: scale(1);
+            transition: transform 0.3s ease;
+            display: block !important;
+            margin: 0 auto !important;
+        }
+
+        .hero-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .hero h1 {
+            font-size: 3.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            margin-top: 5px;
+            background: linear-gradient(45deg, #3FCBFF, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-tagline {
+            font-size: 1.5em;
+            font-weight: 300;
+            font-style: italic;
+            color: #3FCBFF;
+            margin-bottom: 25px;
+            letter-spacing: 0.5px;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            color: #1F1633;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(63, 203, 255, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(63, 203, 255, 0.4);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            color: #3FCBFF;
+            border: 2px solid #3FCBFF;
+            box-shadow: 0 10px 30px rgba(63, 203, 255, 0.1);
+        }
+
+        .cta-button.secondary:hover {
+            background: rgba(63, 203, 255, 0.1);
+            box-shadow: 0 15px 40px rgba(63, 203, 255, 0.2);
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 80px 20px;
+            background: rgba(63, 203, 255, 0.05);
+        }
+
+        .stats-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 20px;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 100px 20px;
+            background: linear-gradient(135deg, #1F1633 0%, #2a1b4d 50%, #1F1633 100%);
+            text-align: center;
+        }
+
+        .services-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .services h2 {
+            font-size: 2.8em;
+            font-weight: 300;
+            margin-bottom: 25px;
+            color: #FFFFFF;
+            line-height: 1.2;
+        }
+
+        .services-subtitle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 60px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            font-weight: 300;
+        }
+
+        .services-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .service-tag {
+            background: rgba(63, 203, 255, 0.1);
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            color: #3FCBFF;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1em;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+
+        .service-tag:hover {
+            background: rgba(63, 203, 255, 0.2);
+            border-color: rgba(63, 203, 255, 0.5);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(63, 203, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: 700;
+            color: #3FCBFF;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 20px;
+            background: #1F1633;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .features h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #3FCBFF;
+            font-weight: 600;
+        }
+
+        .features-subtitle {
+            font-size: 1.2em;
+            margin-bottom: 60px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: rgba(63, 203, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-align: left;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(63, 203, 255, 0.2);
+            border-color: rgba(63, 203, 255, 0.4);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            color: #3FCBFF;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .feature-link {
+            color: #3FCBFF;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .feature-link:hover {
+            color: #2db8e8;
+        }
+
+        /* Quick Access Section */
+        .quick-access {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #2a1b4d 0%, #1F1633 100%);
+        }
+
+        .quick-access-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .quick-access h2 {
+            font-size: 2.2em;
+            margin-bottom: 50px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .quick-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-decoration: none;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .quick-card:hover {
+            background: rgba(63, 203, 255, 0.1);
+            border-color: rgba(63, 203, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .quick-card-icon {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #3FCBFF;
+        }
+
+        .quick-card h3 {
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .quick-card p {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Footer */
+        .footer {
+            background: #0f0a1f;
+            padding: 60px 20px 30px;
+            text-align: center;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: #3FCBFF;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: block;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #3FCBFF;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(31, 22, 51, 0.98);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 50px;
+                transition: left 0.3s ease;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .hero h1 {
+                font-size: 2.5em;
+            }
+
+            .hero-logo img {
+                max-width: 168px !important;
+                min-width: 98px !important;
+            }
+
+            .hero-tagline {
+                font-size: 1.2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .services h2 {
+                font-size: 2.2em;
+            }
+
+            .services-grid {
+                gap: 10px;
+            }
+
+            .service-tag {
+                padding: 12px 20px;
+                font-size: 0.9em;
+            }
+
+            .features h2 {
+                font-size: 2em;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .quick-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .hero-tagline {
+                font-size: 1.1em;
+            }
+
+            .services h2 {
+                font-size: 1.8em;
+            }
+
+            .service-tag {
+                padding: 10px 16px;
+                font-size: 0.8em;
+            }
+
+            .feature-card {
+                padding: 30px 20px;
+            }
+
+            .quick-card {
+                padding: 20px 15px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3FCBFF;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #2db8e8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/icon-only.svg" alt="Paradigm Logo">
+                Brand Central
+            </a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="guidelines.html">Guidelines</a></li>
+                <li><a href="assets.html">Assets</a></li>
+                <li><a href="resources.html">Tools</a></li>
+                <li><a href="boost.html">Boost</a></li>
+
+                <li id="auth-user-info" style="display: none;"></li>
+                <li><a href="login.html" id="auth-login-btn" style="display: none;">Sign In</a></li>
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content fade-in">
+            <div class="hero-logo">
+                <img src="assets/logos/reverse-logo-white.png" alt="Paradigm Productions Group">
+            </div>
+            <h1>Brand Central</h1>
+            <p class="hero-tagline">Production that Moves People</p>
+            <p>Your comprehensive brand resource hub for Paradigm Productions Group. Access professional tools, templates, and assets to maintain consistent brand identity across all touchpoints and communications.</p>
+            <div class="cta-buttons">
+                <a href="resources.html" class="cta-button">Create Email Signature</a>
+                <a href="assets.html" class="cta-button secondary">Browse Assets</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stats-container">
+            <div class="stat-item fade-in">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Brand Assets</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">25+</div>
+                <div class="stat-label">Templates</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Brand Consistent</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Access</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="services-container">
+            <h2>Every tool. Every touchpoint. All under one roof.</h2>
+            <p class="services-subtitle">Our brand capabilities span the full production lifecycle. Whether you need signatures, assets, or brand guidelines, Brand Central plugs in wherever your team needs it most.</p>
+            
+            <div class="services-grid">
+                <div class="service-tag">GUIDELINES</div>
+                <div class="service-tag">ASSETS</div>
+                <div class="service-tag">TEMPLATES</div>
+                <div class="service-tag">TOOLS</div>
+                <div class="service-tag">BRANDING</div>
+                <div class="service-tag">CONSISTENCY</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="features-container">
+            <h2>Everything You Need for Brand Consistency</h2>
+            <p class="features-subtitle">Professional tools and resources that span the full brand lifecycle</p>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">📋</div>
+                    <h3>Brand Guidelines</h3>
+                    <p>Comprehensive style guide covering logo usage, typography, color palettes, tone of voice, and brand application standards for consistent brand identity.</p>
+                    <a href="guidelines.html" class="feature-link">
+                        View Guidelines →
+                    </a>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Brand Assets</h3>
+                    <p>Access high-quality logos, icons, graphics, templates, and visual elements in various formats. Download assets optimized for web, print, and digital use.</p>
+                    <a href="assets.html" class="feature-link">
+                        Browse Assets →
+                    </a>
+                </div>
+
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">�️</div>
+                    <h3>Brand Tools</h3>
+                    <p>Professional tools including email signature generator, production resources, and utilities to maintain brand consistency across all communications.</p>
+                    <a href="resources.html" class="feature-link">
+                        Access Tools →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Section -->
+    <section class="quick-access">
+        <div class="quick-access-container">
+            <h2>Quick Access Tools</h2>
+            <div class="quick-grid">
+                <a href="resources.html" class="quick-card">
+                    <div class="quick-card-icon">⚡</div>
+                    <h3>Signature Generator</h3>
+                    <p>Create instantly</p>
+                </a>
+                <a href="assets.html" class="quick-card">
+                    <div class="quick-card-icon">📥</div>
+                    <h3>Logo Downloads</h3>
+                    <p>All formats & sizes</p>
+                </a>
+                <a href="assets.html" class="quick-card">
+                    <div class="quick-card-icon">📊</div>
+                    <h3>Templates</h3>
+                    <p>PowerPoint & Keynote</p>
+                </a>
+                <a href="guidelines.html" class="quick-card">
+                    <div class="quick-card-icon">📋</div>
+                    <h3>Brand Guidelines</h3>
+                    <p>Colors & Typography</p>
+                </a>
+                <a href="resources.html" class="quick-card">
+                    <div class="quick-card-icon">�️</div>
+                    <h3>Production Tools</h3>
+                    <p>External resources</p>
+                </a>
+                <a href="mailto:jrocchetti@paradigmproductionsgroup.com" class="quick-card">
+                    <div class="quick-card-icon">�</div>
+                    <h3>Get Support</h3>
+                    <p>Contact our team</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Brand Central</h3>
+                    <p>Paradigm Productions Group's comprehensive brand resource center. Production that moves people through consistent brand identity across all platforms and materials.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Brand Tools</h3>
+                    <a href="guidelines.html">Brand Guidelines</a>
+                    <a href="assets.html">Brand Assets</a>
+                    <a href="assets.html">Templates</a>
+                    <a href="resources.html">Email Signature</a>
+                    <a href="resources.html">Production Tools</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <a href="mailto:jrocchetti@paradigmproductionsgroup.com">Contact Support</a>
+                    <a href="guidelines.html">Brand Guidelines</a>
+                    <a href="resources.html">Help Resources</a>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <a href="https://paradigmproductionsgroup.com" target="_blank">Official Website</a>
+                    <a href="https://www.linkedin.com/company/paradigmproductionsgroup" target="_blank">LinkedIn</a>
+                    <a href="mailto:jrocchetti@paradigmproductionsgroup.com">Contact Us</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Paradigm Productions Group. All rights reserved. | 215 E Main Street, Leesburg, Florida 34748 | Brand Central v2.0</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(31, 22, 51, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(31, 22, 51, 0.95)';
+            }
+        });
+
+        // Counter animation for stats
+        function animateCounter(element, target) {
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                if (target === 100) {
+                    element.textContent = Math.floor(current) + '%';
+                } else if (element.textContent.includes('/')) {
+                    element.textContent = '24/7';
+                } else {
+                    element.textContent = Math.floor(current) + '+';
+                }
+            }, 20);
+        }
+
+        // Animate counters when they come into view
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const number = entry.target.querySelector('.stat-number');
+                    const text = number.textContent;
+                    
+                    if (text.includes('50')) {
+                        animateCounter(number, 50);
+                    } else if (text.includes('25')) {
+                        animateCounter(number, 25);
+                    } else if (text.includes('100')) {
+                        animateCounter(number, 100);
+                    } else if (text.includes('24')) {
+                        number.textContent = '24/7';
+                    }
+                    
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        });
+
+        document.querySelectorAll('.stat-item').forEach(item => {
+            statsObserver.observe(item);
+        });
+    </script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
+            authDomain: "email-signature-generato-10c84.firebaseapp.com",
+            projectId: "email-signature-generato-10c84",
+            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
+            messagingSenderId: "1047646901753",
+            appId: "1:1047646901753:web:63afbed550484949bc1928",
+            measurementId: "G-LRGGTL0599"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <!-- Authentication helper -->
+    <script src="auth.js"></script>
+    
+    <script>
+        // Show Assets Manager link for admin users
+        document.addEventListener('DOMContentLoaded', () => {
+            function checkAdminForNav() {
+                if (window.brandCentralAuth && window.brandCentralAuth.isInitialized()) {
+                    if (window.brandCentralAuth.isAdmin()) {
+                        const assetsManagerLink = document.getElementById('admin-assets-manager');
+                        if (assetsManagerLink) {
+                            assetsManagerLink.style.display = 'block';
+                            console.log('✅ Assets Manager link shown for admin user');
+                        }
+                    }
+                } else {
+                    // Retry if auth not ready
+                    setTimeout(checkAdminForNav, 500);
+                }
+            }
+            
+            // Check admin status after a short delay
+            setTimeout(checkAdminForNav, 100);
+        });
+    </script>
+</body>
+</html>

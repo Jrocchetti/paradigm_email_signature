@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Connectivity Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background-color: #0056b3; }
+        button:disabled { background-color: #6c757d; cursor: not-allowed; }
+        pre {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔥 Firebase Connectivity Test</h1>
+        <p>This page tests Firebase connectivity and helps diagnose connection issues.</p>
+        
+        <div id="status" class="status info">
+            ⏳ Initializing Firebase...
+        </div>
+        
+        <div class="grid">
+            <div>
+                <h3>🧪 Quick Tests</h3>
+                <button onclick="testBasicConnection()">Test Basic Connection</button>
+                <button onclick="testFirestoreRead()">Test Firestore Read</button>
+                <button onclick="testFirestoreOffline()">Test Offline Mode</button>
+                <button onclick="clearCache()">Clear Cache & Reload</button>
+            </div>
+            
+            <div>
+                <h3>🔧 Network Info</h3>
+                <div id="networkInfo"></div>
+            </div>
+        </div>
+        
+        <div class="test-container">
+            <h3>📊 Test Results</h3>
+            <div id="testResults"></div>
+        </div>
+        
+        <div class="test-container">
+            <h3>🚨 Troubleshooting Steps</h3>
+            <div class="status warning">
+                <strong>If you see connectivity errors:</strong>
+                <ol>
+                    <li><strong>Check your internet connection</strong> - Try loading other websites</li>
+                    <li><strong>Clear browser cache</strong> - Press Ctrl+Shift+R or use the button above</li>
+                    <li><strong>Try incognito mode</strong> - Opens a fresh browser session</li>
+                    <li><strong>Check firewall/antivirus</strong> - May block Firebase connections</li>
+                    <li><strong>Wait and retry</strong> - Firebase servers may be temporarily unavailable</li>
+                    <li><strong>Check Firebase status</strong> - Visit <a href="https://status.firebase.google.com/" target="_blank">status.firebase.google.com</a></li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="test-container">
+            <h3>📋 Debug Information</h3>
+            <button onclick="copyDebugInfo()">Copy Debug Info</button>
+            <pre id="debugInfo"></pre>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, enableNetwork, disableNetwork } from 'https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
+            authDomain: "email-signature-generato-10c84.firebaseapp.com",
+            projectId: "email-signature-generato-10c84",
+            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
+            messagingSenderId: "1047646901753",
+            appId: "1:1047646901753:web:63afbed550484949bc1928",
+            measurementId: "G-LRGGTL0599"
+        };
+
+        let app, db;
+        let testResults = [];
+
+        // Initialize Firebase
+        try {
+            app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            updateStatus('✅ Firebase initialized successfully', 'success');
+            updateNetworkInfo();
+            updateDebugInfo();
+        } catch (error) {
+            updateStatus(`❌ Firebase initialization failed: ${error.message}`, 'error');
+            console.error('Firebase init error:', error);
+        }
+
+        // Make functions available globally
+        window.testBasicConnection = testBasicConnection;
+        window.testFirestoreRead = testFirestoreRead;
+        window.testFirestoreOffline = testFirestoreOffline;
+        window.clearCache = clearCache;
+        window.copyDebugInfo = copyDebugInfo;
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = `status ${type}`;
+        }
+
+        function addTestResult(test, result, details = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            testResults.push({ timestamp, test, result, details });
+            
+            const resultsEl = document.getElementById('testResults');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${result === 'PASS' ? 'success' : 'error'}`;
+            resultDiv.innerHTML = `
+                <strong>[${timestamp}] ${test}:</strong> ${result}
+                ${details ? `<br><small>${details}</small>` : ''}
+            `;
+            resultsEl.appendChild(resultDiv);
+            resultsEl.scrollTop = resultsEl.scrollHeight;
+        }
+
+        function updateNetworkInfo() {
+            const info = {
+                online: navigator.onLine,
+                userAgent: navigator.userAgent,
+                connection: navigator.connection ? {
+                    effectiveType: navigator.connection.effectiveType,
+                    downlink: navigator.connection.downlink,
+                    rtt: navigator.connection.rtt
+                } : 'Not available'
+            };
+            
+            document.getElementById('networkInfo').innerHTML = `
+                <div class="status ${info.online ? 'success' : 'error'}">
+                    <strong>Online:</strong> ${info.online ? 'Yes' : 'No'}
+                </div>
+                <div><strong>Browser:</strong> ${info.userAgent.split(' ').pop()}</div>
+                <div><strong>Connection:</strong> ${JSON.stringify(info.connection, null, 2)}</div>
+            `;
+        }
+
+        function updateDebugInfo() {
+            const debugInfo = {
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent,
+                online: navigator.onLine,
+                firebaseConfig: {
+                    projectId: firebaseConfig.projectId,
+                    authDomain: firebaseConfig.authDomain
+                },
+                testResults: testResults
+            };
+            
+            document.getElementById('debugInfo').textContent = JSON.stringify(debugInfo, null, 2);
+        }
+
+        async function testBasicConnection() {
+            updateStatus('🧪 Testing basic connection...', 'info');
+            
+            try {
+                // Test internet connectivity
+                const response = await fetch('https://www.google.com', { 
+                    method: 'HEAD', 
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+                addTestResult('Internet Connectivity', 'PASS', 'Can reach external sites');
+                
+                // Test Firebase endpoint
+                const firebaseResponse = await fetch('https://firestore.googleapis.com/', {
+                    method: 'HEAD',
+                    mode: 'no-cors',
+                    cache: 'no-cache'
+                });
+                addTestResult('Firebase Endpoint', 'PASS', 'Can reach Firebase servers');
+                
+                updateStatus('✅ Basic connection test passed', 'success');
+            } catch (error) {
+                addTestResult('Basic Connection', 'FAIL', error.message);
+                updateStatus(`❌ Basic connection test failed: ${error.message}`, 'error');
+            }
+            updateDebugInfo();
+        }
+
+        async function testFirestoreRead() {
+            updateStatus('🧪 Testing Firestore read...', 'info');
+            
+            try {
+                const assetsRef = collection(db, 'assets');
+                const snapshot = await getDocs(assetsRef);
+                
+                addTestResult('Firestore Read', 'PASS', `Read ${snapshot.size} documents from assets collection`);
+                updateStatus('✅ Firestore read test passed', 'success');
+                
+                // Test assetTags collection
+                const tagsRef = collection(db, 'assetTags');
+                const tagsSnapshot = await getDocs(tagsRef);
+                addTestResult('AssetTags Read', 'PASS', `Read ${tagsSnapshot.size} documents from assetTags collection`);
+                
+            } catch (error) {
+                addTestResult('Firestore Read', 'FAIL', error.message);
+                updateStatus(`❌ Firestore read test failed: ${error.message}`, 'error');
+            }
+            updateDebugInfo();
+        }
+
+        async function testFirestoreOffline() {
+            updateStatus('🧪 Testing offline mode...', 'info');
+            
+            try {
+                // Disable network
+                await disableNetwork(db);
+                addTestResult('Offline Mode', 'PASS', 'Successfully disabled network');
+                
+                // Try to read from cache
+                const assetsRef = collection(db, 'assets');
+                const snapshot = await getDocs(assetsRef);
+                addTestResult('Offline Read', 'PASS', `Read ${snapshot.size} documents from cache`);
+                
+                // Re-enable network
+                await enableNetwork(db);
+                addTestResult('Online Mode', 'PASS', 'Successfully re-enabled network');
+                
+                updateStatus('✅ Offline mode test passed', 'success');
+            } catch (error) {
+                addTestResult('Offline Mode', 'FAIL', error.message);
+                updateStatus(`❌ Offline mode test failed: ${error.message}`, 'error');
+                
+                // Try to re-enable network in case of error
+                try {
+                    await enableNetwork(db);
+                } catch (e) {
+                    console.error('Failed to re-enable network:', e);
+                }
+            }
+            updateDebugInfo();
+        }
+
+        function clearCache() {
+            if ('caches' in window) {
+                caches.keys().then(names => {
+                    names.forEach(name => {
+                        caches.delete(name);
+                    });
+                });
+            }
+            
+            // Clear localStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Reload page
+            window.location.reload(true);
+        }
+
+        function copyDebugInfo() {
+            const debugText = document.getElementById('debugInfo').textContent;
+            navigator.clipboard.writeText(debugText).then(() => {
+                updateStatus('✅ Debug info copied to clipboard', 'success');
+            }).catch(() => {
+                updateStatus('❌ Failed to copy debug info', 'error');
+            });
+        }
+
+        // Monitor network changes
+        window.addEventListener('online', () => {
+            updateStatus('🌐 Network connection restored', 'success');
+            updateNetworkInfo();
+        });
+
+        window.addEventListener('offline', () => {
+            updateStatus('🚫 Network connection lost', 'error');
+            updateNetworkInfo();
+        });
+
+        // Auto-run initial tests
+        setTimeout(() => {
+            testBasicConnection();
+        }, 1000);
+    </script>
+</body>
+</html>

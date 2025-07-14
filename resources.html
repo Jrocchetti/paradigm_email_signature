@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Tools - Brand Central</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #1F1633;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(31, 22, 51, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #3FCBFF;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #3FCBFF;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3FCBFF;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #FFFFFF;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #1F1633 0%, #2a1b4d 100%);
+        }
+
+        .page-title {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #3FCBFF, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2.2em;
+            color: #3FCBFF;
+            margin-bottom: 30px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 50px;
+            font-size: 1.1em;
+        }
+
+        /* Resource Grid */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .resource-card {
+            background: rgba(63, 203, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resource-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+        }
+
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(63, 203, 255, 0.2);
+            border-color: rgba(63, 203, 255, 0.4);
+        }
+
+        .resource-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .resource-title {
+            font-size: 1.5em;
+            color: #3FCBFF;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .resource-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .resource-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .resource-link {
+            background: rgba(63, 203, 255, 0.1);
+            color: #3FCBFF;
+            padding: 8px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9em;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .resource-link:hover {
+            background: rgba(63, 203, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .resource-link.primary {
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            color: #1F1633;
+            border: none;
+        }
+
+        .resource-link.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(63, 203, 255, 0.3);
+        }
+
+        /* Category Sections */
+        .category-section {
+            margin-bottom: 80px;
+        }
+
+        .category-title {
+            font-size: 1.8em;
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            font-weight: 600;
+            padding-left: 20px;
+            border-left: 4px solid #3FCBFF;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .tool-card:hover {
+            background: rgba(63, 203, 255, 0.1);
+            border-color: rgba(63, 203, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .tool-icon {
+            width: 40px;
+            height: 40px;
+            background: #3FCBFF;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #1F1633;
+        }
+
+        .tool-name {
+            font-weight: 600;
+            color: #3FCBFF;
+            font-size: 1.1em;
+        }
+
+        .tool-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+
+        .tool-price {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .tool-link {
+            color: #3FCBFF;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color 0.3s ease;
+        }
+
+        .tool-link:hover {
+            color: #2db8e8;
+        }
+
+        /* Learning Resources */
+        .learning-card {
+            background: linear-gradient(135deg, #2a1b4d 0%, #1F1633 100%);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid rgba(63, 203, 255, 0.2);
+        }
+
+        .learning-title {
+            color: #3FCBFF;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .learning-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .learning-item h4 {
+            color: #3FCBFF;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .learning-item p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .learning-item a {
+            color: #3FCBFF;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+        .learning-item a:hover {
+            color: #2db8e8;
+        }
+
+        /* Quick Access Panel */
+        .quick-access-panel {
+            background: rgba(63, 203, 255, 0.1);
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin: 60px 0;
+        }
+
+        .quick-access-title {
+            font-size: 1.8em;
+            color: #3FCBFF;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .quick-access-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .quick-btn {
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            color: #1F1633;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(63, 203, 255, 0.3);
+        }
+
+        .quick-btn.secondary {
+            background: transparent;
+            color: #3FCBFF;
+            border: 2px solid #3FCBFF;
+        }
+
+        .quick-btn.secondary:hover {
+            background: rgba(63, 203, 255, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(31, 22, 51, 0.98);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 50px;
+                transition: left 0.3s ease;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .page-title {
+                font-size: 2.2em;
+            }
+
+            .resource-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-access-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .learning-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.8em;
+            }
+
+            .resource-card,
+            .tool-card {
+                padding: 20px;
+            }
+
+            .quick-access-panel {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/icon-only.svg" alt="Paradigm Logo">
+                Brand Central
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="guidelines.html">Guidelines</a></li>
+                <li><a href="assets.html">Assets</a></li>
+                <li><a href="resources.html" class="active">Tools</a></li>
+                <li><a href="boost.html">Boost</a></li>
+
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Brand Tools</h1>
+                <p class="page-subtitle">Professional tools including email signature generator, production resources, and utilities to maintain brand consistency across all communications and touchpoints.</p>
+            </div>
+        </section>
+
+        <!-- Quick Access Panel -->
+        <section class="content-section">
+            <div class="container">
+                <div class="quick-access-panel">
+                    <h2 class="quick-access-title">Need Something Specific?</h2>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 10px;">Jump directly to our most popular resources</p>
+                    <div class="quick-access-buttons">
+                        <a href="email-signature.html" class="quick-btn">
+                            ⚡ Create Email Signature
+                        </a>
+                        <a href="assets.html" class="quick-btn secondary">
+                            📥 Download Assets
+                        </a>
+                        <a href="guidelines.html" class="quick-btn secondary">
+                            📋 View Guidelines
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Email Signature Generator -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.05); border: 1px solid rgba(63, 203, 255, 0.2); border-radius: 16px; margin: 40px 20px;">
+            <div class="container">
+                <div style="text-align: center; padding: 40px 20px;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">✉️</div>
+                    <h2 style="color: #3FCBFF; margin-bottom: 20px; font-size: 2.2em;">Email Signature Generator</h2>
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 1.1em;">Create professional, Outlook-compatible email signatures with consistent branding, proper spacing, and perfect alignment across all email clients. Maintain brand consistency in every communication.</p>
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px;">
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 8px;">
+                            <strong style="color: #3FCBFF;">✓ Brand Consistent</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 8px;">
+                            <strong style="color: #3FCBFF;">✓ Outlook Compatible</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 8px;">
+                            <strong style="color: #3FCBFF;">✓ Professional</strong>
+                        </div>
+                    </div>
+                    <a href="email-signature.html" style="display: inline-block; background: linear-gradient(45deg, #3FCBFF, #2db8e8); color: #1F1633; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 1.1em; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(63, 203, 255, 0.3);">
+                        Create Your Signature Now →
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- External Tools -->
+        <section class="content-section">
+            <div class="container">
+                <div class="category-section">
+                    <h2 class="category-title">Design Tools</h2>
+                    <p class="section-subtitle">Professional design software and online tools for creating brand-consistent materials</p>
+                    
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">🎨</div>
+                                <div class="tool-name">Adobe Creative Suite</div>
+                            </div>
+                            <div class="tool-description">Industry-standard design software including Photoshop, Illustrator, and InDesign for professional graphics and layouts.</div>
+                            <div class="tool-price">Subscription: $54.99/month</div>
+                            <a href="https://www.adobe.com/creativecloud.html" class="tool-link" target="_blank">
+                                Visit Adobe →
+                            </a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">✨</div>
+                                <div class="tool-name">Figma</div>
+                            </div>
+                            <div class="tool-description">Collaborative design platform perfect for UI/UX design, prototyping, and team collaboration on digital projects.</div>
+                            <div class="tool-price">Free / Pro: $12/month</div>
+                            <a href="https://www.figma.com" class="tool-link" target="_blank">
+                                Try Figma →
+                            </a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">🎭</div>
+                                <div class="tool-name">Canva Pro</div>
+                            </div>
+                            <div class="tool-description">Easy-to-use design platform with templates for social media, presentations, and marketing materials.</div>
+                            <div class="tool-price">Free / Pro: $14.99/month</div>
+                            <a href="https://www.canva.com/pro/" class="tool-link" target="_blank">
+                                Get Canva Pro →
+                            </a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">🖼️</div>
+                                <div class="tool-name">Sketch</div>
+                            </div>
+                            <div class="tool-description">Vector graphics editor focused on digital design for web and mobile interfaces, popular among UI designers.</div>
+                            <div class="tool-price">$10/month per editor</div>
+                            <a href="https://www.sketch.com" class="tool-link" target="_blank">
+                                Try Sketch →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stock Resources -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.02);">
+            <div class="container">
+                <div class="category-section">
+                    <h2 class="category-title">Stock Resources</h2>
+                    <p class="section-subtitle">High-quality stock photos, videos, and graphics for your marketing materials</p>
+                    
+                    <div class="resource-grid">
+                        <div class="resource-card">
+                            <div class="resource-icon">📸</div>
+                            <div class="resource-title">Unsplash</div>
+                            <div class="resource-description">Free high-resolution photos from talented photographers worldwide. Perfect for web, print, and social media use.</div>
+                            <div class="resource-links">
+                                <a href="https://unsplash.com" class="resource-link primary" target="_blank">
+                                    🔗 Browse Photos
+                                </a>
+                                <a href="https://unsplash.com/collections" class="resource-link" target="_blank">
+                                    📂 Collections
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <div class="resource-icon">🎥</div>
+                            <div class="resource-title">Pexels</div>
+                            <div class="resource-description">Free stock photos and videos with a simple license. Thousands of new images and videos added weekly.</div>
+                            <div class="resource-links">
+                                <a href="https://www.pexels.com" class="resource-link primary" target="_blank">
+                                    🔗 Visit Pexels
+                                </a>
+                                <a href="https://www.pexels.com/videos/" class="resource-link" target="_blank">
+                                    🎬 Videos
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <div class="resource-icon">🎨</div>
+                            <div class="resource-title">Freepik</div>
+                            <div class="resource-description">Millions of graphic resources including vectors, stock photos, PSD files, and illustrations for design projects.</div>
+                            <div class="resource-links">
+                                <a href="https://www.freepik.com" class="resource-link primary" target="_blank">
+                                    🔗 Explore Freepik
+                                </a>
+                                <a href="https://www.freepik.com/vectors" class="resource-link" target="_blank">
+                                    📐 Vectors
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <div class="resource-icon">🔤</div>
+                            <div class="resource-title">Google Fonts</div>
+                            <div class="resource-description">Open source fonts that can be easily integrated into web and print projects. Includes web font optimization.</div>
+                            <div class="resource-links">
+                                <a href="https://fonts.google.com" class="resource-link primary" target="_blank">
+                                    🔗 Browse Fonts
+                                </a>
+                                <a href="https://fonts.google.com/specimen/Manrope" class="resource-link" target="_blank">
+                                    📝 Manrope
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Color & Inspiration -->
+        <section class="content-section">
+            <div class="container">
+                <div class="category-section">
+                    <h2 class="category-title">Color & Inspiration</h2>
+                    <p class="section-subtitle">Tools for color palettes, gradients, and design inspiration</p>
+                    
+                    <div class="tools-grid">
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">🎨</div>
+                                <div class="tool-name">Coolors.co</div>
+                            </div>
+                            <div class="tool-description">Generate perfect color palettes and explore trending color combinations for your designs.</div>
+                            <div class="tool-price">Free / Pro: $4/month</div>
+                            <a href="https://coolors.co" class="tool-link" target="_blank">
+                                Generate Colors →
+                            </a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">📐</div>
+                                <div class="tool-name">Adobe Color</div>
+                            </div>
+                            <div class="tool-description">Create color themes and explore color combinations with professional color wheel tools.</div>
+                            <div class="tool-price">Free with Adobe account</div>
+                            <a href="https://color.adobe.com" class="tool-link" target="_blank">
+                                Use Adobe Color →
+                            </a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">✨</div>
+                                <div class="tool-name">Dribbble</div>
+                            </div>
+                            <div class="tool-description">Design inspiration platform showcasing creative work from designers worldwide.</div>
+                            <div class="tool-price">Free / Pro: $8/month</div>
+                            <a href="https://dribbble.com" class="tool-link" target="_blank">
+                                Browse Dribbble →
+                            </a>
+                        </div>
+
+                        <div class="tool-card">
+                            <div class="tool-header">
+                                <div class="tool-icon">🌈</div>
+                                <div class="tool-name">Gradient Hunt</div>
+                            </div>
+                            <div class="tool-description">Curated collection of beautiful gradients for web and graphic design projects.</div>
+                            <div class="tool-price">Free</div>
+                            <a href="https://gradienthunt.com" class="tool-link" target="_blank">
+                                Find Gradients →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Learning Resources -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.02);">
+            <div class="container">
+                <h2 class="section-title">Learning Resources</h2>
+                <p class="section-subtitle">Tutorials, courses, and guides to improve your design and brand skills</p>
+                
+                <div class="learning-card">
+                    <div class="learning-title">Design & Branding Tutorials</div>
+                    <div class="learning-grid">
+                        <div class="learning-item">
+                            <h4>YouTube Channels</h4>
+                            <p>Free video tutorials on design principles, software, and branding strategies.</p>
+                            <a href="https://www.youtube.com/user/TheSkoolRocks" target="_blank">The Futur →</a>
+                        </div>
+                        <div class="learning-item">
+                            <h4>Coursera Design Courses</h4>
+                            <p>University-level courses on graphic design, UX/UI, and visual communication.</p>
+                            <a href="https://www.coursera.org/browse/arts-and-humanities/graphic-design" target="_blank">Browse Courses →</a>
+                        </div>
+                        <div class="learning-item">
+                            <h4>Udemy Design Training</h4>
+                            <p>Practical design courses covering software skills and design theory.</p>
+                            <a href="https://www.udemy.com/topic/graphic-design/" target="_blank">View Courses →</a>
+                        </div>
+                        <div class="learning-item">
+                            <h4>Brand Strategy Guides</h4>
+                            <p>Learn about brand development, strategy, and implementation best practices.</p>
+                            <a href="https://blog.hubspot.com/marketing/branding-strategy" target="_blank">Read Articles →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Productivity Tools -->
+        <section class="content-section">
+            <div class="container">
+                <div class="category-section">
+                    <h2 class="category-title">Productivity & Collaboration</h2>
+                    <p class="section-subtitle">Tools to streamline your workflow and improve team collaboration</p>
+                    
+                    <div class="resource-grid">
+                        <div class="resource-card">
+                            <div class="resource-icon">📋</div>
+                            <div class="resource-title">Notion</div>
+                            <div class="resource-description">All-in-one workspace for notes, databases, project management, and team collaboration with powerful organization features.</div>
+                            <div class="resource-links">
+                                <a href="https://www.notion.so" class="resource-link primary" target="_blank">
+                                    🔗 Try Notion
+                                </a>
+                                <a href="https://www.notion.so/templates" class="resource-link" target="_blank">
+                                    📄 Templates
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <div class="resource-icon">📊</div>
+                            <div class="resource-title">Airtable</div>
+                            <div class="resource-description">Flexible database platform that combines spreadsheet simplicity with database functionality for project tracking.</div>
+                            <div class="resource-links">
+                                <a href="https://airtable.com" class="resource-link primary" target="_blank">
+                                    🔗 Visit Airtable
+                                </a>
+                                <a href="https://airtable.com/templates" class="resource-link" target="_blank">
+                                    📑 Templates
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <div class="resource-icon">💬</div>
+                            <div class="resource-title">Slack</div>
+                            <div class="resource-description">Team communication platform with channels, direct messages, file sharing, and integration with other tools.</div>
+                            <div class="resource-links">
+                                <a href="https://slack.com" class="resource-link primary" target="_blank">
+                                    🔗 Get Slack
+                                </a>
+                                <a href="https://slack.com/apps" class="resource-link" target="_blank">
+                                    🔌 Integrations
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <div class="resource-icon">🗂️</div>
+                            <div class="resource-title">Google Workspace</div>
+                            <div class="resource-description">Complete suite of productivity tools including Docs, Sheets, Slides, and Drive for seamless collaboration.</div>
+                            <div class="resource-links">
+                                <a href="https://workspace.google.com" class="resource-link primary" target="_blank">
+                                    🔗 Google Workspace
+                                </a>
+                                <a href="https://drive.google.com" class="resource-link" target="_blank">
+                                    ☁️ Drive
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.02);">
+            <div class="container">
+                <div class="quick-access-panel">
+                    <h2 class="quick-access-title">Need Additional Resources?</h2>
+                    <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 10px;">Can't find what you're looking for? Get in touch with our team</p>
+                    <div class="quick-access-buttons">
+                        <a href="mailto:jrocchetti@paradigmproductionsgroup.com" class="quick-btn">
+                            📧 Contact Support
+                        </a>
+                        <a href="mailto:jrocchetti@paradigmproductionsgroup.com" class="quick-btn secondary">
+                            💬 Request Resource
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(31, 22, 51, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(31, 22, 51, 0.95)';
+            }
+        });
+
+        // Add external link indicators
+        document.querySelectorAll('a[target="_blank"]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Optional: Add analytics tracking for external clicks
+                console.log('External link clicked:', this.href);
+            });
+        });
+    </script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
+            authDomain: "email-signature-generato-10c84.firebaseapp.com",
+            projectId: "email-signature-generato-10c84",
+            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
+            messagingSenderId: "1047646901753",
+            appId: "1:1047646901753:web:63afbed550484949bc1928",
+            measurementId: "G-LRGGTL0599"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <!-- Authentication helper -->
+    <script src="auth.js"></script>
+
+    <script>
+        // Require admin access for brand tools
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for auth to initialize, then check admin access
+            function checkAdminAccess() {
+                if (window.brandCentralAuth) {
+                    if (window.brandCentralAuth.isInitialized()) {
+                        console.log('Auth initialized, checking admin access...');
+                        window.brandCentralAuth.requireAdmin();
+                    } else {
+                        console.log('Auth not initialized yet, retrying...');
+                        setTimeout(checkAdminAccess, 500);
+                    }
+                } else {
+                    console.log('BrandCentralAuth not available yet, retrying...');
+                    setTimeout(checkAdminAccess, 500);
+                }
+            }
+            
+            setTimeout(checkAdminAccess, 100);
+        });
+    </script>
+</body>
+</html>

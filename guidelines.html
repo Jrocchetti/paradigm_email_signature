@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Guidelines - Paradigm Productions Group</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #1F1633;
+            color: #FFFFFF;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(31, 22, 51, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: #3FCBFF;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 32px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #3FCBFF;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #3FCBFF;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .nav-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #FFFFFF;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 60px 0;
+            background: linear-gradient(135deg, #1F1633 0%, #2a1b4d 100%);
+        }
+
+        .page-title {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #3FCBFF, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.3em;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2.2em;
+            color: #3FCBFF;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .section-content {
+            background: rgba(63, 203, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
+            border-radius: 16px 0 16px 0;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        /* Color Palette */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .color-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px 0 16px 0;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .color-swatch {
+            width: 100%;
+            height: 80px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .color-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #3FCBFF;
+        }
+
+        .color-codes {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        /* Typography */
+        .typography-example {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px 0 12px 0;
+            padding: 30px;
+            margin: 20px 0;
+            border-left: 4px solid #3FCBFF;
+        }
+
+        .font-example {
+            margin-bottom: 20px;
+        }
+
+        .font-name {
+            color: #3FCBFF;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Logo Usage */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .logo-example {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px 0 16px 0;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo-placeholder {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            border-radius: 12px 0 12px 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1F1633;
+            font-size: 1.2em;
+        }
+
+        .logo-display {
+            width: 100%;
+            height: 120px;
+            border-radius: 12px 0 12px 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-display.primary {
+            background: #FFFFFF;
+        }
+
+        .logo-display.reverse {
+            background: #1F1633;
+        }
+
+        .logo-display.monochrome {
+            background: #F5F5F5;
+        }
+
+        .logo-display.icon {
+            background: linear-gradient(45deg, #f0f0f0, #e0e0e0);
+        }
+
+        .logo-title {
+            font-weight: 600;
+            color: #3FCBFF;
+            margin-bottom: 10px;
+        }
+
+        .logo-description {
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Download Section */
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .download-card {
+            background: rgba(63, 203, 255, 0.1);
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            border-radius: 12px 0 12px 0;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            background: rgba(63, 203, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .download-icon {
+            font-size: 2em;
+            color: #3FCBFF;
+            margin-bottom: 15px;
+        }
+
+        .download-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            color: #1F1633;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(63, 203, 255, 0.3);
+        }
+
+        /* Quick Reference */
+        .quick-ref {
+            background: linear-gradient(135deg, #2a1b4d 0%, #1F1633 100%);
+            border-radius: 16px 0 16px 0;
+            padding: 40px;
+            margin: 40px 0;
+        }
+
+        .quick-ref h3 {
+            color: #3FCBFF;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .quick-ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .quick-ref-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 12px 0 12px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .quick-ref-label {
+            color: #3FCBFF;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .quick-ref-value {
+            color: rgba(255, 255, 255, 0.9);
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(31, 22, 51, 0.98);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 50px;
+                transition: left 0.3s ease;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-toggle {
+                display: flex;
+            }
+
+            .page-title {
+                font-size: 2.2em;
+            }
+
+            .section-content {
+                padding: 30px 20px;
+            }
+
+            .color-grid,
+            .logo-grid,
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-ref-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 1.8em;
+            }
+
+            .section-content {
+                padding: 20px 15px;
+            }
+
+            .quick-ref-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/icon-only.svg" alt="Paradigm Logo">
+                Brand Central
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="guidelines.html" class="active">Guidelines</a></li>
+                <li><a href="assets.html">Assets</a></li>
+                <li><a href="resources.html">Tools</a></li>
+                <li><a href="boost.html">Boost</a></li>
+
+            </ul>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <div class="container">
+                <h1 class="page-title">Brand Guidelines</h1>
+                <p class="page-subtitle">Comprehensive style guide for maintaining consistent brand identity across all touchpoints and communications</p>
+            </div>
+        </section>
+
+        <!-- Brand Overview -->
+        <section class="content-section">
+            <div class="container">
+                <h2 class="section-title">Brand Overview</h2>
+                <div class="section-content">
+                    <p style="font-size: 1.3em; margin-bottom: 15px; color: #3FCBFF; font-style: italic; font-weight: 300;">
+                        "Production that Moves People"
+                    </p>
+                    <p style="font-size: 1.1em; margin-bottom: 20px; color: rgba(255, 255, 255, 0.9);">
+                        Paradigm Productions Group represents innovation, creativity, and professional excellence in event production. Our brand identity reflects these core values through modern design, consistent messaging, and strategic visual communication that moves people both emotionally and physically.
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.8);">
+                        Our capabilities span the full event production lifecycle - from audio/visual and lighting to creative direction, stage management, rentals, and branding. Every tool, every touchpoint, all under one roof. These guidelines ensure that every interaction with our brand maintains the same level of quality and consistency, whether it's a business card, website, or large-scale presentation.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Logo Usage -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.02);">
+            <div class="container">
+                <h2 class="section-title">Logo Usage</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; color: rgba(255, 255, 255, 0.8);">
+                        Our logo is the cornerstone of our brand identity. Use these guidelines to ensure proper application across all media.
+                    </p>
+                    
+                    <div class="logo-grid">
+                        <div class="logo-example">
+                            <div class="logo-display primary">
+                                <img src="assets/logos/primary-logo.svg" alt="Paradigm Productions Group Primary Logo">
+                            </div>
+                            <div class="logo-title">Primary Logo</div>
+                            <div class="logo-description">Use on light backgrounds and white/neutral surfaces</div>
+                        </div>
+                        <div class="logo-example">
+                            <div class="logo-display reverse">
+                                <img src="assets/logos/reverse-logo.svg" alt="Paradigm Productions Group Reverse Logo">
+                            </div>
+                            <div class="logo-title">Reverse Logo</div>
+                            <div class="logo-description">Use on dark backgrounds and colored surfaces</div>
+                        </div>
+                        <div class="logo-example">
+                            <div class="logo-display reverse">
+                                <img src="assets/logos/reverse-logo-white.svg" alt="Paradigm Productions Group White Reverse Logo">
+                            </div>
+                            <div class="logo-title">White Reverse Logo</div>
+                            <div class="logo-description">Use on dark backgrounds when white logo is preferred</div>
+                        </div>
+                        <div class="logo-example">
+                            <div class="logo-display monochrome">
+                                <img src="assets/logos/primary-logo.svg" alt="Paradigm Productions Group Monochrome Logo" style="filter: grayscale(100%);">
+                            </div>
+                            <div class="logo-title">Monochrome Version</div>
+                            <div class="logo-description">Use when color reproduction is limited</div>
+                        </div>
+                        <div class="logo-example">
+                            <div class="logo-display icon">
+                                <img src="assets/logos/icon-only.svg" alt="Paradigm Productions Group Icon">
+                            </div>
+                            <div class="logo-title">Icon Only</div>
+                            <div class="logo-description">Use for small spaces and social media profiles</div>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 12px 0 12px 0; margin-top: 30px;">
+                        <h4 style="color: #3FCBFF; margin-bottom: 15px;">Logo Don'ts</h4>
+                        <ul style="color: rgba(255, 255, 255, 0.8); line-height: 1.8;">
+                            <li>Don't stretch or distort the logo</li>
+                            <li>Don't change the colors or modify elements</li>
+                            <li>Don't place on busy backgrounds that reduce legibility</li>
+                            <li>Don't use outdated versions of the logo</li>
+                            <li>Maintain minimum clear space of half the logo height on all sides</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Color Palette -->
+        <section class="content-section">
+            <div class="container">
+                <h2 class="section-title">Color Palette</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; color: rgba(255, 255, 255, 0.8);">
+                        Our color palette reflects innovation and professionalism. Use these colors consistently across all brand materials.
+                    </p>
+                    
+                    <div class="color-grid">
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: #3FCBFF;"></div>
+                            <div class="color-name">Paradigm Blue</div>
+                            <div class="color-codes">
+                                HEX: #3FCBFF<br>
+                                RGB: 63, 203, 255<br>
+                                CMYK: 75, 20, 0, 0
+                            </div>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: #1F1633;"></div>
+                            <div class="color-name">Deep Purple</div>
+                            <div class="color-codes">
+                                HEX: #1F1633<br>
+                                RGB: 31, 22, 51<br>
+                                CMYK: 80, 90, 40, 30
+                            </div>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: #2db8e8;"></div>
+                            <div class="color-name">Bright Blue</div>
+                            <div class="color-codes">
+                                HEX: #2DB8E8<br>
+                                RGB: 45, 184, 232<br>
+                                CMYK: 80, 20, 0, 0
+                            </div>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: #FFFFFF; border: 2px solid #3FCBFF;"></div>
+                            <div class="color-name">Pure White</div>
+                            <div class="color-codes">
+                                HEX: #FFFFFF<br>
+                                RGB: 255, 255, 255<br>
+                                CMYK: 0, 0, 0, 0
+                            </div>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: #2a1b4d;"></div>
+                            <div class="color-name">Dark Purple</div>
+                            <div class="color-codes">
+                                HEX: #2A1B4D<br>
+                                RGB: 42, 27, 77<br>
+                                CMYK: 85, 95, 30, 20
+                            </div>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: #3f105e;"></div>
+                            <div class="color-name">Deep Magenta</div>
+                            <div class="color-codes">
+                                HEX: #3F105E<br>
+                                RGB: 63, 16, 94<br>
+                                CMYK: 80, 95, 25, 10
+                            </div>
+                        </div>
+                        <div class="color-card">
+                            <div class="color-swatch" style="background: rgba(255, 255, 255, 0.1); border: 2px solid #3FCBFF;"></div>
+                            <div class="color-name">Light Gray</div>
+                            <div class="color-codes">
+                                HEX: #F5F5F5<br>
+                                RGB: 245, 245, 245<br>
+                                CMYK: 3, 2, 2, 0
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Typography -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.02);">
+            <div class="container">
+                <h2 class="section-title">Typography</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; color: rgba(255, 255, 255, 0.8);">
+                        Typography plays a crucial role in our brand communication. Use Manrope for all brand materials to ensure consistency.
+                    </p>
+                    
+                    <div class="typography-example">
+                        <div class="font-example">
+                            <div class="font-name">Manrope - Primary Font</div>
+                            <h1 style="font-size: 2.5em; font-weight: 700; margin: 10px 0; color: #3FCBFF;">Heading 1 - Bold 700</h1>
+                            <h2 style="font-size: 2em; font-weight: 600; margin: 10px 0;">Heading 2 - Semibold 600</h2>
+                            <h3 style="font-size: 1.5em; font-weight: 500; margin: 10px 0;">Heading 3 - Medium 500</h3>
+                            <p style="font-size: 1.1em; font-weight: 400; margin: 10px 0; color: rgba(255, 255, 255, 0.9);">Body text - Regular 400. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                            <p style="font-size: 0.9em; font-weight: 300; margin: 10px 0; color: rgba(255, 255, 255, 0.7);">Small text - Light 300. Additional information and captions.</p>
+                        </div>
+                    </div>
+
+                    <div style="background: rgba(255, 255, 255, 0.05); padding: 25px; border-radius: 12px 0 12px 0; margin-top: 30px;">
+                        <h4 style="color: #3FCBFF; margin-bottom: 15px;">Typography Guidelines</h4>
+                        <ul style="color: rgba(255, 255, 255, 0.8); line-height: 1.8;">
+                            <li><strong>Headings:</strong> Use Manrope Bold (700) or Semibold (600)</li>
+                            <li><strong>Body Text:</strong> Use Manrope Regular (400) with 1.6 line height</li>
+                            <li><strong>Captions:</strong> Use Manrope Light (300) at smaller sizes</li>
+                            <li><strong>Hierarchy:</strong> Maintain clear size relationships between text elements</li>
+                            <li><strong>Contrast:</strong> Ensure sufficient contrast for readability</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Reference -->
+        <section class="content-section">
+            <div class="container">
+                <div class="quick-ref">
+                    <h3>Quick Reference Guide</h3>
+                    <div class="quick-ref-grid">
+                        <div class="quick-ref-item">
+                            <div class="quick-ref-label">Primary Blue</div>
+                            <div class="quick-ref-value">#3FCBFF</div>
+                        </div>
+                        <div class="quick-ref-item">
+                            <div class="quick-ref-label">Deep Purple</div>
+                            <div class="quick-ref-value">#1F1633</div>
+                        </div>
+                        <div class="quick-ref-item">
+                            <div class="quick-ref-label">Primary Font</div>
+                            <div class="quick-ref-value">Manrope</div>
+                        </div>
+                        <div class="quick-ref-item">
+                            <div class="quick-ref-label">Border Radius</div>
+                            <div class="quick-ref-value">16px / 8px</div>
+                        </div>
+                        <div class="quick-ref-item">
+                            <div class="quick-ref-label">Line Height</div>
+                            <div class="quick-ref-value">1.6</div>
+                        </div>
+                        <div class="quick-ref-item">
+                            <div class="quick-ref-label">Logo Clear Space</div>
+                            <div class="quick-ref-value">0.5x logo height</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Downloads -->
+        <section class="content-section" style="background: rgba(63, 203, 255, 0.02);">
+            <div class="container">
+                <h2 class="section-title">Download Brand Assets</h2>
+                <div class="section-content">
+                    <p style="margin-bottom: 30px; color: rgba(255, 255, 255, 0.8);">
+                        Access all brand assets in various formats for different use cases. Always use the most current versions.
+                    </p>
+                    
+                    <div class="download-grid">
+                        <div class="download-card">
+                            <div class="download-icon">📋</div>
+                            <div class="download-title">Brand Guidelines PDF</div>
+                            <a href="assets/paradigm-brand-guidelines.pdf" class="download-btn" download>Download PDF</a>
+                        </div>
+                        <div class="download-card">
+                            <div class="download-icon">🎨</div>
+                            <div class="download-title">Logo Package</div>
+                            <a href="assets/paradigm-logos.zip" class="download-btn" download>Download ZIP</a>
+                        </div>
+                        <div class="download-card">
+                            <div class="download-icon">🎭</div>
+                            <div class="download-title">Color Swatches</div>
+                            <a href="assets/paradigm-colors.ase" class="download-btn" download>Download ASE</a>
+                        </div>
+                        <div class="download-card">
+                            <div class="download-icon">📝</div>
+                            <div class="download-title">Typography Kit</div>
+                            <a href="assets/paradigm-typography.zip" class="download-btn" download>Download ZIP</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        navToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        navLinks.addEventListener('click', (e) => {
+            if (e.target.tagName === 'A') {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Navbar background on scroll
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.style.background = 'rgba(31, 22, 51, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(31, 22, 51, 0.95)';
+            }
+        });
+    </script>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
+            authDomain: "email-signature-generato-10c84.firebaseapp.com",
+            projectId: "email-signature-generato-10c84",
+            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
+            messagingSenderId: "1047646901753",
+            appId: "1:1047646901753:web:63afbed550484949bc1928",
+            measurementId: "G-LRGGTL0599"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+    
+    <!-- Authentication helper -->
+    <script src="auth.js"></script>
+    
+    <script>
+        // Show Assets Manager link for admin users
+        document.addEventListener('DOMContentLoaded', () => {
+            function checkAdminForNav() {
+                if (window.brandCentralAuth && window.brandCentralAuth.isInitialized()) {
+                    if (window.brandCentralAuth.isAdmin()) {
+                        const assetsManagerLink = document.getElementById('admin-assets-manager');
+                        if (assetsManagerLink) {
+                            assetsManagerLink.style.display = 'block';
+                            console.log('✅ Assets Manager link shown for admin user');
+                        }
+                    }
+                } else {
+                    // Retry if auth not ready
+                    setTimeout(checkAdminForNav, 500);
+                }
+            }
+            
+            // Check admin status after a short delay
+            setTimeout(checkAdminForNav, 100);
+        });
+    </script>
+</body>
+</html>
