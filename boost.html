@@ -560,8 +560,12 @@
             text-align: center;
         }
 
-        /* Protected Content */
+        /* Protected Content - Show by default, hide if not admin */
         .protected-content {
+            display: block;
+        }
+
+        .protected-content.hidden {
             display: none;
         }
 
@@ -676,10 +680,10 @@
         </div>
 
         <!-- Admin Upload Section -->
-        <div class="upload-section protected-content" id="upload-section">
+        <div class="upload-section protected-content" id="upload-section" style="display: block;">
             <h2 style="color: #3FCBFF; margin-bottom: 20px;">🎬 Admin Content Manager</h2>
             <div class="admin-notice">
-                � Admin Access: You can upload, manage, and organize social media content
+                🔑 Admin Access: You can upload, manage, and organize social media content
             </div>
             
             <!-- Upload Area -->
@@ -782,13 +786,14 @@ Tips:
                 <!-- Captions will be loaded here -->
             </div>
         </div>
-    </div>
-
-    <!-- Debug Panel -->
-    <div class="debug-panel">
-        <strong>🔧 Boost Debug:</strong><br>
-        <span id="debugContent">Initializing Supabase...</span>
-    </div>
+    </div>        <!-- Debug Panel -->
+        <div class="debug-panel">
+            <strong>🔧 Boost Debug:</strong><br>
+            <span id="debugContent">Initializing Supabase...</span>
+            <br><br>
+            <button onclick="toggleAdminMode()" style="background: #ff9800; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">🔓 Toggle Admin</button>
+            <button onclick="checkAdminAccess()" style="background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; margin-left: 5px;">🔍 Check Admin</button>
+        </div>
 
     <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -886,22 +891,41 @@ Tips:
             }
         }
 
-        // Check admin access
+        // Check admin access with better debugging
         function checkAdminAccess() {
+            updateDebugInfo('🔍 Checking admin access...');
+            
             setTimeout(() => {
+                const uploadSection = document.getElementById('upload-section');
+                
                 if (window.brandCentralAuth) {
                     isAdmin = window.brandCentralAuth.isAdmin();
-                    updateDebugInfo(`🔑 Admin: ${isAdmin ? 'YES' : 'NO'}`);
+                    const userEmail = window.brandCentralAuth.getCurrentUser()?.email || 'Not signed in';
+                    
+                    updateDebugInfo(`� User: ${userEmail}`);
+                    updateDebugInfo(`�🔑 Admin Status: ${isAdmin ? 'YES ✅' : 'NO ❌'}`);
                     
                     // Show/hide upload section based on admin status
-                    const uploadSection = document.getElementById('upload-section');
                     if (uploadSection) {
-                        uploadSection.style.display = isAdmin ? 'block' : 'none';
+                        if (isAdmin) {
+                            uploadSection.classList.remove('hidden');
+                            uploadSection.style.display = 'block';
+                            updateDebugInfo('🎬 Upload section: SHOWN');
+                        } else {
+                            uploadSection.classList.add('hidden');
+                            uploadSection.style.display = 'none';
+                            updateDebugInfo('🚫 Upload section: HIDDEN (Not admin)');
+                        }
                     }
                 } else {
-                    updateDebugInfo('⚠️ BrandCentralAuth not loaded');
+                    updateDebugInfo('⚠️ BrandCentralAuth not loaded - showing upload for testing');
+                    // For testing: show upload section if auth not loaded
+                    if (uploadSection) {
+                        uploadSection.style.display = 'block';
+                        uploadSection.classList.remove('hidden');
+                    }
                 }
-            }, 500);
+            }, 1000); // Increased timeout to ensure auth loads
         }
 
         // Setup event listeners
@@ -1529,7 +1553,24 @@ Tips:
             }
         }
 
-        // ...existing code...
+        // Manual admin toggle for testing
+        function toggleAdminMode() {
+            isAdmin = !isAdmin;
+            updateDebugInfo(`🔓 Manual admin toggle: ${isAdmin ? 'ON' : 'OFF'}`);
+            
+            const uploadSection = document.getElementById('upload-section');
+            if (uploadSection) {
+                if (isAdmin) {
+                    uploadSection.style.display = 'block';
+                    uploadSection.classList.remove('hidden');
+                    updateDebugInfo('🎬 Upload section: SHOWN (Manual)');
+                } else {
+                    uploadSection.style.display = 'none';
+                    uploadSection.classList.add('hidden');
+                    updateDebugInfo('🚫 Upload section: HIDDEN (Manual)');
+                }
+            }
+        }
     </script>
     
     <!-- Authentication helper -->
