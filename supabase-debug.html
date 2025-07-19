@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase Auth Debug - Brand Central</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #1F1633;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 12px;
+            border: 2px solid #3FCBFF;
+        }
+
+        h1 {
+            color: #3FCBFF;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+        }
+
+        .section h2 {
+            color: #3FCBFF;
+            margin-bottom: 15px;
+        }
+
+        button {
+            background: #3FCBFF;
+            color: #1F1633;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background: #2db8e8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            margin: 5px;
+            width: 300px;
+        }
+
+        .output {
+            background: #000;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+
+        .success {
+            color: #4caf50;
+        }
+
+        .error {
+            color: #f44336;
+        }
+
+        .warning {
+            color: #ff9800;
+        }
+
+        .info {
+            color: #2196f3;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #3FCBFF;
+            padding: 8px 16px;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: inherit;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <a href="login.html" class="back-btn">← Back to Login</a>
+
+    <div class="container">
+        <h1>🔧 Supabase Authentication Debug Tool</h1>
+        
+        <div class="section">
+            <h2>Connection Status</h2>
+            <button onclick="testConnection()">Test Supabase Connection</button>
+            <div id="connectionOutput" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>User Management</h2>
+            <input type="email" id="userEmail" placeholder="Enter email address" value="jrocchetti@paradigmproductionsgroup.com">
+            <br>
+            <button onclick="checkUser()">Check User Status</button>
+            <button onclick="listAllUsers()">List All Users</button>
+            <button onclick="resendConfirmation()">Resend Confirmation</button>
+            <div id="userOutput" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>Auth Status</h2>
+            <button onclick="getCurrentSession()">Get Current Session</button>
+            <button onclick="getCurrentUser()">Get Current User</button>
+            <button onclick="signOutUser()">Sign Out</button>
+            <div id="authOutput" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>Configuration Info</h2>
+            <button onclick="showConfig()">Show Supabase Config</button>
+            <div id="configOutput" class="output"></div>
+        </div>
+
+        <div class="section">
+            <h2>Quick Fixes</h2>
+            <button onclick="showEmailConfirmationTips()">Email Confirmation Help</button>
+            <button onclick="resetAuthState()">Reset Auth State</button>
+            <div id="fixesOutput" class="output"></div>
+        </div>
+    </div>
+
+    <!-- Supabase JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+        
+        let supabase;
+
+        // Initialize Supabase
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                log('connectionOutput', '✅ Supabase client initialized', 'success');
+            } catch (error) {
+                log('connectionOutput', `❌ Initialization error: ${error.message}`, 'error');
+            }
+        });
+
+        // Utility function to log output
+        function log(outputId, message, type = 'info') {
+            const output = document.getElementById(outputId);
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type === 'success' ? 'success' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+            output.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Clear output
+        function clearOutput(outputId) {
+            document.getElementById(outputId).innerHTML = '';
+        }
+
+        // Test connection
+        async function testConnection() {
+            clearOutput('connectionOutput');
+            log('connectionOutput', '🔄 Testing Supabase connection...', 'info');
+            
+            try {
+                // Test basic connection
+                const { data, error } = await supabase.from('profiles').select('count').limit(1);
+                
+                if (error && error.code !== 'PGRST116') {
+                    throw error;
+                }
+                
+                log('connectionOutput', '✅ Database connection successful', 'success');
+                log('connectionOutput', `📊 Supabase URL: ${SUPABASE_URL}`, 'info');
+                log('connectionOutput', `🔑 Using anon key: ${SUPABASE_ANON_KEY.substring(0, 20)}...`, 'info');
+                
+                // Test auth service
+                const { data: authData, error: authError } = await supabase.auth.getSession();
+                if (authError) {
+                    log('connectionOutput', `⚠️ Auth service warning: ${authError.message}`, 'warning');
+                } else {
+                    log('connectionOutput', '✅ Auth service available', 'success');
+                }
+                
+            } catch (error) {
+                log('connectionOutput', `❌ Connection error: ${error.message}`, 'error');
+            }
+        }
+
+        // Check specific user
+        async function checkUser() {
+            const email = document.getElementById('userEmail').value;
+            clearOutput('userOutput');
+            
+            if (!email) {
+                log('userOutput', '❌ Please enter an email address', 'error');
+                return;
+            }
+            
+            log('userOutput', `🔍 Checking user: ${email}`, 'info');
+            
+            try {
+                // Note: This requires admin privileges, will likely fail with anon key
+                log('userOutput', '⚠️ User lookup requires admin privileges', 'warning');
+                log('userOutput', '💡 This function is limited with anonymous access', 'info');
+                
+                // Try to check current session instead
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (session && session.user.email === email) {
+                    log('userOutput', `✅ Found current session for: ${email}`, 'success');
+                    log('userOutput', `📧 Email confirmed: ${session.user.email_confirmed_at ? 'Yes' : 'No'}`, session.user.email_confirmed_at ? 'success' : 'warning');
+                    log('userOutput', `🆔 User ID: ${session.user.id}`, 'info');
+                    log('userOutput', `📅 Created: ${new Date(session.user.created_at).toLocaleString()}`, 'info');
+                } else {
+                    log('userOutput', `❌ No active session found for: ${email}`, 'error');
+                }
+                
+            } catch (error) {
+                log('userOutput', `❌ Error checking user: ${error.message}`, 'error');
+            }
+        }
+
+        // List all users (limited with anon key)
+        async function listAllUsers() {
+            clearOutput('userOutput');
+            log('userOutput', '🔍 Attempting to list users...', 'info');
+            log('userOutput', '⚠️ This requires admin privileges and may fail', 'warning');
+            
+            try {
+                // This will likely fail with anon key
+                const { data, error } = await supabase.auth.admin.listUsers();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                log('userOutput', `✅ Found ${data.users.length} users`, 'success');
+                data.users.forEach(user => {
+                    log('userOutput', `👤 ${user.email} - Confirmed: ${user.email_confirmed_at ? 'Yes' : 'No'}`, 'info');
+                });
+                
+            } catch (error) {
+                log('userOutput', `❌ List users error: ${error.message}`, 'error');
+                log('userOutput', '💡 Try using the Supabase Dashboard instead', 'info');
+            }
+        }
+
+        // Resend confirmation email
+        async function resendConfirmation() {
+            const email = document.getElementById('userEmail').value;
+            clearOutput('userOutput');
+            
+            if (!email) {
+                log('userOutput', '❌ Please enter an email address', 'error');
+                return;
+            }
+            
+            log('userOutput', `📧 Resending confirmation to: ${email}`, 'info');
+            
+            try {
+                const { error } = await supabase.auth.resend({
+                    type: 'signup',
+                    email: email
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                log('userOutput', `✅ Confirmation email sent to: ${email}`, 'success');
+                log('userOutput', '📬 Please check the email inbox', 'info');
+                
+            } catch (error) {
+                log('userOutput', `❌ Resend error: ${error.message}`, 'error');
+            }
+        }
+
+        // Get current session
+        async function getCurrentSession() {
+            clearOutput('authOutput');
+            log('authOutput', '🔍 Getting current session...', 'info');
+            
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (session) {
+                    log('authOutput', '✅ Active session found', 'success');
+                    log('authOutput', `👤 User: ${session.user.email}`, 'info');
+                    log('authOutput', `📧 Confirmed: ${session.user.email_confirmed_at ? 'Yes' : 'No'}`, session.user.email_confirmed_at ? 'success' : 'warning');
+                    log('authOutput', `🔑 Access Token: ${session.access_token.substring(0, 20)}...`, 'info');
+                    log('authOutput', `⏰ Expires: ${new Date(session.expires_at * 1000).toLocaleString()}`, 'info');
+                } else {
+                    log('authOutput', '❌ No active session', 'error');
+                }
+                
+            } catch (error) {
+                log('authOutput', `❌ Session error: ${error.message}`, 'error');
+            }
+        }
+
+        // Get current user
+        async function getCurrentUser() {
+            clearOutput('authOutput');
+            log('authOutput', '🔍 Getting current user...', 'info');
+            
+            try {
+                const { data: { user }, error } = await supabase.auth.getUser();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (user) {
+                    log('authOutput', '✅ Current user found', 'success');
+                    log('authOutput', `👤 Email: ${user.email}`, 'info');
+                    log('authOutput', `🆔 ID: ${user.id}`, 'info');
+                    log('authOutput', `📧 Confirmed: ${user.email_confirmed_at ? 'Yes' : 'No'}`, user.email_confirmed_at ? 'success' : 'warning');
+                    log('authOutput', `📅 Created: ${new Date(user.created_at).toLocaleString()}`, 'info');
+                    log('authOutput', `🔄 Updated: ${new Date(user.updated_at).toLocaleString()}`, 'info');
+                } else {
+                    log('authOutput', '❌ No current user', 'error');
+                }
+                
+            } catch (error) {
+                log('authOutput', `❌ User error: ${error.message}`, 'error');
+            }
+        }
+
+        // Sign out user
+        async function signOutUser() {
+            clearOutput('authOutput');
+            log('authOutput', '🔄 Signing out...', 'info');
+            
+            try {
+                const { error } = await supabase.auth.signOut();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                log('authOutput', '✅ Signed out successfully', 'success');
+                
+            } catch (error) {
+                log('authOutput', `❌ Sign out error: ${error.message}`, 'error');
+            }
+        }
+
+        // Show configuration
+        function showConfig() {
+            clearOutput('configOutput');
+            log('configOutput', '📋 Supabase Configuration:', 'info');
+            log('configOutput', `🔗 URL: ${SUPABASE_URL}`, 'info');
+            log('configOutput', `🔑 Anon Key: ${SUPABASE_ANON_KEY.substring(0, 30)}...`, 'info');
+            log('configOutput', `🌐 Client Available: ${typeof window.supabase !== 'undefined' ? 'Yes' : 'No'}`, 'info');
+            log('configOutput', `📍 Current Page: ${window.location.href}`, 'info');
+        }
+
+        // Show email confirmation tips
+        function showEmailConfirmationTips() {
+            clearOutput('fixesOutput');
+            log('fixesOutput', '📧 Email Confirmation Help:', 'info');
+            log('fixesOutput', '', 'info');
+            log('fixesOutput', '1. Check spam/junk folder for confirmation email', 'info');
+            log('fixesOutput', '2. Use "Resend Confirmation" button above', 'info');
+            log('fixesOutput', '3. Confirm email in Supabase Dashboard:', 'info');
+            log('fixesOutput', '   - Go to Authentication > Users', 'info');
+            log('fixesOutput', '   - Find user and click "Confirm Email"', 'info');
+            log('fixesOutput', '', 'info');
+            log('fixesOutput', '4. Temporarily disable email confirmation:', 'info');
+            log('fixesOutput', '   - Go to Authentication > Settings', 'info');
+            log('fixesOutput', '   - Disable "Enable email confirmations"', 'info');
+            log('fixesOutput', '', 'info');
+            log('fixesOutput', '5. Check Email Templates in Supabase Dashboard', 'info');
+        }
+
+        // Reset auth state
+        async function resetAuthState() {
+            clearOutput('fixesOutput');
+            log('fixesOutput', '🔄 Resetting authentication state...', 'info');
+            
+            try {
+                // Sign out
+                await supabase.auth.signOut();
+                log('fixesOutput', '✅ Signed out', 'success');
+                
+                // Clear local storage
+                localStorage.clear();
+                sessionStorage.clear();
+                log('fixesOutput', '✅ Cleared local storage', 'success');
+                
+                // Reload page
+                log('fixesOutput', '🔄 Reloading page...', 'info');
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
+                
+            } catch (error) {
+                log('fixesOutput', `❌ Reset error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

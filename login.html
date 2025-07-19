@@ -201,15 +201,37 @@
             display: none;
         }
 
-        .success-message {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            color: #4caf50;
+        .info-message {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            color: #2196f3;
             padding: 12px 16px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-size: 14px;
-            display: none;
+        }
+
+        .resend-btn {
+            background: rgba(33, 150, 243, 0.1);
+            border: 1px solid rgba(33, 150, 243, 0.3);
+            color: #2196f3;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Manrope', sans-serif;
+            margin-top: 10px;
+        }
+
+        .resend-btn:hover {
+            background: rgba(33, 150, 243, 0.2);
+            border-color: rgba(33, 150, 243, 0.5);
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .links {
@@ -300,6 +322,11 @@
 
         <div id="error-message" class="error-message"></div>
         <div id="success-message" class="success-message"></div>
+        <div id="confirmation-prompt" class="info-message" style="display: none;">
+            <p>📧 <strong>Email confirmation required.</strong></p>
+            <p>Please check your email and click the confirmation link.</p>
+            <button id="resend-confirmation-btn" class="resend-btn">Resend Confirmation Email</button>
+        </div>
 
         <form id="login-form">
             <div class="form-group">
@@ -342,6 +369,9 @@
     <div class="debug-panel">
         <strong>🔧 Supabase Debug:</strong><br>
         <span id="debugContent">Initializing Supabase connection...</span>
+        <br><br>
+        <button onclick="debugAuthStatus()" style="background: #4caf50; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer;">Check Auth Status</button>
+        <button onclick="debugClearSession()" style="background: #f44336; color: white; border: none; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; margin-left: 5px;">Clear Session</button>
     </div>
 
     <!-- Supabase JS -->
@@ -453,6 +483,8 @@
         const googleSigninBtn = document.getElementById('google-signin');
         const errorMessage = document.getElementById('error-message');
         const successMessage = document.getElementById('success-message');
+        const confirmationPrompt = document.getElementById('confirmation-prompt');
+        const resendConfirmationBtn = document.getElementById('resend-confirmation-btn');
         const forgotPasswordLink = document.getElementById('forgot-password');
 
         // Email/Password Sign In
@@ -495,7 +527,13 @@
             } catch (error) {
                 console.error('Login error:', error);
                 updateDebugInfo(`❌ Login Error: ${error.message}`);
-                showError(getErrorMessage(error.message));
+                
+                // Handle email not confirmed error specifically
+                if (error.message === 'Email not confirmed') {
+                    showEmailConfirmationPrompt(email);
+                } else {
+                    showError(getErrorMessage(error.message));
+                }
             } finally {
                 setLoading(false);
             }
@@ -506,6 +544,11 @@
             updateDebugInfo('🔄 Attempting Google sign in...');
             
             try {
+                // Use production URL for OAuth redirects
+                const baseUrl = window.location.protocol === 'file:' 
+                    ? 'https://paradigm-brand-central.netlify.app' 
+                    : window.location.origin;
+                
                 const { data, error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
@@ -514,7 +557,7 @@
                             prompt: 'consent',
                             hd: 'paradigmproductionsgroup.com'
                         },
-                        redirectTo: `${window.location.origin}/index.html`
+                        redirectTo: `${baseUrl}/index.html`
                     }
                 });
 
@@ -542,8 +585,13 @@
             }
 
             try {
+                // Use production URL for email redirects
+                const baseUrl = window.location.protocol === 'file:' 
+                    ? 'https://paradigm-brand-central.netlify.app' 
+                    : window.location.origin;
+                
                 const { error } = await supabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: `${window.location.origin}/login.html`,
+                    redirectTo: `${baseUrl}/login.html`,
                 });
 
                 if (error) {
@@ -556,6 +604,43 @@
                 console.error('Password reset error:', error);
                 updateDebugInfo(`❌ Password Reset Error: ${error.message}`);
                 showError('Failed to send password reset email. Please try again.');
+            }
+        });
+
+        // Resend confirmation email
+        resendConfirmationBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            if (!email) {
+                showError('Please enter your email address');
+                return;
+            }
+
+            try {
+                resendConfirmationBtn.disabled = true;
+                resendConfirmationBtn.textContent = 'Sending...';
+                
+                const { error } = await supabase.auth.resend({
+                    type: 'signup',
+                    email: email
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                showSuccess('Confirmation email sent! Please check your inbox.');
+                updateDebugInfo(`✅ Confirmation email resent to: ${email}`);
+                
+                // Hide the confirmation prompt
+                confirmationPrompt.style.display = 'none';
+                
+            } catch (error) {
+                console.error('Resend confirmation error:', error);
+                updateDebugInfo(`❌ Resend Error: ${error.message}`);
+                showError('Failed to resend confirmation email. Please try again.');
+            } finally {
+                resendConfirmationBtn.disabled = false;
+                resendConfirmationBtn.textContent = 'Resend Confirmation Email';
             }
         });
 
@@ -586,6 +671,13 @@
         function hideMessages() {
             errorMessage.style.display = 'none';
             successMessage.style.display = 'none';
+            confirmationPrompt.style.display = 'none';
+        }
+
+        function showEmailConfirmationPrompt(email) {
+            hideMessages();
+            confirmationPrompt.style.display = 'block';
+            updateDebugInfo(`⚠️ Email confirmation required for: ${email}`);
         }
 
         function getErrorMessage(errorCode) {
@@ -610,6 +702,50 @@
             debugContent.innerHTML += `<br>[${timestamp}] ${info}`;
             debugContent.scrollTop = debugContent.scrollHeight;
         }
+
+        // Debug functions
+        window.debugAuthStatus = async function() {
+            try {
+                updateDebugInfo('🔍 Checking auth status...');
+                
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    updateDebugInfo(`❌ Session Error: ${error.message}`);
+                    return;
+                }
+                
+                if (session) {
+                    updateDebugInfo(`✅ Active Session: ${session.user.email}`);
+                    updateDebugInfo(`📧 Email Confirmed: ${session.user.email_confirmed_at ? 'Yes' : 'No'}`);
+                    updateDebugInfo(`🆔 User ID: ${session.user.id}`);
+                } else {
+                    updateDebugInfo('❌ No active session found');
+                }
+                
+                const { data: { user }, error: userError } = await supabase.auth.getUser();
+                if (userError) {
+                    updateDebugInfo(`❌ User Error: ${userError.message}`);
+                } else if (user) {
+                    updateDebugInfo(`👤 Current User: ${user.email}`);
+                } else {
+                    updateDebugInfo('👤 No current user');
+                }
+            } catch (error) {
+                updateDebugInfo(`❌ Debug Error: ${error.message}`);
+            }
+        };
+
+        window.debugClearSession = async function() {
+            try {
+                updateDebugInfo('🔄 Clearing session...');
+                await supabase.auth.signOut();
+                updateDebugInfo('✅ Session cleared');
+                location.reload();
+            } catch (error) {
+                updateDebugInfo(`❌ Clear Error: ${error.message}`);
+            }
+        };
     </script>
 </body>
 </html>
