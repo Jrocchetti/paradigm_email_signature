@@ -757,10 +757,7 @@
                 
                 const { data, error } = await supabase
                     .from('assets')
-                    .select(`
-                        *,
-                        uploader:uploaded_by(email)
-                    `)
+                    .select('*')
                     .order('created_at', { ascending: false });
                 
                 if (error) {
