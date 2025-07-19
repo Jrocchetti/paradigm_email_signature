@@ -973,24 +973,11 @@
         });
     </script>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-    
-    <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
-            authDomain: "email-signature-generato-10c84.firebaseapp.com",
-            projectId: "email-signature-generato-10c84",
-            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
-            messagingSenderId: "1047646901753",
-            appId: "1:1047646901753:web:63afbed550484949bc1928",
-            measurementId: "G-LRGGTL0599"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+    <!-- Supabase JS -->
+    <script 
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+        onload="console.log('✅ Supabase library loaded successfully');"
+        onerror="console.error('❌ Failed to load Supabase library');">
     </script>
     
     <!-- Authentication helper -->

@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Assets - Brand Central</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: #1F1633;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(63, 203, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(63, 203, 255, 0.05) 0%, transparent 50%);
+            color: #FFFFFF;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(31, 22, 51, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #3FCBFF;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 28px;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: #3FCBFF;
+        }
+
+        .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-email {
+            color: #3FCBFF;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title {
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #3FCBFF, #FFFFFF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-subtitle {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Admin Section */
+        .admin-section {
+            background: rgba(63, 203, 255, 0.1);
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: none;
+        }
+
+        .admin-section h3 {
+            color: #3FCBFF;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(63, 203, 255, 0.5);
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 1rem 0;
+            background: rgba(63, 203, 255, 0.05);
+        }
+
+        .upload-area:hover {
+            border-color: #3FCBFF;
+            background: rgba(63, 203, 255, 0.1);
+        }
+
+        .upload-area h4 {
+            color: #3FCBFF;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            flex: 1;
+        }
+
+        .search-box {
+            padding: 12px 16px;
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            min-width: 250px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #3FCBFF;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .filter-select {
+            padding: 12px 16px;
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 10px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            min-width: 150px;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .filter-select option {
+            background: #1F1633;
+            color: white;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3FCBFF, #2196F3);
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(63, 203, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: #3FCBFF;
+            border: 2px solid #3FCBFF;
+        }
+
+        .btn-secondary:hover {
+            background: #3FCBFF;
+            color: #1F1633;
+        }
+
+        .btn-danger {
+            background: #ff4757;
+            color: white;
+            border: 2px solid transparent;
+        }
+
+        .btn-danger:hover {
+            background: #ff3742;
+            transform: translateY(-2px);
+        }
+
+        /* Assets Grid */
+        .assets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .asset-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .asset-card:hover {
+            transform: translateY(-5px);
+            border-color: #3FCBFF;
+            box-shadow: 0 10px 30px rgba(63, 203, 255, 0.2);
+        }
+
+        .asset-preview {
+            width: 100%;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .asset-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .asset-info {
+            padding: 1.5rem;
+        }
+
+        .asset-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #3FCBFF;
+        }
+
+        .asset-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .asset-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: rgba(63, 203, 255, 0.2);
+            color: #3FCBFF;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+        }
+
+        .asset-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Loading and Status */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #3FCBFF;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .status-info {
+            background: rgba(63, 203, 255, 0.2);
+            color: #3FCBFF;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+        }
+
+        .debug-info {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #1F1633;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-content h2 {
+            color: #3FCBFF;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: 'Manrope', sans-serif;
+            margin-bottom: 1rem;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #3FCBFF;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-title {
+                font-size: 2em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-filter {
+                flex-direction: column;
+            }
+            
+            .search-box, .filter-select {
+                min-width: unset;
+                width: 100%;
+            }
+            
+            .assets-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logos/icon-only.png" alt="Paradigm Logo" onerror="this.style.display='none'">
+                Brand Central
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="assets.html" class="active">Assets</a></li>
+                <li><a href="guidelines.html">Guidelines</a></li>
+                <li><a href="resources.html">Resources</a></li>
+                <li><a href="templates.html">Templates</a></li>
+            </ul>
+            <div class="auth-section">
+                <span id="userEmail" class="user-email"></span>
+                <button id="authButton" class="btn btn-primary" onclick="toggleAuth()">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">Brand Assets</h1>
+                <p class="page-subtitle">Discover, download, and manage brand assets with ease</p>
+            </div>
+
+            <!-- Admin Section -->
+            <div id="adminSection" class="admin-section">
+                <h3>🔧 Admin Tools</h3>
+                <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                    <h4>📁 Upload New Asset</h4>
+                    <p>Click here or drag and drop files to upload</p>
+                    <input type="file" id="fileInput" multiple accept="image/*,video/*,application/pdf,application/zip" style="display: none;">
+                </div>
+                <div style="margin-top: 1rem;">
+                    <button class="btn btn-secondary" onclick="showManageTags()">🏷️ Manage Tags</button>
+                    <button class="btn btn-secondary" onclick="refreshAssets()">🔄 Refresh Assets</button>
+                </div>
+            </div>
+
+            <!-- Search and Filter Controls -->
+            <div class="controls">
+                <div class="search-filter">
+                    <input type="text" id="searchBox" class="search-box" placeholder="🔍 Search assets...">
+                    <select id="categoryFilter" class="filter-select">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select id="tagFilter" class="filter-select">
+                        <option value="">All Tags</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="statusContainer"></div>
+
+            <!-- Debug Information -->
+            <div id="debugInfo" class="debug-info">
+                <strong>🔍 Debug Information:</strong><br>
+                <span id="debugContent">Initializing Supabase connection...</span>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                Loading assets...
+            </div>
+
+            <!-- Assets Grid -->
+            <div id="assetsContainer" class="assets-grid"></div>
+
+            <!-- No Assets Message -->
+            <div id="noAssetsMessage" class="loading hidden">
+                <h3>📂 No assets found</h3>
+                <p>No assets match your current search criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase JS -->
+    <script 
+        src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" 
+        onerror="console.error('Failed to load Supabase library'); document.getElementById('debugContent').innerHTML += '<br>❌ Failed to load Supabase library from CDN'"
+        onload="console.log('Supabase library loaded successfully'); document.getElementById('debugContent').innerHTML += '<br>✅ Supabase library loaded from CDN'">
+    </script>
+    
+    <script>
+        // 🔧 SUPABASE CONFIGURATION
+        const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+        
+        // Initialize Supabase client
+        let supabase;
+        let currentUser = null;
+        let isAdmin = false;
+        let allAssets = [];
+        let allTags = [];
+
+        // 🚀 INITIALIZE APPLICATION
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 Supabase Brand Assets initializing...');
+            
+            // Wait for Supabase library to load
+            await waitForSupabaseLibrary();
+            
+            await initializeSupabase();
+            await checkAuthState();
+            await loadTags();
+            await loadAssets();
+            setupEventListeners();
+            console.log('✅ Application initialized successfully');
+        });
+
+        // Wait for Supabase library to load
+        function waitForSupabaseLibrary() {
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+                const maxAttempts = 20; // Wait up to 10 seconds
+                
+                const checkLibrary = () => {
+                    if (typeof window.supabase !== 'undefined') {
+                        updateDebugInfo('✅ Supabase library loaded');
+                        resolve();
+                    } else if (attempts >= maxAttempts) {
+                        updateDebugInfo('❌ Supabase library failed to load');
+                        reject(new Error('Supabase library failed to load. Please check your internet connection.'));
+                    } else {
+                        attempts++;
+                        updateDebugInfo(`🔄 Waiting for Supabase library... (${attempts}/${maxAttempts})`);
+                        setTimeout(checkLibrary, 500);
+                    }
+                };
+                
+                checkLibrary();
+            });
+        }
+
+        // Initialize Supabase
+        async function initializeSupabase() {
+            try {
+                if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+                    throw new Error('Please configure your Supabase URL and anon key');
+                }
+                
+                // Wait for Supabase library to load
+                if (typeof window.supabase === 'undefined') {
+                    throw new Error('Supabase library not loaded. Please check your internet connection.');
+                }
+                
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                
+                updateDebugInfo('✅ Supabase: Connected successfully');
+                console.log('✅ Supabase client initialized');
+                
+                // Test database connection
+                const { data, error } = await supabase.from('profiles').select('count').limit(1);
+                if (error) {
+                    throw error;
+                }
+                updateDebugInfo('✅ Database: Connection verified');
+                
+            } catch (error) {
+                console.error('❌ Supabase initialization error:', error);
+                updateDebugInfo(`❌ Supabase Error: ${error.message}`);
+                showStatus('Failed to connect to Supabase. Please check configuration.', 'error');
+            }
+        }
+
+        // Check authentication state
+        async function checkAuthState() {
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                
+                if (error) {
+                    throw error;
+                }
+                
+                if (session) {
+                    currentUser = session.user;
+                    await checkAdminStatus();
+                    updateAuthUI();
+                } else {
+                    updateAuthUI();
+                }
+                
+                // Listen for auth changes
+                supabase.auth.onAuthStateChange(async (event, session) => {
+                    console.log('Auth state changed:', event);
+                    if (session) {
+                        currentUser = session.user;
+                        await checkAdminStatus();
+                    } else {
+                        currentUser = null;
+                        isAdmin = false;
+                    }
+                    updateAuthUI();
+                });
+                
+            } catch (error) {
+                console.error('❌ Auth state check error:', error);
+                updateDebugInfo(`❌ Auth Error: ${error.message}`);
+            }
+        }
+
+        // Check if user is admin
+        async function checkAdminStatus() {
+            if (!currentUser) {
+                isAdmin = false;
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('is_admin')
+                    .eq('id', currentUser.id)
+                    .single();
+                
+                if (error) {
+                    console.log('Profile not found, creating...');
+                    // Profile might not exist yet, create it
+                    const { data: newProfile, error: createError } = await supabase
+                        .from('profiles')
+                        .insert({
+                            id: currentUser.id,
+                            email: currentUser.email,
+                            is_admin: currentUser.email === 'jrocchetti@paradigmproductionsgroup.com'
+                        })
+                        .select()
+                        .single();
+                    
+                    if (createError) {
+                        throw createError;
+                    }
+                    isAdmin = newProfile.is_admin;
+                } else {
+                    isAdmin = data.is_admin;
+                }
+                
+                console.log(`User admin status: ${isAdmin}`);
+                updateDebugInfo(`🔐 User: ${currentUser.email}, Admin: ${isAdmin ? 'Yes' : 'No'}`);
+                
+            } catch (error) {
+                console.error('❌ Admin check error:', error);
+                isAdmin = false;
+            }
+        }
+
+        // Update authentication UI
+        function updateAuthUI() {
+            const userEmail = document.getElementById('userEmail');
+            const authButton = document.getElementById('authButton');
+            const adminSection = document.getElementById('adminSection');
+            
+            if (currentUser) {
+                userEmail.textContent = currentUser.email;
+                authButton.textContent = 'Sign Out';
+                authButton.onclick = signOut;
+                
+                if (isAdmin) {
+                    adminSection.style.display = 'block';
+                }
+            } else {
+                userEmail.textContent = '';
+                authButton.textContent = 'Sign In';
+                authButton.onclick = showSignInModal;
+                adminSection.style.display = 'none';
+            }
+        }
+
+        // Show sign-in modal
+        function showSignInModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h2>🔐 Sign In</h2>
+                    <form id="signInForm" style="margin-top: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label>Email:</label>
+                            <input type="email" id="signInEmail" required>
+                        </div>
+                        <div style="margin-bottom: 1.5rem;">
+                            <label>Password:</label>
+                            <input type="password" id="signInPassword" required>
+                        </div>
+                        <div style="display: flex; gap: 1rem;">
+                            <button type="submit" class="btn btn-primary" style="flex: 1;">Sign In</button>
+                            <button type="button" class="btn btn-secondary" onclick="closeModal()" style="flex: 1;">Cancel</button>
+                        </div>
+                    </form>
+                    <div id="signInError" style="margin-top: 1rem; color: #e74c3c; display: none;"></div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            document.getElementById('signInForm').onsubmit = async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('signInEmail').value;
+                const password = document.getElementById('signInPassword').value;
+                await signIn(email, password);
+            };
+            
+            // Close modal on outside click
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            };
+        }
+
+        // Sign in user
+        async function signIn(email, password) {
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                showStatus('Successfully signed in!', 'success');
+                closeModal();
+                
+            } catch (error) {
+                console.error('❌ Sign in error:', error);
+                const errorDiv = document.getElementById('signInError');
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Sign out user
+        async function signOut() {
+            try {
+                const { error } = await supabase.auth.signOut();
+                if (error) {
+                    throw error;
+                }
+                showStatus('Successfully signed out!', 'success');
+            } catch (error) {
+                console.error('❌ Sign out error:', error);
+                showStatus('Error signing out: ' + error.message, 'error');
+            }
+        }
+
+        // Close modal
+        function closeModal() {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => modal.remove());
+        }
+
+        // Load tags from database
+        async function loadTags() {
+            try {
+                const { data, error } = await supabase
+                    .from('asset_tags')
+                    .select('*')
+                    .order('name');
+                
+                if (error) {
+                    throw error;
+                }
+                
+                allTags = data || [];
+                populateTagFilter();
+                console.log(`✅ Loaded ${allTags.length} tags`);
+                
+            } catch (error) {
+                console.error('❌ Error loading tags:', error);
+                showStatus('Error loading tags: ' + error.message, 'error');
+            }
+        }
+
+        // Load assets from database
+        async function loadAssets() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const assetsContainer = document.getElementById('assetsContainer');
+            const noAssetsMessage = document.getElementById('noAssetsMessage');
+            
+            try {
+                loadingIndicator.style.display = 'block';
+                assetsContainer.innerHTML = '';
+                noAssetsMessage.classList.add('hidden');
+                
+                const { data, error } = await supabase
+                    .from('assets')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                allAssets = data || [];
+                displayAssets(allAssets);
+                
+                console.log(`✅ Loaded ${allAssets.length} assets`);
+                updateDebugInfo(`📊 Assets: ${allAssets.length} total`);
+                
+            } catch (error) {
+                console.error('❌ Error loading assets:', error);
+                showStatus('Error loading assets: ' + error.message, 'error');
+                updateDebugInfo(`❌ Asset Load Error: ${error.message}`);
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // Display assets in grid
+        function displayAssets(assets) {
+            const assetsContainer = document.getElementById('assetsContainer');
+            const noAssetsMessage = document.getElementById('noAssetsMessage');
+            
+            if (assets.length === 0) {
+                assetsContainer.innerHTML = '';
+                noAssetsMessage.classList.remove('hidden');
+                return;
+            }
+            
+            noAssetsMessage.classList.add('hidden');
+            
+            assetsContainer.innerHTML = assets.map(asset => `
+                <div class="asset-card">
+                    <div class="asset-preview">
+                        ${getAssetPreview(asset)}
+                    </div>
+                    <div class="asset-info">
+                        <div class="asset-name">${escapeHtml(asset.name)}</div>
+                        ${asset.description ? `<div class="asset-description">${escapeHtml(asset.description)}</div>` : ''}
+                        <div class="asset-tags">
+                            ${(asset.tags || []).map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+                        </div>
+                        <div class="asset-actions">
+                            <button class="btn btn-primary" onclick="downloadAsset('${asset.file_url}', '${escapeHtml(asset.name)}')">
+                                📥 Download
+                            </button>
+                            ${isAdmin ? `
+                                <button class="btn btn-danger" onclick="deleteAsset('${asset.id}')">
+                                    🗑️ Delete
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get asset preview based on type
+        function getAssetPreview(asset) {
+            if (asset.mime_type && asset.mime_type.startsWith('image/')) {
+                return `<img src="${asset.file_url}" alt="${escapeHtml(asset.name)}" loading="lazy">`;
+            } else if (asset.mime_type && asset.mime_type.startsWith('video/')) {
+                return `<video src="${asset.file_url}" controls style="max-width: 100%; max-height: 100%;"></video>`;
+            } else {
+                const icon = getFileIcon(asset.mime_type);
+                return `<div style="font-size: 3rem;">${icon}</div>`;
+            }
+        }
+
+        // Get file icon based on mime type
+        function getFileIcon(mimeType) {
+            if (!mimeType) return '📄';
+            if (mimeType.includes('pdf')) return '📄';
+            if (mimeType.includes('zip')) return '📦';
+            if (mimeType.includes('video')) return '🎥';
+            if (mimeType.includes('audio')) return '🎵';
+            return '📄';
+        }
+
+        // Download asset
+        function downloadAsset(url, filename) {
+            try {
+                // Create download link
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.style.display = 'none';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showStatus(`📥 Downloading ${filename}...`, 'success');
+                
+            } catch (error) {
+                console.error('❌ Download error:', error);
+                showStatus('Download failed: ' + error.message, 'error');
+            }
+        }
+
+        // Populate tag filter dropdown
+        function populateTagFilter() {
+            const tagFilter = document.getElementById('tagFilter');
+            tagFilter.innerHTML = '<option value="">All Tags</option>';
+            
+            allTags.forEach(tag => {
+                const option = document.createElement('option');
+                option.value = tag.name;
+                option.textContent = tag.name;
+                tagFilter.appendChild(option);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            const searchBox = document.getElementById('searchBox');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const tagFilter = document.getElementById('tagFilter');
+            
+            searchBox.addEventListener('input', filterAssets);
+            categoryFilter.addEventListener('change', filterAssets);
+            tagFilter.addEventListener('change', filterAssets);
+            
+            // File input change handler
+            document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+        }
+
+        // Handle file upload
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files.length) return;
+            
+            if (!currentUser) {
+                showStatus('Please sign in to upload files.', 'error');
+                return;
+            }
+            
+            if (!isAdmin) {
+                showStatus('Only admins can upload files.', 'error');
+                return;
+            }
+            
+            showStatus('Upload functionality coming soon!', 'info');
+            // TODO: Implement Supabase Storage upload
+        }
+
+        // Filter assets based on search and filters
+        function filterAssets() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const tagFilter = document.getElementById('tagFilter').value;
+            
+            const filteredAssets = allAssets.filter(asset => {
+                const matchesSearch = !searchTerm || 
+                    asset.name.toLowerCase().includes(searchTerm) ||
+                    (asset.description && asset.description.toLowerCase().includes(searchTerm));
+                
+                const matchesCategory = !categoryFilter || asset.category === categoryFilter;
+                
+                const matchesTag = !tagFilter || (asset.tags && asset.tags.includes(tagFilter));
+                
+                return matchesSearch && matchesCategory && matchesTag;
+            });
+            
+            displayAssets(filteredAssets);
+        }
+
+        // Refresh assets
+        async function refreshAssets() {
+            showStatus('🔄 Refreshing assets...', 'info');
+            await loadAssets();
+            showStatus('✅ Assets refreshed!', 'success');
+        }
+
+        // Utility function to escape HTML
+        function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Show status message
+        function showStatus(message, type = 'info') {
+            const container = document.getElementById('statusContainer');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status-message status-${type}`;
+            statusDiv.textContent = message;
+            
+            container.appendChild(statusDiv);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.parentNode.removeChild(statusDiv);
+                }
+            }, 5000);
+        }
+
+        // Update debug information
+        function updateDebugInfo(info) {
+            const debugContent = document.getElementById('debugContent');
+            const timestamp = new Date().toLocaleTimeString();
+            debugContent.innerHTML += `<br>[${timestamp}] ${info}`;
+        }
+
+        // Placeholder functions for admin features
+        function showManageTags() {
+            showStatus('Tag management feature coming soon!', 'info');
+        }
+
+        function deleteAsset(assetId) {
+            if (confirm('Are you sure you want to delete this asset?')) {
+                showStatus('Asset deletion feature coming soon!', 'info');
+            }
+        }
+
+        // Toggle auth (legacy function)
+        function toggleAuth() {
+            if (currentUser) {
+                signOut();
+            } else {
+                showSignInModal();
+            }
+        }
+    </script>
+</body>
+</html>
