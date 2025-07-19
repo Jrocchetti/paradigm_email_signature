@@ -659,7 +659,7 @@
             try {
                 // Use production URL for OAuth redirects
                 const baseUrl = window.location.protocol === 'file:' 
-                    ? 'https://paradigm-brand-central.netlify.app' 
+                    ? 'https://brandcentral.netlify.app' 
                     : window.location.origin;
                 
                 const { data, error } = await supabase.auth.signInWithOAuth({
