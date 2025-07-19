@@ -877,7 +877,7 @@ Tips:
                 }
                 
                 // Set up auth state listener
-                supabase.auth.onAuthStateChanged((event, session) => {
+                supabase.auth.onAuthStateChange((event, session) => {
                     console.log('🔐 Auth state changed:', session?.user?.email || 'No user');
                     currentUser = session?.user || null;
                     checkAdminAccess();
