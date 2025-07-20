@@ -641,6 +641,7 @@
         }
 
         function generateSignature() {
+            console.log("🔄 generateSignature() called");
             const name = document.getElementById("fullName").value;
             const title = document.getElementById("title").value;
             const phone = document.getElementById("phone").value;
@@ -648,28 +649,33 @@
             const domain = "@paradigmproductionsgroup.com";
             const emailFull = emailUser + domain;
             
+            console.log("📝 Form data:", { name, title, phone, emailUser });
+            
             // Get the current headshot data URL
             const currentHeadshotDataUrl = window.headshotDataUrl || headshotDataUrl || "";
+            console.log("📸 Headshot data URL present:", !!currentHeadshotDataUrl);
 
             renderNameTitleBoxAsImage(name, title, function (nameTitleBoxDataUrl, bannerWidth) {
+                console.log("🎨 Name/title box rendered, width:", bannerWidth);
                 // Store banner width globally for copy function
                 window.currentBannerWidth = bannerWidth;
                 
                 // Generate a visible placeholder for the combined logo
                 generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
+                    console.log("🖼️ Combined logo generated successfully");
                     // Headshot + name/title/company in a styled box, side by side, bottom-aligned
                     let headshotNameTitle = `
-                                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
-                                                <tr>
-                                                    <td style="vertical-align:bottom; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
-                                                        ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0 16px 0; display:block;">` : ""}
-                                                    </td>
-                                                    <td style="vertical-align:bottom;">
-                                                        <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        `;
+                        <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
+                            <tr>
+                                <td style="vertical-align:bottom; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
+                                    ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0 16px 0; display:block;">` : ""}
+                                </td>
+                                <td style="vertical-align:bottom;">
+                                    <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
+                                </td>
+                            </tr>
+                        </table>
+                    `;
 
                     // Phone numbers (show nothing if empty)
                     let phoneBlock = "";
@@ -681,52 +687,60 @@
 
                     // Signature layout with generated combined logo
                     const signatureHTML = `
-                                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; box-sizing: border-box;">
-                                                <!-- Top row: Headshot and Name/Title Banner -->
-                                                <tr>
-                                                    <td style="vertical-align:bottom; padding: 20px; padding-bottom: 12px;">
-                                                        ${headshotNameTitle}
-                                                    </td>
-                                                </tr>
-                                                <!-- Contact info row -->
-                                                <tr>
-                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
-                                                        ${phoneBlock}
-                                                        <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                                            <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
-                                                        </div>
-                                                        <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                                            <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <!-- Address row -->
-                                                <tr>
-                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px;">
-                                                        <div style="font-size:12px; color:#222;">
-                                                            215 E Main Street, Leesburg, Florida 34748
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <!-- Combined Logo/Tagline/Button PNG row -->
-                                                <tr>
-                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
-                                                        <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
-                                                            <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Production that Moves People - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        `;
+                        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; box-sizing: border-box;">
+                            <!-- Top row: Headshot and Name/Title Banner -->
+                            <tr>
+                                <td style="vertical-align:bottom; padding: 20px; padding-bottom: 12px;">
+                                    ${headshotNameTitle}
+                                </td>
+                            </tr>
+                            <!-- Contact info row -->
+                            <tr>
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
+                                    ${phoneBlock}
+                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
+                                        <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
+                                    </div>
+                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
+                                        <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Address row -->
+                            <tr>
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px;">
+                                    <div style="font-size:12px; color:#222;">
+                                        215 E Main Street, Leesburg, Florida 34748
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Combined Logo/Tagline/Button PNG row -->
+                            <tr>
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
+                                    <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
+                                        <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Production that Moves People - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
 
+                    console.log("✅ Setting preview HTML");
                     document.getElementById("preview").innerHTML = signatureHTML;
                     document.getElementById("copyBtn").style.display = "inline-block";
                     document.getElementById("copyMsg").style.display = "none";
+                    console.log("✅ Preview updated successfully");
                 });
             });
         }
 
         window.onload = generateSignature;
+        
+        // Also trigger on DOMContentLoaded to ensure it runs
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("📄 DOM loaded, calling generateSignature");
+            generateSignature();
+        });
 
         // Toggle saved signatures panel
         function toggleSavedSignatures() {
@@ -795,8 +809,8 @@
             console.log("Save button clicked");
             
             try {
-                console.log("Calling saveSignatureToFirestore (now uses Supabase)");
-                await window.saveSignatureToFirestore();
+                console.log("Calling saveSignatureToSupabase");
+                await window.saveSignatureToSupabase();
                 console.log("Signature save completed");
             } catch (error) {
                 console.error("Error saving signature:", error);
@@ -818,14 +832,14 @@
             console.log("🔍 Checking for BrandCentralAuth...");
             console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
             if (window.BrandCentralAuth) {
-                console.log("- BrandCentralAuth.isInitialized exists:", !!window.BrandCentralAuth.isInitialized);
-                if (window.BrandCentralAuth.isInitialized) {
+                console.log("- BrandCentralAuth.isInitialized exists:", typeof window.BrandCentralAuth.isInitialized === 'function');
+                console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
+                if (typeof window.BrandCentralAuth.isInitialized === 'function' && window.BrandCentralAuth.isInitialized()) {
                     console.log("- BrandCentralAuth.isInitialized():", window.BrandCentralAuth.isInitialized());
                 }
-                console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
             }
             
-            if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
+            if (window.BrandCentralAuth && typeof window.BrandCentralAuth.isInitialized === 'function' && window.BrandCentralAuth.isInitialized()) {
                 supabase = window.BrandCentralAuth.supabase;
                 console.log("✅ Using global Supabase client from BrandCentralAuth");
                 return true;
@@ -834,13 +848,13 @@
         }
 
         // Save signature to Supabase
-        window.saveSignatureToFirestore = async function () {
+        window.saveSignatureToSupabase = async function () {
             console.log("saveSignature called");
             
             // Initialize Supabase client if not already done
             if (!supabase && !initializeSupabase()) {
                 console.log("⏳ Waiting for BrandCentralAuth...");
-                setTimeout(() => window.saveSignatureToFirestore(), 500);
+                setTimeout(() => window.saveSignatureToSupabase(), 500);
                 return;
             }
 
