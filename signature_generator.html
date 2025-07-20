@@ -1090,6 +1090,15 @@
                     if (currentUser) {
                         console.log('👤 Current user from BrandCentralAuth:', currentUser.email);
                         displaySavedSignatures();
+                        // Auto-expand saved signatures if user is authenticated
+                        setTimeout(() => {
+                            const content = document.getElementById("savedSignaturesContent");
+                            const icon = document.querySelector(".collapse-icon");
+                            if (content && !content.classList.contains("active")) {
+                                content.classList.add("active");
+                                if (icon) icon.classList.add("rotated");
+                            }
+                        }, 500);
                     } else {
                         console.log('👤 No current user, waiting for sign in...');
                         // Set up a listener for when user signs in
@@ -1099,6 +1108,15 @@
                                 currentUser = user;
                                 console.log('👤 User signed in:', user.email);
                                 displaySavedSignatures();
+                                // Auto-expand saved signatures when user signs in
+                                setTimeout(() => {
+                                    const content = document.getElementById("savedSignaturesContent");
+                                    const icon = document.querySelector(".collapse-icon");
+                                    if (content && !content.classList.contains("active")) {
+                                        content.classList.add("active");
+                                        if (icon) icon.classList.add("rotated");
+                                    }
+                                }, 500);
                                 clearInterval(checkForUser);
                             }
                         }, 1000);
@@ -1112,6 +1130,15 @@
 
         // Initialize when page loads - give more time for auth.js to load
         setTimeout(initializeSignatureGenerator, 2000);
+        
+        // Also try to load saved signatures after 5 seconds regardless of auth status (for testing)
+        setTimeout(() => {
+            console.log("🔍 Testing saved signatures load after 5 seconds...");
+            if (document.getElementById("savedSignaturesContent").innerHTML.trim() === "") {
+                console.log("📋 Forcing saved signatures display attempt...");
+                displaySavedSignatures();
+            }
+        }, 5000);
     </script>
 
     <!-- Authentication helper -->
