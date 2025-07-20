@@ -4,7 +4,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Signature Generator - Brand Central (Supabase)</title>
+    <title>Email Signature Generator - Brand Central</title>
     <style>
         /* Navigation */
         .navbar {
@@ -979,65 +979,87 @@
             });
         }
 
-        // Save signature handler (calls Supabase function)
+        // Save signature handler (calls Firestore via module)
         document.getElementById("saveBtn").addEventListener("click", async function () {
             console.log("Save button clicked");
-            console.log("window.saveSignatureToSupabase available:", typeof window.saveSignatureToSupabase);
+            console.log("window.saveSignatureToFirestore available:", typeof window.saveSignatureToFirestore);
             
-            if (!window.saveSignatureToSupabase) {
-                console.error("saveSignatureToSupabase not available");
-                alert("Supabase not loaded yet. Please wait a moment and try again.");
+            if (!window.saveSignatureToFirestore) {
+                console.error("saveSignatureToFirestore not available");
+                alert("Firestore not loaded yet. Please wait a moment and try again.");
                 return;
             }
             try {
-                console.log("Calling saveSignatureToSupabase");
-                await window.saveSignatureToSupabase();
-                console.log("saveSignatureToSupabase completed");
+                console.log("Calling saveSignatureToFirestore");
+                await window.saveSignatureToFirestore();
+                console.log("saveSignatureToFirestore completed");
             } catch (error) {
                 console.error("Error saving signature:", error);
                 alert("Error saving signature: " + error.message);
             }
+        });
     </script>
     
-    <!-- Supabase SDK - Required for auth.js to work -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>    
     <script>
-        // Use the global Supabase client from BrandCentralAuth
-        let supabase;
-        let currentUser = null;
-        
-        // Wait for BrandCentralAuth to be available and use its Supabase client
-        function initializeSupabase() {
-            console.log("🔍 Checking for BrandCentralAuth...");
-            console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
-            if (window.BrandCentralAuth) {
-                console.log("- BrandCentralAuth.isInitialized exists:", !!window.BrandCentralAuth.isInitialized);
-                if (window.BrandCentralAuth.isInitialized) {
-                    console.log("- BrandCentralAuth.isInitialized():", window.BrandCentralAuth.isInitialized());
-                }
-                console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
-            }
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAofNPkgQH88hT-aY0R2yfgW3iYmCrncvQ",
+            authDomain: "email-signature-generato-10c84.firebaseapp.com",
+            projectId: "email-signature-generato-10c84",
+            storageBucket: "email-signature-generato-10c84.firebasestorage.app",
+            messagingSenderId: "1047646901753",
+            appId: "1:1047646901753:web:63afbed550484949bc1928",
+            measurementId: "G-LRGGTL0599"
+        };
+
+        // Initialize Firebase
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase app initialized successfully");
+            db = firebase.firestore();
+            console.log("Firestore initialized successfully");
             
-            if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
-                supabase = window.BrandCentralAuth.supabase;
-                console.log("✅ Using global Supabase client from BrandCentralAuth");
-                return true;
-            }
-            return false;
+            // Test Firebase connection
+            db.enableNetwork().then(() => {
+                console.log("Firestore network enabled");
+            }).catch((error) => {
+                console.error("Firestore network error:", error);
+            });
+            
+        } catch (error) {
+            console.error("Firebase initialization failed:", error);
+            alert("Firebase initialization failed. Save functionality will not work.");
         }
 
-        // Save signature to Supabase
-        window.saveSignatureToSupabase = async function () {
-            console.log("saveSignature called");
-            
-            // Initialize Supabase client if not already done
-            if (!supabase && !initializeSupabase()) {
-                console.log("⏳ Waiting for BrandCentralAuth...");
-                setTimeout(() => window.saveSignatureToSupabase(), 500);
-                return;
+        // Require admin access for signature generator
+        document.addEventListener('DOMContentLoaded', () => {
+            // Wait for auth to initialize, then check admin access
+            function checkAdminAccess() {
+                if (window.brandCentralAuth) {
+                    if (window.brandCentralAuth.isInitialized()) {
+                        console.log('Auth initialized, checking admin access...');
+                        window.brandCentralAuth.requireAdmin();
+                    } else {
+                        console.log('Auth not initialized yet, retrying...');
+                        setTimeout(checkAdminAccess, 500);
+                    }
+                } else {
+                    console.log('BrandCentralAuth not available yet, retrying...');
+                    setTimeout(checkAdminAccess, 500);
+                }
             }
-
+            
+            setTimeout(checkAdminAccess, 100);
+        });
+        
+        // Save signature to Firestore
+        window.saveSignatureToFirestore = async function () {
+            console.log("saveSignatureToFirestore called");
             const name = document.getElementById("fullName").value;
             const title = document.getElementById("title").value;
             const phone = document.getElementById("phone").value;
@@ -1052,36 +1074,29 @@
             }
 
             try {
-                console.log("💾 Saving signature to Supabase...");
-                
-                const { data, error } = await supabase
-                    .from('email_signatures')
-                    .insert([{
-                        name: name || "",
-                        title: title || "",
-                        phone: phone || "",
-                        email: emailUser || "",
-                        headshot: headshot,
-                        created_by: currentUser?.id || null,
-                        created_at: new Date().toISOString()
-                    }]);
-
-                if (error) {
-                    throw error;
-                }
-
-                console.log("✅ Signature saved successfully");
+                console.log("Adding document to Firestore...");
+                const docRef = await db.collection("signatures").add({
+                    name: name || "",
+                    title: title || "",
+                    phone: phone || "",
+                    emailUser: emailUser || "",
+                    headshot: headshot,
+                    created: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                console.log("Document written with ID: ", docRef.id);
                 document.getElementById("saveMsg").style.display = "inline";
                 setTimeout(() => document.getElementById("saveMsg").style.display = "none", 2000);
                 await displaySavedSignatures();
-                
             } catch (e) {
-                console.error("❌ Error saving signature:", e);
+                console.error("Error adding document: ", e);
                 
-                if (e.message.includes('permission') || e.message.includes('policy')) {
-                    alert("Permission denied. Please sign in to save signatures.");
-                } else if (e.message.includes('network')) {
-                    alert("Network error. Please check your internet connection and try again.");
+                // More specific error messages
+                if (e.code === 'permission-denied') {
+                    alert("Permission denied. Please check Firestore security rules.");
+                } else if (e.code === 'unavailable') {
+                    alert("Firestore is currently unavailable. Please check your internet connection and try again.");
+                } else if (e.code === 'unauthenticated') {
+                    alert("Authentication required. Please set up Firebase Authentication.");
                 } else {
                     alert("Error saving signature: " + e.message);
                 }
@@ -1093,53 +1108,46 @@
             const container = document.getElementById("savedSignaturesContent");
             container.innerHTML = "";
             
-            // Initialize Supabase client if not already done
-            if (!supabase && !initializeSupabase()) {
-                container.innerHTML += "<div style='color:#orange;'>⏳ Waiting for authentication...</div>";
+            if (!db) {
+                container.innerHTML += "<div style='color:#ff6b6b;'>Firebase not initialized. Cannot load saved signatures.</div>";
                 return;
             }
             
             try {
-                console.log("📋 Loading saved signatures...");
-                const { data: signatures, error } = await supabase
-                    .from('email_signatures')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    throw error;
-                }
-
-                console.log("✅ Query completed. Found", signatures?.length || 0, "signatures");
+                console.log("Loading saved signatures...");
+                const querySnapshot = await db.collection("signatures").orderBy("created", "desc").get();
+                console.log("Query completed. Found", querySnapshot.size, "documents");
                 
-                if (!signatures || signatures.length === 0) {
+                if (querySnapshot.empty) {
                     container.innerHTML += "<div style='color:#ccc;'>No saved signatures found.</div>";
                     return;
                 }
                 
-                signatures.forEach((signature) => {
-                    console.log("Signature data:", signature);
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    console.log("Document data:", data);
                     container.innerHTML += `
                         <div class="signature-card">
-                            <div><strong>Name:</strong> ${signature.name || "Not specified"}</div>
-                            <div><strong>Title:</strong> ${signature.title || "Not specified"}</div>
-                            <div><strong>Phone:</strong> ${signature.phone || "Not specified"}</div>
-                            <div><strong>Email Username:</strong> ${signature.email || "Not specified"}</div>
-                            ${signature.headshot ? `<img src="${signature.headshot}" alt="Headshot">` : "<div style='color:#999;'>No headshot</div>"}
+                            <div><strong>Name:</strong> ${data.name || "Not specified"}</div>
+                            <div><strong>Title:</strong> ${data.title || "Not specified"}</div>
+                            <div><strong>Phone:</strong> ${data.phone || "Not specified"}</div>
+                            <div><strong>Email Username:</strong> ${data.emailUser || "Not specified"}</div>
+                            ${data.headshot ? `<img src="${data.headshot}" alt="Headshot">` : "<div style='color:#999;'>No headshot</div>"}
                             <div style="margin-top:8px;">
-                                <button onclick="loadSignature('${signature.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
-                                <button onclick="deleteSignature('${signature.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
+                                <button onclick="loadSignature('${doc.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
+                                <button onclick="deleteSignature('${doc.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
                             </div>
                         </div>
                     `;
                 });
             } catch (error) {
-                console.error("❌ Error loading saved signatures:", error);
+                console.error("Error loading saved signatures:", error);
                 
-                if (error.message.includes('permission') || error.message.includes('policy')) {
-                    container.innerHTML += "<div style='color:#ff6b6b;'>Permission denied. Please sign in to view saved signatures.</div>";
-                } else if (error.message.includes('network')) {
-                    container.innerHTML += "<div style='color:#ff6b6b;'>Network error. Please check your internet connection.</div>";
+                // More specific error messages for loading
+                if (error.code === 'permission-denied') {
+                    container.innerHTML += "<div style='color:#ff6b6b;'>Permission denied. Please check Firestore security rules.</div>";
+                } else if (error.code === 'unavailable') {
+                    container.innerHTML += "<div style='color:#ff6b6b;'>Firestore unavailable. Please check your internet connection.</div>";
                 } else {
                     container.innerHTML += "<div style='color:#ff6b6b;'>Error loading saved signatures: " + error.message + "</div>";
                 }
@@ -1151,36 +1159,27 @@
 
         // Load a saved signature into the form
         window.loadSignature = async function(id) {
-            console.log("📥 Loading signature with ID:", id);
+            console.log("Loading signature with ID:", id);
             
-            // Initialize Supabase client if not already done
-            if (!supabase && !initializeSupabase()) {
-                alert("⏳ Please wait for authentication to complete...");
+            if (!db) {
+                alert("Firebase not initialized!");
                 return;
             }
             
             try {
-                const { data: signature, error } = await supabase
-                    .from('email_signatures')
-                    .select('*')
-                    .eq('id', id)
-                    .single();
-
-                if (error) {
-                    throw error;
-                }
-
-                if (signature) {
-                    console.log("✅ Loaded signature data:", signature);
+                const doc = await db.collection("signatures").doc(id).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    console.log("Loaded signature data:", data);
                     
-                    document.getElementById("fullName").value = signature.name || "";
-                    document.getElementById("title").value = signature.title || "";
-                    document.getElementById("phone").value = signature.phone || "";
-                    document.getElementById("emailUser").value = signature.email || "";
+                    document.getElementById("fullName").value = data.name || "";
+                    document.getElementById("title").value = data.title || "";
+                    document.getElementById("phone").value = data.phone || "";
+                    document.getElementById("emailUser").value = data.emailUser || "";
                     
-                    if (signature.headshot) {
-                        headshotDataUrl = signature.headshot;
-                        window.headshotDataUrl = signature.headshot;
+                    if (data.headshot) {
+                        headshotDataUrl = data.headshot;
+                        window.headshotDataUrl = data.headshot;
                     } else {
                         headshotDataUrl = "";
                         window.headshotDataUrl = "";
@@ -1188,20 +1187,19 @@
                     
                     generateSignature();
                 } else {
-                    console.error("Signature not found!");
+                    console.error("Document not found!");
                     alert("Signature not found!");
                 }
             } catch (error) {
-                console.error("❌ Error loading signature:", error);
+                console.error("Error loading signature:", error);
                 alert("Error loading signature: " + error.message);
             }
         };
 
         // Delete signature function
-        window.deleteSignature = async function(id) {
-            // Initialize Supabase client if not already done
-            if (!supabase && !initializeSupabase()) {
-                alert("⏳ Please wait for authentication to complete...");
+        window.deleteSignature = async function(docId) {
+            if (!db) {
+                alert("Firebase not initialized!");
                 return;
             }
             
@@ -1211,90 +1209,34 @@
             }
             
             try {
-                console.log("🗑️ Deleting signature with ID:", id);
-                const { error } = await supabase
-                    .from('email_signatures')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) {
-                    throw error;
-                }
-
-                console.log("✅ Signature deleted successfully!");
+                console.log("Deleting signature with ID:", docId);
+                await db.collection("signatures").doc(docId).delete();
+                console.log("Signature deleted successfully!");
                 alert("Signature deleted successfully!");
                 
                 // Refresh the saved signatures display
                 displaySavedSignatures();
             } catch (error) {
-                console.error("❌ Error deleting signature:", error);
+                console.error("Error deleting signature:", error);
                 
-                if (error.message.includes('permission') || error.message.includes('policy')) {
-                    alert("Permission denied. Please sign in to delete signatures.");
-                } else if (error.message.includes('network')) {
-                    alert("Network error. Please check your internet connection and try again.");
+                // More specific error messages for deletion
+                if (error.code === 'permission-denied') {
+                    alert("Permission denied. Please check Firestore security rules.");
+                } else if (error.code === 'unavailable') {
+                    alert("Firestore is currently unavailable. Please check your internet connection and try again.");
+                } else if (error.code === 'not-found') {
+                    alert("Signature not found. It may have already been deleted.");
                 } else {
                     alert("Error deleting signature: " + error.message);
                 }
             }
         };
 
-        // Add auth state listener and initial load
-        async function initializeSignatureGenerator() {
-            // Wait for BrandCentralAuth and get the global Supabase client
-            if (initializeSupabase()) {
-                console.log('✅ Using global Supabase client');
-                
-                // Get current user from BrandCentralAuth
-                if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
-                    currentUser = window.BrandCentralAuth.getCurrentUser();
-                    if (currentUser) {
-                        console.log('👤 Current user from BrandCentralAuth:', currentUser.email);
-                        displaySavedSignatures();
-                    } else {
-                        console.log('👤 No current user, waiting for sign in...');
-                        // Set up a listener for when user signs in
-                        const checkForUser = setInterval(() => {
-                            const user = window.BrandCentralAuth.getCurrentUser();
-                            if (user) {
-                                currentUser = user;
-                                console.log('👤 User signed in:', user.email);
-                                displaySavedSignatures();
-                                clearInterval(checkForUser);
-                            }
-                        }, 1000);
-                    }
-                }
-            } else {
-                console.log('⏳ Waiting for BrandCentralAuth to initialize...');
-                setTimeout(initializeSignatureGenerator, 1000);
-            }
-        }
-
-        // Initialize when page loads - give more time for auth.js to load
-        setTimeout(initializeSignatureGenerator, 2000);
+        // Initial load - wait a bit for Firebase to initialize
+        setTimeout(displaySavedSignatures, 1000);
     </script>
-
+    
     <!-- Authentication helper -->
     <script src="auth.js"></script>
-
-    <script>
-        // Initialize page with auth check
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('📄 Email Signature Generator page loaded');
-            
-            // Simple check - the main initialization happens in initializeSignatureGenerator()
-            function checkAuthReady() {
-                if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
-                    console.log('✅ BrandCentralAuth ready');
-                } else {
-                    console.log('⏳ Waiting for BrandCentralAuth to initialize...');
-                    setTimeout(checkAuthReady, 1000);
-                }
-            }
-            
-            checkAuthReady();
-        });
-    </script>
 </body>
 </html>
