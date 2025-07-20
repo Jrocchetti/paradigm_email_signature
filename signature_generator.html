@@ -299,6 +299,8 @@
         </div>
     </div>
     <script>
+        console.log("🚀 JavaScript execution started - script section loaded");
+        
         let headshotImage = null;
         let headshotDataUrl = "";
         let tempHeadshotDataUrl = "";
@@ -640,6 +642,8 @@
             logoImg.src = "https://paradigmpg.wpenginepowered.com/wp-content/uploads/2025/04/Rectangle-336-300x74.png";
         }
 
+        console.log("🔧 About to define generateSignature function");
+        
         function generateSignature() {
             console.log("🔄 generateSignature() called");
             const name = document.getElementById("fullName").value;
@@ -1048,6 +1052,8 @@
                 }
             }
         }
+
+        console.log("📋 displaySavedSignatures function defined successfully");
 
         // Expose for main script to call after save
         window.displaySavedSignatures = displaySavedSignatures;
