@@ -1028,6 +1028,53 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <script>
+        // Comprehensive diagnostic function
+        function diagnoseJavaScriptIssues() {
+            console.log("🔍 JAVASCRIPT DIAGNOSTIC REPORT 🔍");
+            console.log("===============================");
+            
+            // Check if generateSignature is available
+            console.log("1. generateSignature function:");
+            console.log("   - typeof generateSignature:", typeof generateSignature);
+            console.log("   - window.generateSignature:", typeof window.generateSignature);
+            
+            // Check DOM elements
+            console.log("2. DOM Elements:");
+            const elements = ['fullName', 'title', 'phone', 'emailUser'];
+            elements.forEach(id => {
+                const element = document.getElementById(id);
+                console.log(`   - ${id}:`, element ? '✅ Found' : '❌ Missing');
+            });
+            
+            // Check for syntax errors
+            console.log("3. Script loading status:");
+            console.log("   - Document ready state:", document.readyState);
+            console.log("   - BrandCentralAuth:", !!window.BrandCentralAuth);
+            console.log("   - Supabase:", !!window.supabase);
+            
+            console.log("===============================");
+            
+            // Test function call
+            if (typeof window.generateSignature === 'function') {
+                console.log("✅ generateSignature is available, testing call...");
+                try {
+                    window.generateSignature();
+                    console.log("✅ generateSignature executed successfully");
+                } catch (error) {
+                    console.error("❌ Error calling generateSignature:", error);
+                }
+            } else {
+                console.error("❌ generateSignature not available globally");
+            }
+        }
+        
+        // Run diagnostics when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', diagnoseJavaScriptIssues);
+        } else {
+            diagnoseJavaScriptIssues();
+        }
+        
         // Use the global Supabase client from BrandCentralAuth
         let supabase;
         let currentUser = null;
