@@ -655,7 +655,16 @@
             const currentHeadshotDataUrl = window.headshotDataUrl || headshotDataUrl || "";
             console.log("📸 Headshot data URL present:", !!currentHeadshotDataUrl);
 
-            renderNameTitleBoxAsImage(name, title, function (nameTitleBoxDataUrl, bannerWidth) {
+            // Use fallback values for empty fields to show a preview
+            const displayName = name || "Your Name";
+            const displayTitle = title || "Your Title";
+            const displayPhone = phone || "(555) 123-4567";
+            const displayEmailUser = emailUser || "yourname";
+            const displayEmailFull = displayEmailUser + domain;
+            
+            console.log("📝 Display values:", { displayName, displayTitle, displayPhone, displayEmailUser });
+
+            renderNameTitleBoxAsImage(displayName, displayTitle, function (nameTitleBoxDataUrl, bannerWidth) {
                 console.log("🎨 Name/title box rendered, width:", bannerWidth);
                 // Store banner width globally for copy function
                 window.currentBannerWidth = bannerWidth;
@@ -677,13 +686,20 @@
                         </table>
                     `;
 
-                    // Phone numbers (show nothing if empty)
+                    // Phone numbers (show display phone if provided, or fallback)
                     let phoneBlock = "";
-                    if (phone) {
-                        phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Cell: ${formatPhoneNumber(phone)}</div>`;
+                    if (displayPhone && displayPhone !== "(555) 123-4567") {
+                        phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Cell: ${formatPhoneNumber(displayPhone)}</div>`;
+                    } else if (displayPhone === "(555) 123-4567") {
+                        phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px; opacity:0.6;">Cell: ${formatPhoneNumber(displayPhone)} (example)</div>`;
                     }
                     // Always show office number
                     phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Office: (407) 909 - 1338</div>`;
+
+                    // Use display email values
+                    const isExampleEmail = displayEmailUser === "yourname";
+                    const emailOpacity = isExampleEmail ? "opacity:0.6;" : "";
+                    const emailSuffix = isExampleEmail ? " (example)" : "";
 
                     // Signature layout with generated combined logo
                     const signatureHTML = `
@@ -698,8 +714,8 @@
                             <tr>
                                 <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
                                     ${phoneBlock}
-                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                        <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
+                                    <div style="font-size:12px; color:#222; margin-bottom:4px; ${emailOpacity}">
+                                        <a href="mailto:${displayEmailFull}" style="color:#1F1633; text-decoration:none;">${displayEmailFull}${emailSuffix}</a>
                                     </div>
                                     <div style="font-size:12px; color:#222; margin-bottom:4px;">
                                         <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
@@ -910,11 +926,13 @@
 
         // Display saved signatures
         async function displaySavedSignatures() {
+            console.log("📋 displaySavedSignatures() called");
             const container = document.getElementById("savedSignaturesContent");
             container.innerHTML = "";
             
             // Initialize Supabase client if not already done
             if (!supabase && !initializeSupabase()) {
+                console.log("⏳ Supabase not ready, showing waiting message");
                 container.innerHTML += "<div style='color:#orange;'>⏳ Waiting for authentication...</div>";
                 return;
             }
@@ -1061,6 +1079,7 @@
 
         // Add auth state listener and initial load
         async function initializeSignatureGenerator() {
+            console.log("🚀 initializeSignatureGenerator() called");
             // Wait for BrandCentralAuth and get the global Supabase client
             if (initializeSupabase()) {
                 console.log('✅ Using global Supabase client');
