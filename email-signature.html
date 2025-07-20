@@ -550,13 +550,12 @@
             const offsetX = (70 - scaledW) / 2 + panX;
             const offsetY = (70 - scaledH) / 2 + panY;
 
-            // Draw with custom border radius
+            // Draw with custom border radius (top-left and bottom-left rounded, top-right and bottom-right square)
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(16, 0);
-            ctx.lineTo(54, 0);
-            ctx.quadraticCurveTo(70, 0, 70, 16); // top right rounded
-            ctx.lineTo(70, 54);
+            ctx.lineTo(70, 0); // top edge - straight to top right (no rounding)
+            ctx.lineTo(70, 54); // right edge - straight down
             ctx.quadraticCurveTo(70, 70, 54, 70);
             ctx.lineTo(16, 70);
             ctx.lineTo(0, 70);
@@ -589,13 +588,12 @@
             canvas.height = 70;
             const ctx = canvas.getContext("2d");
 
-            // Draw with custom border radius
+            // Draw with custom border radius (top-left and bottom-left rounded, top-right and bottom-right square)
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(16, 0);
-            ctx.lineTo(54, 0);
-            ctx.quadraticCurveTo(70, 0, 70, 16); // top right rounded
-            ctx.lineTo(70, 54);
+            ctx.lineTo(70, 0); // top edge - straight to top right (no rounding)
+            ctx.lineTo(70, 54); // right edge - straight down
             ctx.quadraticCurveTo(70, 70, 54, 70);
             ctx.lineTo(16, 70);
             ctx.lineTo(0, 70);
