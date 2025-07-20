@@ -37,7 +37,7 @@ CREATE POLICY "Admins can manage social content" ON public.social_content
 
 ### 3. Test the Fix
 After running the SQL setup:
-1. Open the live site: https://paradigm-email-signature.netlify.app/boost.html
+1. Open the live site: https://brandcentral.netlify.app/boost.html
 2. Sign in with an admin account
 3. Check the browser console for:
    - ✅ "Supabase initialized"

@@ -47,7 +47,7 @@ If you forget your password:
 
 ## Live Demo
 
-Visit the live application at: [Your Netlify URL will go here]
+Visit the live application at: [https://brandcentral.netlify.app/](https://brandcentral.netlify.app/)
 
 ## Local Development
 
