@@ -6,11 +6,17 @@
 # Publish directory
 publish = "."
 
-# Redirect all 404s to index.html for single-page app behavior
+# Redirect rules for specific paths
+[[redirects]]
+  from = "/admin"
+  to = "/boost.html"
+  status = 200
+
+# Handle 404s but don't interfere with existing HTML files
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
+  status = 404
 
 # Headers for better security and performance
 [[headers]]
