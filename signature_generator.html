@@ -1013,13 +1013,22 @@
                 
                 signatures.forEach((signature) => {
                     console.log("Signature data:", signature);
+                    
+                    // Build headshot display safely
+                    let headshotDisplay = '';
+                    if (signature.headshot) {
+                        headshotDisplay = '<img src="' + signature.headshot + '" alt="Headshot">';
+                    } else {
+                        headshotDisplay = '<div style="color:#999;">No headshot</div>';
+                    }
+                    
                     container.innerHTML += `
                         <div class="signature-card">
                             <div><strong>Name:</strong> ${signature.name || "Not specified"}</div>
                             <div><strong>Title:</strong> ${signature.title || "Not specified"}</div>
                             <div><strong>Phone:</strong> ${signature.phone || "Not specified"}</div>
                             <div><strong>Email Username:</strong> ${signature.email || "Not specified"}</div>
-                            ${signature.headshot ? `<img src="${signature.headshot}" alt="Headshot">` : "<div style='color:#999;'>No headshot</div>"}
+                            ${headshotDisplay}
                             <div style="margin-top:8px;">
                                 <button onclick="loadSignature('${signature.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
                                 <button onclick="deleteSignature('${signature.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
