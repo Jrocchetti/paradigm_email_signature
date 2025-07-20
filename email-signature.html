@@ -1012,14 +1012,14 @@
             console.log("🔍 Checking for BrandCentralAuth...");
             console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
             if (window.BrandCentralAuth) {
-                console.log("- BrandCentralAuth.isInitialized exists:", !!window.BrandCentralAuth.isInitialized);
-                if (window.BrandCentralAuth.isInitialized) {
+                console.log("- BrandCentralAuth.isInitialized exists:", typeof window.BrandCentralAuth.isInitialized === 'function');
+                console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
+                if (typeof window.BrandCentralAuth.isInitialized === 'function' && window.BrandCentralAuth.isInitialized()) {
                     console.log("- BrandCentralAuth.isInitialized():", window.BrandCentralAuth.isInitialized());
                 }
-                console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
             }
             
-            if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
+            if (window.BrandCentralAuth && typeof window.BrandCentralAuth.isInitialized === 'function' && window.BrandCentralAuth.isInitialized()) {
                 supabase = window.BrandCentralAuth.supabase;
                 console.log("✅ Using global Supabase client from BrandCentralAuth");
                 return true;
@@ -1285,7 +1285,7 @@
             
             // Simple check - the main initialization happens in initializeSignatureGenerator()
             function checkAuthReady() {
-                if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
+                if (window.BrandCentralAuth && typeof window.BrandCentralAuth.isInitialized === 'function' && window.BrandCentralAuth.isInitialized()) {
                     console.log('✅ BrandCentralAuth ready');
                 } else {
                     console.log('⏳ Waiting for BrandCentralAuth to initialize...');
