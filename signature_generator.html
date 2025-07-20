@@ -811,30 +811,34 @@
         });
     </script>
     
-    <!-- Supabase SDK -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Supabase SDK already loaded by auth.js, no need to load again -->
     
     <script>
-        // Supabase configuration
-        const supabaseUrl = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczNDc5NDQsImV4cCI6MjA1MjkyMzk0NH0.pTQJG2R9TK6oj7F_2Fq-a0Fko6Jl9ddz8Sj7A7K0xlc';
-        
-        // Initialize Supabase
+        // Use the global Supabase client from BrandCentralAuth
         let supabase;
         let currentUser = null;
         
-        try {
-            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-            console.log("✅ Supabase initialized for Signature Generator");
-            
-        } catch (error) {
-            console.error("❌ Supabase initialization failed:", error);
-            alert("Database initialization failed. Save functionality will not work.");
+        // Wait for BrandCentralAuth to be available and use its Supabase client
+        function initializeSupabase() {
+            if (window.BrandCentralAuth && window.BrandCentralAuth.supabase) {
+                supabase = window.BrandCentralAuth.supabase;
+                console.log("✅ Using global Supabase client from BrandCentralAuth");
+                return true;
+            }
+            return false;
         }
 
         // Save signature to Supabase
         window.saveSignatureToFirestore = async function () {
             console.log("saveSignature called");
+            
+            // Initialize Supabase client if not already done
+            if (!supabase && !initializeSupabase()) {
+                console.log("⏳ Waiting for BrandCentralAuth...");
+                setTimeout(() => window.saveSignatureToFirestore(), 500);
+                return;
+            }
+
             const name = document.getElementById("fullName").value;
             const title = document.getElementById("title").value;
             const phone = document.getElementById("phone").value;
@@ -890,8 +894,9 @@
             const container = document.getElementById("savedSignaturesContent");
             container.innerHTML = "";
             
-            if (!supabase) {
-                container.innerHTML += "<div style='color:#ff6b6b;'>Supabase not initialized. Cannot load saved signatures.</div>";
+            // Initialize Supabase client if not already done
+            if (!supabase && !initializeSupabase()) {
+                container.innerHTML += "<div style='color:#orange;'>⏳ Waiting for authentication...</div>";
                 return;
             }
             
@@ -949,8 +954,9 @@
         window.loadSignature = async function(id) {
             console.log("📥 Loading signature with ID:", id);
             
-            if (!supabase) {
-                alert("Supabase not initialized!");
+            // Initialize Supabase client if not already done
+            if (!supabase && !initializeSupabase()) {
+                alert("⏳ Please wait for authentication to complete...");
                 return;
             }
             
@@ -994,8 +1000,9 @@
 
         // Delete signature function
         window.deleteSignature = async function(id) {
-            if (!supabase) {
-                alert("Supabase not initialized!");
+            // Initialize Supabase client if not already done
+            if (!supabase && !initializeSupabase()) {
+                alert("⏳ Please wait for authentication to complete...");
                 return;
             }
             
@@ -1035,26 +1042,21 @@
 
         // Add auth state listener and initial load
         async function initializeSignatureGenerator() {
-            // Set up auth state listener
-            if (supabase) {
-                supabase.auth.onAuthStateChange((event, session) => {
-                    console.log('🔐 Auth state changed:', event);
-                    currentUser = session?.user || null;
+            // Wait for BrandCentralAuth and get the global Supabase client
+            if (initializeSupabase()) {
+                console.log('✅ Using global Supabase client');
+                
+                // Get current user from BrandCentralAuth
+                if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
+                    currentUser = window.BrandCentralAuth.getCurrentUser();
                     if (currentUser) {
-                        console.log('👤 User signed in:', currentUser.email);
+                        console.log('👤 Current user from BrandCentralAuth:', currentUser.email);
                         displaySavedSignatures();
-                    } else {
-                        console.log('👤 User signed out');
                     }
-                });
-
-                // Get initial session
-                const { data: { session } } = await supabase.auth.getSession();
-                currentUser = session?.user || null;
-                if (currentUser) {
-                    console.log('👤 Initial session found:', currentUser.email);
-                    displaySavedSignatures();
                 }
+            } else {
+                console.log('⏳ Waiting for BrandCentralAuth...');
+                setTimeout(initializeSignatureGenerator, 500);
             }
         }
 
