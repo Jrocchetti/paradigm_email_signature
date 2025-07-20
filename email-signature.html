@@ -914,7 +914,31 @@
             });
         }
 
-        window.onload = generateSignature;
+        // Make generateSignature globally accessible
+        window.generateSignature = generateSignature;
+
+        // Add debugging to ensure the function is available
+        console.log("✅ generateSignature function defined and attached to window");
+        
+        // Fallback function in case of issues
+        if (!window.generateSignature) {
+            console.warn("⚠️ generateSignature not found on window, creating fallback");
+            window.generateSignature = function() {
+                console.log("🔄 Fallback generateSignature called");
+                // Try to call the function by name
+                if (typeof generateSignature === 'function') {
+                    return generateSignature();
+                } else {
+                    console.error("❌ generateSignature function not found anywhere");
+                }
+            };
+        }
+
+        window.onload = function() {
+            console.log("🚀 Window loaded, calling generateSignature");
+            generateSignature();
+        };
+
 
         // Toggle saved signatures panel
         function toggleSavedSignatures() {
@@ -997,6 +1021,7 @@
                 console.error("Error saving signature:", error);
                 alert("Error saving signature: " + error.message);
             }
+        });
     </script>
     
     <!-- Supabase SDK - Required for auth.js to work -->
