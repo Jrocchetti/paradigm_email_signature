@@ -811,7 +811,8 @@
         });
     </script>
     
-    <!-- Supabase SDK already loaded by auth.js, no need to load again -->
+    <!-- Supabase SDK - Required for auth.js to work -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <script>
         // Use the global Supabase client from BrandCentralAuth
@@ -820,7 +821,7 @@
         
         // Wait for BrandCentralAuth to be available and use its Supabase client
         function initializeSupabase() {
-            if (window.BrandCentralAuth && window.BrandCentralAuth.supabase) {
+            if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
                 supabase = window.BrandCentralAuth.supabase;
                 console.log("✅ Using global Supabase client from BrandCentralAuth");
                 return true;
@@ -1052,16 +1053,28 @@
                     if (currentUser) {
                         console.log('👤 Current user from BrandCentralAuth:', currentUser.email);
                         displaySavedSignatures();
+                    } else {
+                        console.log('👤 No current user, waiting for sign in...');
+                        // Set up a listener for when user signs in
+                        const checkForUser = setInterval(() => {
+                            const user = window.BrandCentralAuth.getCurrentUser();
+                            if (user) {
+                                currentUser = user;
+                                console.log('👤 User signed in:', user.email);
+                                displaySavedSignatures();
+                                clearInterval(checkForUser);
+                            }
+                        }, 1000);
                     }
                 }
             } else {
-                console.log('⏳ Waiting for BrandCentralAuth...');
-                setTimeout(initializeSignatureGenerator, 500);
+                console.log('⏳ Waiting for BrandCentralAuth to initialize...');
+                setTimeout(initializeSignatureGenerator, 1000);
             }
         }
 
-        // Initialize when page loads
-        setTimeout(initializeSignatureGenerator, 1000);
+        // Initialize when page loads - give more time for auth.js to load
+        setTimeout(initializeSignatureGenerator, 2000);
     </script>
 
     <!-- Authentication helper -->
@@ -1072,13 +1085,13 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('📄 Signature Generator page loaded');
             
-            // Auth check is handled by auth.js
+            // Simple check - the main initialization happens in initializeSignatureGenerator()
             function checkAuthReady() {
-                if (window.BrandCentralAuth) {
-                    console.log('✅ BrandCentralAuth available');
+                if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
+                    console.log('✅ BrandCentralAuth ready');
                 } else {
-                    console.log('⏳ Waiting for BrandCentralAuth...');
-                    setTimeout(checkAuthReady, 500);
+                    console.log('⏳ Waiting for BrandCentralAuth to initialize...');
+                    setTimeout(checkAuthReady, 1000);
                 }
             }
             
