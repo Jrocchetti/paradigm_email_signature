@@ -839,6 +839,13 @@
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     
     <script>
+        // Make createClient available globally for compatibility
+        if (typeof window.supabase === 'undefined' && typeof window.createClient !== 'undefined') {
+            window.supabase = { createClient: window.createClient };
+        }
+    </script>
+    
+    <script>
         // Use the global Supabase client from BrandCentralAuth
         let supabase;
         let currentUser = null;
@@ -847,10 +854,12 @@
         function initializeSupabase() {
             console.log("🔍 Checking for BrandCentralAuth...");
             console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
+            console.log("- typeof window.BrandCentralAuth:", typeof window.BrandCentralAuth);
+            
             if (window.BrandCentralAuth) {
                 console.log("- BrandCentralAuth.isInitialized exists:", typeof window.BrandCentralAuth.isInitialized === 'function');
                 console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
-                if (typeof window.BrandCentralAuth.isInitialized === 'function' && window.BrandCentralAuth.isInitialized()) {
+                if (typeof window.BrandCentralAuth.isInitialized === 'function') {
                     console.log("- BrandCentralAuth.isInitialized():", window.BrandCentralAuth.isInitialized());
                 }
             }
@@ -860,6 +869,8 @@
                 console.log("✅ Using global Supabase client from BrandCentralAuth");
                 return true;
             }
+            
+            console.log("❌ BrandCentralAuth not ready yet");
             return false;
         }
 
@@ -869,9 +880,25 @@
             
             // Initialize Supabase client if not already done
             if (!supabase && !initializeSupabase()) {
-                console.log("⏳ Waiting for BrandCentralAuth...");
-                setTimeout(() => window.saveSignatureToSupabase(), 500);
-                return;
+                console.log("⏳ BrandCentralAuth not ready, trying direct Supabase initialization...");
+                
+                // Fallback: try to create Supabase client directly
+                if (typeof window.createClient !== 'undefined') {
+                    try {
+                        const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+                        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+                        supabase = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log("✅ Created fallback Supabase client");
+                    } catch (error) {
+                        console.error("❌ Failed to create fallback Supabase client:", error);
+                        setTimeout(() => window.saveSignatureToSupabase(), 500);
+                        return;
+                    }
+                } else {
+                    console.log("⏳ Waiting for BrandCentralAuth...");
+                    setTimeout(() => window.saveSignatureToSupabase(), 500);
+                    return;
+                }
             }
 
             const name = document.getElementById("fullName").value;
@@ -932,9 +959,25 @@
             
             // Initialize Supabase client if not already done
             if (!supabase && !initializeSupabase()) {
-                console.log("⏳ Supabase not ready, showing waiting message");
-                container.innerHTML += "<div style='color:#orange;'>⏳ Waiting for authentication...</div>";
-                return;
+                console.log("⏳ BrandCentralAuth not ready, trying direct Supabase initialization...");
+                
+                // Fallback: try to create Supabase client directly
+                if (typeof window.createClient !== 'undefined') {
+                    try {
+                        const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+                        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+                        supabase = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log("✅ Created fallback Supabase client for saved signatures");
+                    } catch (error) {
+                        console.error("❌ Failed to create fallback Supabase client:", error);
+                        container.innerHTML += "<div style='color:#orange;'>⏳ Waiting for authentication...</div>";
+                        return;
+                    }
+                } else {
+                    console.log("⏳ Supabase not ready, showing waiting message");
+                    container.innerHTML += "<div style='color:#orange;'>⏳ Waiting for authentication...</div>";
+                    return;
+                }
             }
             
             try {

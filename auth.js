@@ -30,7 +30,8 @@ class BrandCentralAuth {
     waitForSupabaseLibrary() {
         return new Promise((resolve) => {
             const checkLibrary = () => {
-                if (typeof window.supabase !== 'undefined') {
+                // Check for the modern Supabase v2 library
+                if (typeof window.supabase !== 'undefined' || (typeof window.createClient !== 'undefined' && window.createClient)) {
                     resolve();
                 } else {
                     setTimeout(checkLibrary, 100);
@@ -47,11 +48,17 @@ class BrandCentralAuth {
             const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
             
-            if (typeof window.supabase === 'undefined') {
-                throw new Error('Supabase library not loaded');
+            // Support both old and new Supabase library formats
+            if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                // Old format: window.supabase.createClient
+                this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else if (typeof window.createClient !== 'undefined') {
+                // New format: window.createClient (from @supabase/supabase-js@2)
+                this.supabase = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else {
+                throw new Error('Supabase library not loaded or createClient not available');
             }
             
-            this.supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             console.log('✅ Supabase Auth client initialized');
             
         } catch (error) {
@@ -364,16 +371,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Check if we're on a page that should have Supabase
     const hasSupabaseScript = document.querySelector('script[src*="supabase"]');
     
-    if (hasSupabaseScript || typeof window.supabase !== 'undefined') {
+    if (hasSupabaseScript || typeof window.supabase !== 'undefined' || typeof window.createClient !== 'undefined') {
         brandCentralAuthInstance = new BrandCentralAuth();
         
-        // Make BrandCentralAuth class available globally
-        window.BrandCentralAuth = BrandCentralAuth;
+        // Make the instance available globally as BrandCentralAuth
+        window.BrandCentralAuth = brandCentralAuthInstance;
         
-        // Create global instance for easy access
-        window.brandCentralAuth = brandCentralAuthInstance;
+        // Also keep the class available for potential future use
+        window.BrandCentralAuthClass = BrandCentralAuth;
         
-        console.log('✅ BrandCentralAuth (Supabase) initialized and available globally');
+        console.log('✅ BrandCentralAuth (Supabase) instance initialized and available globally');
     } else {
         console.log('⚠️ Supabase not detected, BrandCentralAuth not initialized');
     }
