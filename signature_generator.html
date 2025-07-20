@@ -750,13 +750,26 @@
             });
         }
 
-        window.onload = generateSignature;
+        window.onload = function() {
+            console.log("🚀 window.onload triggered, calling generateSignature");
+            generateSignature();
+        };
         
         // Also trigger on DOMContentLoaded to ensure it runs
         document.addEventListener('DOMContentLoaded', function() {
             console.log("📄 DOM loaded, calling generateSignature");
             generateSignature();
         });
+        
+        // Force generateSignature to run after 1 second as a fallback
+        setTimeout(() => {
+            console.log("🔄 Fallback: Forcing generateSignature after 1 second");
+            if (typeof generateSignature === 'function') {
+                generateSignature();
+            } else {
+                console.error("❌ generateSignature function not found!");
+            }
+        }, 1000);
 
         // Toggle saved signatures panel
         function toggleSavedSignatures() {
@@ -1188,35 +1201,46 @@
     <script src="auth.js"></script>
 
     <script>
+        // Diagnostic function available immediately
+        window.diagnoseLivePreviewIssue = function() {
+            console.log("🔍 === LIVE PREVIEW DIAGNOSTICS ===");
+            console.log("1. Preview element exists:", !!document.getElementById("preview"));
+            const previewEl = document.getElementById("preview");
+            console.log("2. Preview innerHTML:", previewEl?.innerHTML || "EMPTY");
+            console.log("3. Preview innerHTML length:", previewEl?.innerHTML?.length || 0);
+            console.log("4. Form values:");
+            console.log("   - Name:", document.getElementById("fullName")?.value || "EMPTY");
+            console.log("   - Title:", document.getElementById("title")?.value || "EMPTY");
+            console.log("   - Phone:", document.getElementById("phone")?.value || "EMPTY");
+            console.log("   - Email:", document.getElementById("emailUser")?.value || "EMPTY");
+            console.log("5. Functions available:");
+            console.log("   - generateSignature:", typeof generateSignature === 'function');
+            console.log("   - renderNameTitleBoxAsImage:", typeof renderNameTitleBoxAsImage === 'function');
+            console.log("   - generateCombinedLogoImage:", typeof generateCombinedLogoImage === 'function');
+            console.log("6. Auth state:");
+            console.log("   - BrandCentralAuth exists:", !!window.BrandCentralAuth);
+            console.log("   - Supabase available:", !!supabase);
+            console.log("7. Testing generateSignature()...");
+            try {
+                generateSignature();
+                console.log("✅ generateSignature() completed");
+            } catch (error) {
+                console.error("❌ generateSignature() failed:", error);
+            }
+            console.log("=== END DIAGNOSTICS ===");
+        };
+        
         // Initialize page with auth check
         document.addEventListener('DOMContentLoaded', () => {
             console.log('📄 Signature Generator page loaded');
             
-            // Diagnostic function to check current state
-            window.diagnoseLivePreviewIssue = function() {
-                console.log("🔍 DIAGNOSTICS - Current State:");
-                console.log("- Preview element exists:", !!document.getElementById("preview"));
-                console.log("- Preview innerHTML length:", document.getElementById("preview")?.innerHTML?.length || 0);
-                console.log("- Copy button visible:", document.getElementById("copyBtn")?.style.display !== "none");
-                console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
-                console.log("- Supabase client exists:", !!supabase);
-                console.log("- createClient available:", typeof window.createClient !== 'undefined');
-                console.log("- generateSignature function exists:", typeof generateSignature === 'function');
-                
-                // Test generateSignature directly
-                try {
-                    console.log("🧪 Testing generateSignature()...");
-                    generateSignature();
-                } catch (error) {
-                    console.error("❌ generateSignature failed:", error);
-                }
-            };
-            
-            // Auto-run diagnostics after 3 seconds
+            // Auto-run diagnostics after 2 seconds
             setTimeout(() => {
                 console.log("🚀 Auto-running diagnostics...");
-                window.diagnoseLivePreviewIssue();
-            }, 3000);
+                if (typeof window.diagnoseLivePreviewIssue === "function") {
+                    window.diagnoseLivePreviewIssue();
+                }
+            }, 2000);
             
             // Simple check - the main initialization happens in initializeSignatureGenerator()
             function checkAuthReady() {
