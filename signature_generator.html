@@ -790,20 +790,14 @@
             });
         }
 
-        // Save signature handler (calls Firestore via module)
+        // Save signature handler (calls Supabase function)
         document.getElementById("saveBtn").addEventListener("click", async function () {
             console.log("Save button clicked");
-            console.log("window.saveSignatureToFirestore available:", typeof window.saveSignatureToFirestore);
             
-            if (!window.saveSignatureToFirestore) {
-                console.error("saveSignatureToFirestore not available");
-                alert("Firestore not loaded yet. Please wait a moment and try again.");
-                return;
-            }
             try {
-                console.log("Calling saveSignatureToFirestore");
+                console.log("Calling saveSignatureToFirestore (now uses Supabase)");
                 await window.saveSignatureToFirestore();
-                console.log("saveSignatureToFirestore completed");
+                console.log("Signature save completed");
             } catch (error) {
                 console.error("Error saving signature:", error);
                 alert("Error saving signature: " + error.message);
@@ -821,6 +815,16 @@
         
         // Wait for BrandCentralAuth to be available and use its Supabase client
         function initializeSupabase() {
+            console.log("🔍 Checking for BrandCentralAuth...");
+            console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
+            if (window.BrandCentralAuth) {
+                console.log("- BrandCentralAuth.isInitialized exists:", !!window.BrandCentralAuth.isInitialized);
+                if (window.BrandCentralAuth.isInitialized) {
+                    console.log("- BrandCentralAuth.isInitialized():", window.BrandCentralAuth.isInitialized());
+                }
+                console.log("- BrandCentralAuth.supabase exists:", !!window.BrandCentralAuth.supabase);
+            }
+            
             if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
                 supabase = window.BrandCentralAuth.supabase;
                 console.log("✅ Using global Supabase client from BrandCentralAuth");
