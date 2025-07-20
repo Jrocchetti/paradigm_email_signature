@@ -1192,6 +1192,32 @@
         document.addEventListener('DOMContentLoaded', () => {
             console.log('📄 Signature Generator page loaded');
             
+            // Diagnostic function to check current state
+            window.diagnoseLivePreviewIssue = function() {
+                console.log("🔍 DIAGNOSTICS - Current State:");
+                console.log("- Preview element exists:", !!document.getElementById("preview"));
+                console.log("- Preview innerHTML length:", document.getElementById("preview")?.innerHTML?.length || 0);
+                console.log("- Copy button visible:", document.getElementById("copyBtn")?.style.display !== "none");
+                console.log("- window.BrandCentralAuth exists:", !!window.BrandCentralAuth);
+                console.log("- Supabase client exists:", !!supabase);
+                console.log("- createClient available:", typeof window.createClient !== 'undefined');
+                console.log("- generateSignature function exists:", typeof generateSignature === 'function');
+                
+                // Test generateSignature directly
+                try {
+                    console.log("🧪 Testing generateSignature()...");
+                    generateSignature();
+                } catch (error) {
+                    console.error("❌ generateSignature failed:", error);
+                }
+            };
+            
+            // Auto-run diagnostics after 3 seconds
+            setTimeout(() => {
+                console.log("🚀 Auto-running diagnostics...");
+                window.diagnoseLivePreviewIssue();
+            }, 3000);
+            
             // Simple check - the main initialization happens in initializeSignatureGenerator()
             function checkAuthReady() {
                 if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized && window.BrandCentralAuth.isInitialized()) {
