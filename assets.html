@@ -535,6 +535,7 @@
                     <button class="btn btn-secondary" onclick="showManageTags()">🏷️ Manage Tags</button>
                     <button class="btn btn-secondary" onclick="refreshAssets()">🔄 Refresh Assets</button>
                     <button class="btn btn-secondary" onclick="testUploadFunction()">🧪 Test Upload</button>
+                    <button class="btn btn-secondary" onclick="addTestAssets()">➕ Add Test Assets</button>
                 </div>
             </div>
 
@@ -599,22 +600,38 @@
         // 🚀 INITIALIZE APPLICATION
         document.addEventListener('DOMContentLoaded', async function() {
             console.log('🚀 Supabase Brand Assets initializing...');
+            updateDebugInfo('🚀 Initializing Supabase connection...');
             
-            // Wait for Supabase library to load
-            await waitForSupabaseLibrary();
-            
-            await initializeSupabase();
-            await checkAuthState();
-            await loadTags();
-            await loadAssets();
-            setupEventListeners();
-            
-            // Test storage connectivity if user is admin
-            if (isAdmin) {
-                await testStorageConnectivity();
+            try {
+                // Wait for Supabase library to load
+                await waitForSupabaseLibrary();
+                
+                // Initialize Supabase client
+                await initializeSupabase();
+                
+                // Setup event listeners first
+                setupEventListeners();
+                
+                // Check authentication state
+                await checkAuthState();
+                
+                // Load data
+                await loadTags();
+                await loadAssets();
+                
+                // Test storage connectivity if user is admin
+                if (isAdmin) {
+                    setTimeout(() => testStorageConnectivity(), 1000);
+                }
+                
+                console.log('✅ Application initialized successfully');
+                updateDebugInfo('✅ Application initialized successfully');
+                
+            } catch (error) {
+                console.error('❌ Initialization error:', error);
+                updateDebugInfo(`❌ Initialization Error: ${error.message}`);
+                showStatus('Failed to initialize application: ' + error.message, 'error');
             }
-            
-            console.log('✅ Application initialized successfully');
         });
 
         // Wait for Supabase library to load
@@ -658,12 +675,20 @@
                 updateDebugInfo('✅ Supabase: Connected successfully');
                 console.log('✅ Supabase client initialized');
                 
-                // Test database connection
-                const { data, error } = await supabase.from('profiles').select('count').limit(1);
-                if (error) {
-                    throw error;
+                // Test basic connection with a simple query
+                try {
+                    const { data, error } = await supabase.from('profiles').select('count').limit(1);
+                    if (error) {
+                        console.error('Database connection test failed:', error);
+                        updateDebugInfo(`⚠️ Database: Connection test failed - ${error.message}`);
+                        // Continue anyway, as the table might not exist yet
+                    } else {
+                        updateDebugInfo('✅ Database: Connection verified');
+                    }
+                } catch (testError) {
+                    console.error('Database test error:', testError);
+                    updateDebugInfo(`⚠️ Database test failed: ${testError.message}`);
                 }
-                updateDebugInfo('✅ Database: Connection verified');
                 
             } catch (error) {
                 console.error('❌ Supabase initialization error:', error);
@@ -888,9 +913,28 @@
             const noAssetsMessage = document.getElementById('noAssetsMessage');
             
             try {
-                loadingIndicator.style.display = 'block';
-                assetsContainer.innerHTML = '';
-                noAssetsMessage.classList.add('hidden');
+                console.log('📊 Loading assets from database...');
+                updateDebugInfo('📊 Loading assets...');
+                
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'block';
+                }
+                
+                if (assetsContainer) {
+                    assetsContainer.innerHTML = '';
+                }
+                
+                if (noAssetsMessage) {
+                    noAssetsMessage.classList.add('hidden');
+                }
+                
+                // Check if supabase is initialized
+                if (!supabase) {
+                    throw new Error('Supabase client not initialized');
+                }
+                
+                console.log('🔍 Querying assets table...');
+                updateDebugInfo('🔍 Querying assets table...');
                 
                 const { data, error } = await supabase
                     .from('assets')
@@ -898,10 +942,21 @@
                     .order('created_at', { ascending: false });
                 
                 if (error) {
+                    console.error('❌ Database query error:', error);
+                    console.error('Error details:', {
+                        message: error.message,
+                        details: error.details,
+                        hint: error.hint,
+                        code: error.code
+                    });
+                    updateDebugInfo(`❌ Database Error: ${error.message} (Code: ${error.code})`);
                     throw error;
                 }
                 
                 allAssets = data || [];
+                console.log(`📊 Retrieved ${allAssets.length} assets from database`);
+                console.log('Asset data sample:', allAssets.slice(0, 2));
+                
                 displayAssets(allAssets);
                 
                 console.log(`✅ Loaded ${allAssets.length} assets`);
@@ -911,8 +966,21 @@
                 console.error('❌ Error loading assets:', error);
                 showStatus('Error loading assets: ' + error.message, 'error');
                 updateDebugInfo(`❌ Asset Load Error: ${error.message}`);
+                
+                // Show no assets message on error
+                if (assetsContainer) {
+                    assetsContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: #e74c3c;">
+                            <h3>⚠️ Error Loading Assets</h3>
+                            <p>${error.message}</p>
+                            <button class="btn btn-primary" onclick="loadAssets()">🔄 Try Again</button>
+                        </div>
+                    `;
+                }
             } finally {
-                loadingIndicator.style.display = 'none';
+                if (loadingIndicator) {
+                    loadingIndicator.style.display = 'none';
+                }
             }
         }
 
@@ -1270,6 +1338,64 @@
             showStatus('✅ Assets refreshed!', 'success');
         }
 
+        // Test function to add sample assets (for debugging)
+        async function addTestAssets() {
+            if (!isAdmin) {
+                console.log('❌ Test assets can only be added by admin users');
+                return;
+            }
+            
+            try {
+                console.log('🧪 Adding test assets...');
+                updateDebugInfo('🧪 Adding test assets...');
+                
+                const testAssets = [
+                    {
+                        name: 'Primary Logo',
+                        description: 'Main brand logo for general use',
+                        file_path: 'test/primary-logo.png',
+                        file_url: './assets/logos/primary-logo.png',
+                        file_size: 15000,
+                        mime_type: 'image/png',
+                        tags: ['logo', 'primary', 'brand'],
+                        category: 'Logos'
+                    },
+                    {
+                        name: 'Icon Only',
+                        description: 'Icon version of the logo',
+                        file_path: 'test/icon-only.png',
+                        file_url: './assets/logos/icon-only.png',
+                        file_size: 8000,
+                        mime_type: 'image/png',
+                        tags: ['logo', 'icon'],
+                        category: 'Logos'
+                    }
+                ];
+                
+                for (const asset of testAssets) {
+                    const { data, error } = await supabase
+                        .from('assets')
+                        .insert(asset)
+                        .select()
+                        .single();
+                    
+                    if (error) {
+                        console.error('Failed to insert test asset:', error);
+                    } else {
+                        console.log('✅ Test asset added:', data.name);
+                    }
+                }
+                
+                // Reload assets after adding test data
+                await loadAssets();
+                updateDebugInfo('✅ Test assets added successfully');
+                
+            } catch (error) {
+                console.error('❌ Error adding test assets:', error);
+                updateDebugInfo(`❌ Test Asset Error: ${error.message}`);
+            }
+        }
+
         // Utility function to escape HTML
         function escapeHtml(unsafe) {
             if (!unsafe) return '';
@@ -1283,7 +1409,14 @@
 
         // Show status message
         function showStatus(message, type = 'info') {
+            console.log(`📢 Status [${type}]: ${message}`);
+            
             const container = document.getElementById('statusContainer');
+            if (!container) {
+                console.warn('Status container not found');
+                return;
+            }
+            
             const statusDiv = document.createElement('div');
             statusDiv.className = `status-message status-${type}`;
             statusDiv.textContent = message;
