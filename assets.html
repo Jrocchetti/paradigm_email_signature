@@ -1016,6 +1016,59 @@
             
             // File input change handler
             document.getElementById('fileInput').addEventListener('change', handleFileUpload);
+            
+            // Setup drag and drop functionality
+            setupDragAndDrop();
+        }
+
+        // Setup drag and drop functionality for upload area
+        function setupDragAndDrop() {
+            const uploadArea = document.querySelector('.upload-area');
+            if (!uploadArea) return;
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight(e) {
+                uploadArea.style.backgroundColor = 'rgba(63, 203, 255, 0.1)';
+                uploadArea.style.borderColor = '#3FCBFF';
+            }
+            
+            function unhighlight(e) {
+                uploadArea.style.backgroundColor = '';
+                uploadArea.style.borderColor = '';
+            }
+            
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                // Create a fake event object to match the file input handler
+                const fakeEvent = {
+                    target: { 
+                        files: files,
+                        value: '' // For clearing after upload
+                    }
+                };
+                
+                handleFileUpload(fakeEvent);
+            }
         }
 
         // Handle file upload
@@ -1033,8 +1086,104 @@
                 return;
             }
             
-            showStatus('Upload functionality coming soon!', 'info');
-            // TODO: Implement Supabase Storage upload
+            showStatus('Uploading files...', 'info');
+            
+            try {
+                const uploadPromises = Array.from(files).map(file => uploadSingleFile(file));
+                await Promise.all(uploadPromises);
+                
+                showStatus(`Successfully uploaded ${files.length} file(s)!`, 'success');
+                
+                // Reload assets to show newly uploaded files
+                await loadAssets();
+                
+                // Clear the file input
+                event.target.value = '';
+                
+            } catch (error) {
+                console.error('❌ Upload error:', error);
+                showStatus('Upload failed: ' + error.message, 'error');
+            }
+        }
+        
+        // Upload a single file to Supabase Storage and create database record
+        async function uploadSingleFile(file) {
+            console.log(`📤 Uploading file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+            
+            // Generate unique filename to avoid conflicts
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
+            const filePath = `brand-assets/${fileName}`;
+            
+            // Upload file to Supabase Storage
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('assets')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+                
+            if (uploadError) {
+                throw new Error(`Storage upload failed: ${uploadError.message}`);
+            }
+            
+            console.log(`✅ File uploaded to storage: ${filePath}`);
+            
+            // Get public URL for the uploaded file
+            const { data: urlData } = supabase.storage
+                .from('assets')
+                .getPublicUrl(filePath);
+                
+            if (!urlData?.publicUrl) {
+                throw new Error('Failed to get public URL for uploaded file');
+            }
+            
+            // Determine category based on file type
+            const category = getCategoryFromMimeType(file.type);
+            
+            // Create database record
+            const { data: assetData, error: dbError } = await supabase
+                .from('assets')
+                .insert([{
+                    name: file.name,
+                    description: `Uploaded ${file.type} file`,
+                    file_path: filePath,
+                    file_url: urlData.publicUrl,
+                    file_size: file.size,
+                    mime_type: file.type,
+                    category: category,
+                    tags: [category], // Auto-tag with category
+                    uploaded_by: currentUser.id
+                }])
+                .select()
+                .single();
+                
+            if (dbError) {
+                // If database insert fails, try to clean up the uploaded file
+                try {
+                    await supabase.storage.from('assets').remove([filePath]);
+                } catch (cleanupError) {
+                    console.error('Failed to cleanup uploaded file:', cleanupError);
+                }
+                throw new Error(`Database insert failed: ${dbError.message}`);
+            }
+            
+            console.log(`✅ Database record created for: ${file.name}`);
+            return assetData;
+        }
+        
+        // Determine category based on MIME type
+        function getCategoryFromMimeType(mimeType) {
+            if (mimeType.startsWith('image/')) {
+                if (mimeType.includes('svg')) return 'logo';
+                return 'image';
+            }
+            if (mimeType.startsWith('video/')) return 'video';
+            if (mimeType.startsWith('audio/')) return 'audio';
+            if (mimeType === 'application/pdf') return 'document';
+            if (mimeType.includes('document') || mimeType.includes('text')) return 'document';
+            if (mimeType.includes('font')) return 'font';
+            return 'other';
         }
 
         // Filter assets based on search and filters
