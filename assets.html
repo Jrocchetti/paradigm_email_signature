@@ -534,6 +534,7 @@
                 <div style="margin-top: 1rem;">
                     <button class="btn btn-secondary" onclick="showManageTags()">🏷️ Manage Tags</button>
                     <button class="btn btn-secondary" onclick="refreshAssets()">🔄 Refresh Assets</button>
+                    <button class="btn btn-secondary" onclick="testUploadFunction()">🧪 Test Upload</button>
                 </div>
             </div>
 
@@ -607,6 +608,12 @@
             await loadTags();
             await loadAssets();
             setupEventListeners();
+            
+            // Test storage connectivity if user is admin
+            if (isAdmin) {
+                await testStorageConnectivity();
+            }
+            
             console.log('✅ Application initialized successfully');
         });
 
@@ -1073,24 +1080,41 @@
 
         // Handle file upload
         async function handleFileUpload(event) {
+            console.log('🔍 Upload triggered:', event);
+            console.log('🔍 Files selected:', event.target.files.length);
+            
             const files = event.target.files;
-            if (!files.length) return;
+            if (!files.length) {
+                console.log('❌ No files selected');
+                return;
+            }
+            
+            console.log('🔍 Current user:', currentUser);
+            console.log('🔍 Is admin:', isAdmin);
             
             if (!currentUser) {
+                console.log('❌ User not authenticated');
                 showStatus('Please sign in to upload files.', 'error');
                 return;
             }
             
             if (!isAdmin) {
+                console.log('❌ User is not admin');
                 showStatus('Only admins can upload files.', 'error');
                 return;
             }
             
+            console.log('✅ Starting upload process...');
             showStatus('Uploading files...', 'info');
             
             try {
-                const uploadPromises = Array.from(files).map(file => uploadSingleFile(file));
-                await Promise.all(uploadPromises);
+                const uploadPromises = Array.from(files).map((file, index) => {
+                    console.log(`📤 Processing file ${index + 1}:`, file.name, file.type, file.size);
+                    return uploadSingleFile(file);
+                });
+                
+                const results = await Promise.all(uploadPromises);
+                console.log('✅ All uploads completed:', results);
                 
                 showStatus(`Successfully uploaded ${files.length} file(s)!`, 'success');
                 
@@ -1102,49 +1126,66 @@
                 
             } catch (error) {
                 console.error('❌ Upload error:', error);
+                console.error('❌ Error stack:', error.stack);
                 showStatus('Upload failed: ' + error.message, 'error');
+                updateDebugInfo(`❌ Upload Error: ${error.message}`);
             }
         }
         
         // Upload a single file to Supabase Storage and create database record
         async function uploadSingleFile(file) {
-            console.log(`📤 Uploading file: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+            console.log(`📤 Starting upload for: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
+            console.log(`📤 File type: ${file.type}`);
+            
+            // Check file size (50MB limit)
+            if (file.size > 50 * 1024 * 1024) {
+                throw new Error(`File ${file.name} is too large. Maximum size is 50MB.`);
+            }
             
             // Generate unique filename to avoid conflicts
             const fileExt = file.name.split('.').pop();
             const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
             const filePath = `brand-assets/${fileName}`;
             
-            // Upload file to Supabase Storage
-            const { data: uploadData, error: uploadError } = await supabase.storage
-                .from('assets')
-                .upload(filePath, file, {
-                    cacheControl: '3600',
-                    upsert: false
-                });
+            console.log(`📤 Generated file path: ${filePath}`);
+            
+            try {
+                // Upload file to Supabase Storage
+                console.log('📤 Uploading to storage...');
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from('assets')
+                    .upload(filePath, file, {
+                        cacheControl: '3600',
+                        upsert: false
+                    });
+                    
+                if (uploadError) {
+                    console.error('❌ Storage upload error:', uploadError);
+                    throw new Error(`Storage upload failed: ${uploadError.message}`);
+                }
                 
-            if (uploadError) {
-                throw new Error(`Storage upload failed: ${uploadError.message}`);
-            }
-            
-            console.log(`✅ File uploaded to storage: ${filePath}`);
-            
-            // Get public URL for the uploaded file
-            const { data: urlData } = supabase.storage
-                .from('assets')
-                .getPublicUrl(filePath);
+                console.log(`✅ File uploaded to storage:`, uploadData);
                 
-            if (!urlData?.publicUrl) {
-                throw new Error('Failed to get public URL for uploaded file');
-            }
-            
-            // Determine category based on file type
-            const category = getCategoryFromMimeType(file.type);
-            
-            // Create database record
-            const { data: assetData, error: dbError } = await supabase
-                .from('assets')
-                .insert([{
+                // Get public URL for the uploaded file
+                console.log('📤 Getting public URL...');
+                const { data: urlData } = supabase.storage
+                    .from('assets')
+                    .getPublicUrl(filePath);
+                    
+                if (!urlData?.publicUrl) {
+                    console.error('❌ Failed to get public URL:', urlData);
+                    throw new Error('Failed to get public URL for uploaded file');
+                }
+                
+                console.log(`✅ Public URL generated: ${urlData.publicUrl}`);
+                
+                // Determine category based on file type
+                const category = getCategoryFromMimeType(file.type);
+                console.log(`📤 Determined category: ${category}`);
+                
+                // Create database record
+                console.log('📤 Creating database record...');
+                const assetRecord = {
                     name: file.name,
                     description: `Uploaded ${file.type} file`,
                     file_path: filePath,
@@ -1154,22 +1195,37 @@
                     category: category,
                     tags: [category], // Auto-tag with category
                     uploaded_by: currentUser.id
-                }])
-                .select()
-                .single();
+                };
                 
-            if (dbError) {
-                // If database insert fails, try to clean up the uploaded file
-                try {
-                    await supabase.storage.from('assets').remove([filePath]);
-                } catch (cleanupError) {
-                    console.error('Failed to cleanup uploaded file:', cleanupError);
+                console.log('📤 Asset record to insert:', assetRecord);
+                
+                const { data: assetData, error: dbError } = await supabase
+                    .from('assets')
+                    .insert([assetRecord])
+                    .select()
+                    .single();
+                    
+                if (dbError) {
+                    console.error('❌ Database insert error:', dbError);
+                    // If database insert fails, try to clean up the uploaded file
+                    try {
+                        console.log('🗑️ Cleaning up uploaded file...');
+                        await supabase.storage.from('assets').remove([filePath]);
+                    } catch (cleanupError) {
+                        console.error('❌ Failed to cleanup uploaded file:', cleanupError);
+                    }
+                    throw new Error(`Database insert failed: ${dbError.message}`);
                 }
-                throw new Error(`Database insert failed: ${dbError.message}`);
+                
+                console.log(`✅ Database record created:`, assetData);
+                updateDebugInfo(`✅ Uploaded: ${file.name}`);
+                return assetData;
+                
+            } catch (error) {
+                console.error(`❌ Upload failed for ${file.name}:`, error);
+                updateDebugInfo(`❌ Upload failed: ${file.name} - ${error.message}`);
+                throw error;
             }
-            
-            console.log(`✅ Database record created for: ${file.name}`);
-            return assetData;
         }
         
         // Determine category based on MIME type
@@ -1247,6 +1303,77 @@
             const debugContent = document.getElementById('debugContent');
             const timestamp = new Date().toLocaleTimeString();
             debugContent.innerHTML += `<br>[${timestamp}] ${info}`;
+        }
+
+        // Test upload functionality (for debugging)
+        function testUploadFunction() {
+            console.log('🧪 Testing upload functionality...');
+            console.log('🧪 Current user:', currentUser);
+            console.log('🧪 Is admin:', isAdmin);
+            console.log('🧪 Supabase client:', supabase);
+            
+            // Test file input click
+            const fileInput = document.getElementById('fileInput');
+            console.log('🧪 File input element:', fileInput);
+            
+            if (fileInput) {
+                console.log('🧪 Triggering file input click...');
+                fileInput.click();
+            } else {
+                console.error('❌ File input not found!');
+                showStatus('File input element not found!', 'error');
+            }
+        }
+
+        // Test storage connectivity
+        async function testStorageConnectivity() {
+            console.log('🧪 Testing storage connectivity...');
+            updateDebugInfo('🧪 Testing storage connectivity...');
+            
+            try {
+                // Test listing buckets
+                const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+                
+                if (bucketsError) {
+                    console.error('❌ Buckets list error:', bucketsError);
+                    updateDebugInfo(`❌ Buckets Error: ${bucketsError.message}`);
+                    return false;
+                }
+                
+                console.log('✅ Available buckets:', buckets);
+                updateDebugInfo(`✅ Found ${buckets.length} buckets`);
+                
+                // Check if assets bucket exists
+                const assetsBucket = buckets.find(b => b.name === 'assets');
+                if (!assetsBucket) {
+                    console.error('❌ Assets bucket not found!');
+                    updateDebugInfo('❌ Assets bucket not found!');
+                    return false;
+                }
+                
+                console.log('✅ Assets bucket found:', assetsBucket);
+                updateDebugInfo('✅ Assets bucket is available');
+                
+                // Test listing files in bucket
+                const { data: files, error: filesError } = await supabase.storage
+                    .from('assets')
+                    .list('brand-assets', { limit: 1 });
+                    
+                if (filesError) {
+                    console.error('❌ Files list error:', filesError);
+                    updateDebugInfo(`❌ Files List Error: ${filesError.message}`);
+                    return false;
+                }
+                
+                console.log('✅ Storage listing works:', files);
+                updateDebugInfo('✅ Storage access verified');
+                return true;
+                
+            } catch (error) {
+                console.error('❌ Storage test error:', error);
+                updateDebugInfo(`❌ Storage Test Error: ${error.message}`);
+                return false;
+            }
         }
 
         // Placeholder functions for admin features
