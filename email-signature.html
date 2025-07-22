@@ -427,7 +427,7 @@
                     <div id="headshot-controls" style="display:none;">
                         <div style="margin-bottom: 10px;">
                             <span class="slider-label">Zoom:</span>
-                            <input type="range" id="zoomSlider" class="slider" min="1" max="3" step="0.01" value="1">
+                            <input type="range" id="zoomSlider" class="slider" min="1" max="3" step="0.001" value="1">
                         </div>
                         <div style="margin-bottom: 10px;">
                             <span class="slider-label">Pan X:</span>
@@ -530,7 +530,7 @@
                 zoom = minZoom;
                 document.getElementById("zoomSlider").min = minZoom;
                 document.getElementById("zoomSlider").max = Math.max(minZoom * 3, 3);
-                document.getElementById("zoomSlider").step = 0.01;
+                document.getElementById("zoomSlider").step = 0.001;
                 document.getElementById("zoomSlider").value = zoom;
                 drawHeadshotPreview();
             };
