@@ -772,7 +772,8 @@
                 ctx.fillText("PARADIGM", 0, 10);
                 
                 ctx.font = "italic 13px Arial, sans-serif";
-                ctx.fillText("Boutique AV. Big Impact.", 0, 40);
+                const taglineY = 40;
+                ctx.fillText("Boutique AV. Big Impact.", 0, taglineY);
                 
                 // Position button to align with the right edge of the banner
                 // Account for headshot offset if present
@@ -780,7 +781,7 @@
                 const buttonWidth = 80;
                 const buttonX = headshotOffset + bannerWidth - buttonWidth; // Right-align with banner's right edge
                 const buttonY = 10; // Start at same Y as PARADIGM text
-                const buttonHeight = 40; // Height to cover both PARADIGM and tagline
+                const buttonHeight = taglineY + 15 - buttonY; // Align button bottom with tagline bottom (taglineY + ~15px for font height)
                 const cornerRadius = 8;
                 
                 // Draw rounded rectangle for button (top-left and bottom-right corners only)
