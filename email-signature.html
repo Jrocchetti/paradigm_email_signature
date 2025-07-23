@@ -683,9 +683,9 @@
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
             
-            // Set canvas dimensions to accommodate logo, tagline, and button alignment
-            // Canvas should be wide enough to fit the banner width plus some extra space for the logo
-            canvas.width = Math.max(bannerWidth + 80, 400); // Ensure button can align with banner
+            // Set initial canvas dimensions - we'll resize if needed
+            // Start with a reasonable size that can accommodate logo, tagline, and button
+            canvas.width = Math.max(bannerWidth + 160, 500); // Extra space for logo, tagline, and button
             canvas.height = 65;
             
             // Clear canvas with white background
@@ -696,31 +696,53 @@
             const logoImg = new Image();
             logoImg.crossOrigin = "anonymous";
             logoImg.onload = function() {
-                // Draw the logo at the left
-                const logoWidth = 150;
+                // First, measure the tagline width to size the logo accordingly
+                ctx.fillStyle = "#444444";
+                ctx.font = "italic 13px Arial, sans-serif";
+                ctx.textAlign = "left";
+                ctx.textBaseline = "top";
+                const taglineText = "Boutique by Design. Defined by Trust.";
+                const taglineWidth = ctx.measureText(taglineText).width;
+                
+                // Size the logo to match the tagline width
+                const logoWidth = taglineWidth;
                 const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
                 const logoY = 5;
                 ctx.drawImage(logoImg, 0, logoY, logoWidth, logoHeight);
                 
                 // Draw the tagline
-                ctx.fillStyle = "#444444";
-                ctx.font = "italic 13px Arial, sans-serif";
-                ctx.textAlign = "left";
-                ctx.textBaseline = "top";
                 const taglineY = logoY + logoHeight + 6;
-                ctx.fillText("Boutique by Design. Defined by Trust.", 0, taglineY);
+                ctx.fillText(taglineText, 0, taglineY);
                 
                 // Calculate total height of logo + gap + tagline for button height
                 const totalContentHeight = logoHeight + 6 + 15; // logo + gap + tagline height (approx 15px for 13px font)
                 
-                // Position button to align with the right edge of the banner
-                // Since the headshot is 70px + 6px gap = 76px, we need to account for that offset
+                // Position button to ensure no overlap - place it after logo/tagline with proper spacing
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
                 const buttonWidth = 80;
-                const buttonX = headshotOffset + bannerWidth - buttonWidth; // Right-align with banner's right edge
+                const logoTaglineWidth = Math.max(logoWidth, taglineWidth);
+                const buttonX = headshotOffset + Math.max(bannerWidth - buttonWidth, logoTaglineWidth + 20); // Ensure 20px gap from logo/tagline
                 const buttonY = logoY; // Start at same Y as logo
                 const buttonHeight = totalContentHeight;
                 const cornerRadius = 8;
+                
+                // Ensure canvas is wide enough for the button
+                if (buttonX + buttonWidth > canvas.width) {
+                    const newWidth = buttonX + buttonWidth + 10; // Add 10px padding
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    canvas.width = newWidth;
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.putImageData(imageData, 0, 0);
+                    
+                    // Redraw logo and tagline
+                    ctx.drawImage(logoImg, 0, logoY, logoWidth, logoHeight);
+                    ctx.fillStyle = "#444444";
+                    ctx.font = "italic 13px Arial, sans-serif";
+                    ctx.textAlign = "left";
+                    ctx.textBaseline = "top";
+                    ctx.fillText(taglineText, 0, taglineY);
+                }
                 
                 // Draw rounded rectangle for button (top-left and bottom-right corners only)
                 ctx.save();
@@ -769,20 +791,51 @@
                 ctx.font = "bold 16px Arial, sans-serif";
                 ctx.textAlign = "left";
                 ctx.textBaseline = "top";
-                ctx.fillText("PARADIGM", 0, 10);
+                
+                // Measure tagline width first
+                ctx.font = "italic 13px Arial, sans-serif";
+                const taglineText = "Boutique by Design. Defined by Trust.";
+                const taglineWidth = ctx.measureText(taglineText).width;
+                
+                // Draw PARADIGM text to match tagline width
+                ctx.font = "bold 16px Arial, sans-serif";
+                const paradigmText = "PARADIGM";
+                const paradigmWidth = ctx.measureText(paradigmText).width;
+                const scaleFactor = taglineWidth / paradigmWidth;
+                const adjustedFontSize = Math.max(12, 16 * scaleFactor); // Minimum 12px font
+                ctx.font = `bold ${adjustedFontSize}px Arial, sans-serif`;
+                ctx.fillText(paradigmText, 0, 10);
                 
                 ctx.font = "italic 13px Arial, sans-serif";
                 const taglineY = 40;
-                ctx.fillText("Boutique by Design. Defined by Trust.", 0, taglineY);
+                ctx.fillText(taglineText, 0, taglineY);
                 
-                // Position button to align with the right edge of the banner
-                // Account for headshot offset if present
+                // Position button to ensure no overlap
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
                 const buttonWidth = 80;
-                const buttonX = headshotOffset + bannerWidth - buttonWidth; // Right-align with banner's right edge
+                const buttonX = headshotOffset + Math.max(bannerWidth - buttonWidth, taglineWidth + 20); // Ensure 20px gap
                 const buttonY = 10; // Start at same Y as PARADIGM text
-                const buttonHeight = taglineY + 15 - buttonY; // Align button bottom with tagline bottom (taglineY + ~15px for font height)
+                const buttonHeight = taglineY + 15 - buttonY; // Align button bottom with tagline bottom
                 const cornerRadius = 8;
+                
+                // Ensure canvas is wide enough for the button
+                if (buttonX + buttonWidth > canvas.width) {
+                    const newWidth = buttonX + buttonWidth + 10; // Add 10px padding
+                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    canvas.width = newWidth;
+                    ctx.fillStyle = "#FFFFFF";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.putImageData(imageData, 0, 0);
+                    
+                    // Redraw text
+                    ctx.fillStyle = "#444444";
+                    ctx.font = `bold ${adjustedFontSize}px Arial, sans-serif`;
+                    ctx.textAlign = "left";
+                    ctx.textBaseline = "top";
+                    ctx.fillText(paradigmText, 0, 10);
+                    ctx.font = "italic 13px Arial, sans-serif";
+                    ctx.fillText(taglineText, 0, taglineY);
+                }
                 
                 // Draw rounded rectangle for button (top-left and bottom-right corners only)
                 ctx.save();
