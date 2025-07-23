@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Syntax Test</title>
+</head>
+<body>
+    <div id="preview"></div>
+    <input type="text" id="fullName" placeholder="Name">
+    <input type="text" id="title" placeholder="Title">
+    
+    <script>
+        console.log("Starting syntax test...");
+        
+        function generateSignature() {
+            console.log("generateSignature called");
+            const name = document.getElementById("fullName").value || "Test Name";
+            const title = document.getElementById("title").value || "Test Title";
+            
+            document.getElementById("preview").innerHTML = `
+                <div style="background: white; color: black; padding: 20px;">
+                    <h3>${name}</h3>
+                    <p>${title}</p>
+                    <p>Paradigm Productions Group</p>
+                </div>
+            `;
+        }
+        
+        console.log("generateSignature function defined");
+        generateSignature();
+        console.log("Test complete");
+    </script>
+</body>
+</html>
