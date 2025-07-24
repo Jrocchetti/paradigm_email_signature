@@ -717,10 +717,11 @@
                 // Calculate total height of logo + gap + tagline for button height
                 const totalContentHeight = logoHeight + 6 + 15; // logo + gap + tagline height (approx 15px for 13px font)
                 
-                // Position button to align with the leading edge of the name/title/company section
+                // Position button to align with the right edge of the name/title/company section
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
                 const buttonWidth = 80;
-                const buttonX = headshotOffset; // Align with left edge of name/title banner
+                const bannerRightEdge = headshotOffset + bannerWidth;
+                const buttonX = bannerRightEdge - buttonWidth; // Align with right edge of name/title banner
                 const buttonY = logoY; // Start at same Y as logo
                 const buttonHeight = totalContentHeight;
                 const cornerRadius = 8;
@@ -809,10 +810,11 @@
                 const taglineY = 40;
                 ctx.fillText(taglineText, 0, taglineY);
                 
-                // Position button to align with the leading edge of the name/title/company section
+                // Position button to align with the right edge of the name/title/company section
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
                 const buttonWidth = 80;
-                const buttonX = headshotOffset; // Align with left edge of name/title banner
+                const bannerRightEdge = headshotOffset + (window.currentBannerWidth || 220);
+                const buttonX = bannerRightEdge - buttonWidth; // Align with right edge of name/title banner
                 const buttonY = 10; // Start at same Y as PARADIGM text
                 const buttonHeight = taglineY + 15 - buttonY; // Align button bottom with tagline bottom
                 const cornerRadius = 8;
