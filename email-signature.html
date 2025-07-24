@@ -717,11 +717,10 @@
                 // Calculate total height of logo + gap + tagline for button height
                 const totalContentHeight = logoHeight + 6 + 15; // logo + gap + tagline height (approx 15px for 13px font)
                 
-                // Position button to ensure no overlap - place it after logo/tagline with proper spacing
+                // Position button to align with the leading edge of the name/title/company section
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
                 const buttonWidth = 80;
-                const logoTaglineWidth = Math.max(logoWidth, taglineWidth);
-                const buttonX = headshotOffset + Math.max(bannerWidth - buttonWidth, logoTaglineWidth + 20); // Ensure 20px gap from logo/tagline
+                const buttonX = headshotOffset; // Align with left edge of name/title banner
                 const buttonY = logoY; // Start at same Y as logo
                 const buttonHeight = totalContentHeight;
                 const cornerRadius = 8;
@@ -810,10 +809,10 @@
                 const taglineY = 40;
                 ctx.fillText(taglineText, 0, taglineY);
                 
-                // Position button to ensure no overlap
+                // Position button to align with the leading edge of the name/title/company section
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
                 const buttonWidth = 80;
-                const buttonX = headshotOffset + Math.max(bannerWidth - buttonWidth, taglineWidth + 20); // Ensure 20px gap
+                const buttonX = headshotOffset; // Align with left edge of name/title banner
                 const buttonY = 10; // Start at same Y as PARADIGM text
                 const buttonHeight = taglineY + 15 - buttonY; // Align button bottom with tagline bottom
                 const cornerRadius = 8;
