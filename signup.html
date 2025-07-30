@@ -211,17 +211,40 @@
     </div>
 
     <div class="debug" id="debug">
-        Loading...
+        Initializing Supabase...
     </div>
 
     <!-- Supabase SDK -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    
-    <!-- Authentication Script - This creates window.BrandCentralAuth -->
-    <script src="auth.js"></script>
 
     <script>
-        console.log('SIMPLE SIGNUP: Starting...');
+        console.log('ULTRA SIMPLE SIGNUP: Starting...');
+        
+        // Create our OWN Supabase client - no dependencies on auth.js!
+        let supabaseClient = null;
+        
+        // Initialize Supabase directly
+        function initSupabase() {
+            try {
+                if (typeof window.createClient === 'function') {
+                    // Supabase credentials from auth.js
+                    const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+                    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+                    
+                    supabaseClient = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    
+                    console.log('ULTRA SIMPLE: Supabase client created!', supabaseClient);
+                    document.getElementById('debug').innerHTML = ' Supabase Ready!<br>Client initialized successfully.';
+                    return true;
+                } else {
+                    throw new Error('window.createClient not available');
+                }
+            } catch (error) {
+                console.error('ULTRA SIMPLE: Supabase init failed:', error);
+                document.getElementById('debug').innerHTML = ' Supabase Failed:<br>' + error.message;
+                return false;
+            }
+        }
         
         // Password validation
         const passwordInput = document.getElementById('password');
@@ -248,10 +271,10 @@
             requirements.number.className = 'requirement ' + (hasNumber ? 'valid' : 'invalid');
         });
 
-        // SIMPLE FORM SUBMISSION - NO WAITING!
+        // ULTRA SIMPLE FORM SUBMISSION
         document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('SIMPLE SIGNUP: Form submitted!');
+            console.log('ULTRA SIMPLE: Form submitted!');
             
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
@@ -279,25 +302,22 @@
             // Disable button
             submitBtn.disabled = true;
             submitBtn.textContent = 'Creating Account...';
-            document.getElementById('debug').innerHTML = 'Creating account for: ' + email + '<br>';
+            document.getElementById('debug').innerHTML += '<br> Creating: ' + email;
             
             try {
-                // DIRECT ACCESS - no waiting, just use it!
-                console.log('SIMPLE SIGNUP: Accessing window.BrandCentralAuth directly...');
-                
-                if (!window.BrandCentralAuth) {
-                    throw new Error('BrandCentralAuth not found on window object');
+                // Make sure Supabase is ready
+                if (!supabaseClient) {
+                    const initSuccess = initSupabase();
+                    if (!initSuccess) {
+                        throw new Error('Could not initialize Supabase client');
+                    }
                 }
                 
-                if (!window.BrandCentralAuth.supabase) {
-                    throw new Error('Supabase client not found in BrandCentralAuth');
-                }
+                console.log('ULTRA SIMPLE: Calling signUp...');
+                document.getElementById('debug').innerHTML += '<br> Calling Supabase signUp...';
                 
-                document.getElementById('debug').innerHTML += 'Auth found! Calling signUp...<br>';
-                console.log('SIMPLE SIGNUP: Calling signUp with Supabase...');
-                
-                // Direct Supabase call
-                const { data, error } = await window.BrandCentralAuth.supabase.auth.signUp({
+                // Direct Supabase signup call
+                const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
                     options: {
@@ -310,12 +330,12 @@
                 });
 
                 if (error) {
-                    console.error('SIMPLE SIGNUP: Supabase error:', error);
+                    console.error('ULTRA SIMPLE: Supabase error:', error);
                     throw error;
                 }
 
-                console.log('SIMPLE SIGNUP: SUCCESS!', data);
-                document.getElementById('debug').innerHTML += 'SUCCESS! User created: ' + (data.user ? data.user.email : 'Unknown') + '<br>';
+                console.log('ULTRA SIMPLE: SUCCESS!', data);
+                document.getElementById('debug').innerHTML += '<br> SUCCESS!<br>User: ' + (data.user ? data.user.email : 'Created');
                 
                 // Clear form
                 document.getElementById('signupForm').reset();
@@ -329,8 +349,8 @@
                 }, 3000);
 
             } catch (error) {
-                console.error('SIMPLE SIGNUP: Error:', error);
-                document.getElementById('debug').innerHTML += 'ERROR: ' + error.message + '<br>';
+                console.error('ULTRA SIMPLE: Error:', error);
+                document.getElementById('debug').innerHTML += '<br> ERROR: ' + error.message;
                 
                 let errorMessage = error.message;
                 if (error.message.includes('User already registered')) {
@@ -366,18 +386,17 @@
             }
         }
         
-        // Simple status check
+        // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                if (window.BrandCentralAuth && window.BrandCentralAuth.supabase) {
-                    document.getElementById('debug').innerHTML = ' Auth Ready!<br>Ready to create accounts.';
-                } else {
-                    document.getElementById('debug').innerHTML = ' Auth Not Ready<br>Please refresh page.';
-                }
-            }, 1000);
+            console.log('ULTRA SIMPLE: DOM ready, initializing Supabase...');
+            
+            // Wait a bit for Supabase library to load, then initialize
+            setTimeout(() => {
+                initSupabase();
+            }, 500);
         });
         
-        console.log('SIMPLE SIGNUP: Script loaded');
+        console.log('ULTRA SIMPLE: Script loaded');
     </script>
 </body>
 </html>
