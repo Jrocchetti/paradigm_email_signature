@@ -211,36 +211,68 @@
     </div>
 
     <div class="debug" id="debug">
-        Initializing Supabase...
+        Checking Supabase library...
     </div>
 
     <!-- Supabase SDK -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
     <script>
-        console.log('ULTRA SIMPLE SIGNUP: Starting...');
+        console.log('FIXED SIGNUP: Starting...');
         
-        // Create our OWN Supabase client - no dependencies on auth.js!
+        // Global Supabase client
         let supabaseClient = null;
         
-        // Initialize Supabase directly
+        // Debug what's available
+        function debugSupabaseAvailability() {
+            console.log('=== SUPABASE DEBUG ===');
+            console.log('window.supabase:', typeof window.supabase, window.supabase);
+            console.log('window.createClient:', typeof window.createClient, window.createClient);
+            console.log('window.supabase?.createClient:', typeof window.supabase?.createClient);
+            
+            // Check global namespace
+            const supabaseKeys = Object.keys(window).filter(k => k.toLowerCase().includes('supabase'));
+            console.log('Supabase-related keys:', supabaseKeys);
+            
+            // Check if we have the newer format
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                console.log(' Found window.supabase.createClient (old format)');
+                return 'old';
+            } else if (typeof window.createClient === 'function') {
+                console.log(' Found window.createClient (new format)');
+                return 'new';
+            } else {
+                console.log(' No Supabase createClient found');
+                return null;
+            }
+        }
+        
+        // Initialize Supabase with multiple fallbacks
         function initSupabase() {
             try {
-                if (typeof window.createClient === 'function') {
-                    // Supabase credentials from auth.js
-                    const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
-                    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
-                    
+                const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+                
+                const debugResult = debugSupabaseAvailability();
+                
+                if (debugResult === 'old' && window.supabase?.createClient) {
+                    // Old format: window.supabase.createClient
+                    console.log('FIXED: Using window.supabase.createClient...');
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } else if (debugResult === 'new' && window.createClient) {
+                    // New format: window.createClient
+                    console.log('FIXED: Using window.createClient...');
                     supabaseClient = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    
-                    console.log('ULTRA SIMPLE: Supabase client created!', supabaseClient);
-                    document.getElementById('debug').innerHTML = ' Supabase Ready!<br>Client initialized successfully.';
-                    return true;
                 } else {
-                    throw new Error('window.createClient not available');
+                    throw new Error('No valid Supabase createClient method found');
                 }
+                
+                console.log('FIXED: Supabase client created!', supabaseClient);
+                document.getElementById('debug').innerHTML = ' Supabase Ready!<br>Method: ' + debugResult + '<br>Client created successfully.';
+                return true;
+                
             } catch (error) {
-                console.error('ULTRA SIMPLE: Supabase init failed:', error);
+                console.error('FIXED: Supabase init failed:', error);
                 document.getElementById('debug').innerHTML = ' Supabase Failed:<br>' + error.message;
                 return false;
             }
@@ -271,10 +303,10 @@
             requirements.number.className = 'requirement ' + (hasNumber ? 'valid' : 'invalid');
         });
 
-        // ULTRA SIMPLE FORM SUBMISSION
+        // Form submission
         document.getElementById('signupForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('ULTRA SIMPLE: Form submitted!');
+            console.log('FIXED: Form submitted!');
             
             const firstName = document.getElementById('firstName').value.trim();
             const lastName = document.getElementById('lastName').value.trim();
@@ -307,13 +339,14 @@
             try {
                 // Make sure Supabase is ready
                 if (!supabaseClient) {
+                    console.log('FIXED: Supabase not ready, initializing...');
                     const initSuccess = initSupabase();
                     if (!initSuccess) {
                         throw new Error('Could not initialize Supabase client');
                     }
                 }
                 
-                console.log('ULTRA SIMPLE: Calling signUp...');
+                console.log('FIXED: Calling signUp...');
                 document.getElementById('debug').innerHTML += '<br> Calling Supabase signUp...';
                 
                 // Direct Supabase signup call
@@ -330,11 +363,11 @@
                 });
 
                 if (error) {
-                    console.error('ULTRA SIMPLE: Supabase error:', error);
+                    console.error('FIXED: Supabase error:', error);
                     throw error;
                 }
 
-                console.log('ULTRA SIMPLE: SUCCESS!', data);
+                console.log('FIXED: SUCCESS!', data);
                 document.getElementById('debug').innerHTML += '<br> SUCCESS!<br>User: ' + (data.user ? data.user.email : 'Created');
                 
                 // Clear form
@@ -349,7 +382,7 @@
                 }, 3000);
 
             } catch (error) {
-                console.error('ULTRA SIMPLE: Error:', error);
+                console.error('FIXED: Error:', error);
                 document.getElementById('debug').innerHTML += '<br> ERROR: ' + error.message;
                 
                 let errorMessage = error.message;
@@ -388,15 +421,15 @@
         
         // Initialize when DOM is ready
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('ULTRA SIMPLE: DOM ready, initializing Supabase...');
+            console.log('FIXED: DOM ready, initializing Supabase...');
             
-            // Wait a bit for Supabase library to load, then initialize
+            // Wait for Supabase library to load, then initialize
             setTimeout(() => {
                 initSupabase();
-            }, 500);
+            }, 1000); // Give it more time to load
         });
         
-        console.log('ULTRA SIMPLE: Script loaded');
+        console.log('FIXED: Script loaded');
     </script>
 </body>
 </html>
