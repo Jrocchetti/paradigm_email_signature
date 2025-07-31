@@ -349,7 +349,7 @@
                 console.log('FIXED: Calling signUp...');
                 document.getElementById('debug').innerHTML += '<br> Calling Supabase signUp...';
                 
-                // Direct Supabase signup call
+                // Direct Supabase signup call with redirect URL
                 const { data, error } = await supabaseClient.auth.signUp({
                     email: email,
                     password: password,
@@ -358,7 +358,8 @@
                             first_name: firstName,
                             last_name: lastName,
                             full_name: firstName + ' ' + lastName
-                        }
+                        },
+                        emailRedirectTo: 'https://brandcentral.netlify.app/login'
                     }
                 });
 
