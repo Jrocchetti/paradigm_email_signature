@@ -887,7 +887,11 @@
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const targetId = this.getAttribute('href');
+                // Skip if href is just "#" (empty anchor)
+                if (targetId === '#') return;
+                
+                const target = document.querySelector(targetId);
                 if (target) {
                     target.scrollIntoView({
                         behavior: 'smooth',
@@ -985,11 +989,18 @@
     
     <script>
         // Function to check authentication and redirect appropriately
-        function checkAuthAndRedirect() {
-            console.log('🔍 Checking authentication for email signature access...');
+        function checkAuthAndRedirect(retryCount = 0) {
+            console.log('🔍 Checking authentication for email signature access... (attempt', retryCount + 1, ')');
+            
+            // Prevent infinite loops
+            if (retryCount > 20) {
+                console.log('❌ Auth check timed out, redirecting to login...');
+                window.location.href = 'login.html';
+                return;
+            }
             
             if (window.brandCentralAuth && window.brandCentralAuth.isInitialized()) {
-                if (window.brandCentralAuth.isSignedIn()) {
+                if (window.brandCentralAuth.isAuthenticated()) {
                     console.log('✅ User is signed in, redirecting to email signature...');
                     window.location.href = 'https://brandcentral.netlify.app/email-signature.html';
                 } else {
@@ -997,10 +1008,10 @@
                     window.location.href = 'login.html';
                 }
             } else {
-                console.log('⏳ Auth not ready, waiting...');
+                console.log('⏳ Auth not ready, waiting... (attempt', retryCount + 1, ')');
                 // If auth isn't ready yet, wait a bit and try again
                 setTimeout(() => {
-                    checkAuthAndRedirect();
+                    checkAuthAndRedirect(retryCount + 1);
                 }, 500);
             }
         }
