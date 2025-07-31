@@ -711,7 +711,7 @@
             <p class="hero-tagline">Boutique Service Built on Trust</p>
             <p>Your comprehensive brand resource hub for Paradigm Productions Group. Access professional tools, templates, and assets to maintain consistent brand identity across all touchpoints and communications.</p>
             <div class="cta-buttons">
-                <a href="resources.html" class="cta-button">Create Email Signature</a>
+                <a href="#" onclick="checkAuthAndRedirect()" class="cta-button">Create Email Signature</a>
                 <a href="assets.html" class="cta-button secondary">Browse Assets</a>
             </div>
         </div>
@@ -984,6 +984,27 @@
     <script src="auth.js"></script>
     
     <script>
+        // Function to check authentication and redirect appropriately
+        function checkAuthAndRedirect() {
+            console.log('🔍 Checking authentication for email signature access...');
+            
+            if (window.brandCentralAuth && window.brandCentralAuth.isInitialized()) {
+                if (window.brandCentralAuth.isSignedIn()) {
+                    console.log('✅ User is signed in, redirecting to email signature...');
+                    window.location.href = 'https://brandcentral.netlify.app/email-signature.html';
+                } else {
+                    console.log('❌ User not signed in, redirecting to login...');
+                    window.location.href = 'login.html';
+                }
+            } else {
+                console.log('⏳ Auth not ready, waiting...');
+                // If auth isn't ready yet, wait a bit and try again
+                setTimeout(() => {
+                    checkAuthAndRedirect();
+                }, 500);
+            }
+        }
+        
         // Show Assets Manager link for admin users
         document.addEventListener('DOMContentLoaded', () => {
             function checkAdminForNav() {
