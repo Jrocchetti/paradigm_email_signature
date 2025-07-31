@@ -137,28 +137,124 @@
         Page loaded! JavaScript working!
     </div>
 
+    <!-- Supabase SDK -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
     <script>
-        console.log('Login page loaded successfully!');
+        console.log('LOGIN: Starting...');
         
-        document.getElementById('debug').innerHTML += '<br>DOM ready!';
+        // Global Supabase client
+        let supabaseClient = null;
         
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        // Initialize Supabase
+        function initSupabase() {
+            try {
+                const SUPABASE_URL = 'https://gijhfdjsmlgivjhvbtve.supabase.co';
+                const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdpamhmZGpzbWxnaXZqaHZidHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NTE3ODMsImV4cCI6MjA2ODUyNzc4M30.HWAjtnUIsAa8swRgtIcMz9z-Ll8N4PmqWas1DF2fFVY';
+                
+                if (window.supabase && typeof window.supabase.createClient === 'function') {
+                    // Old format
+                    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } else if (typeof window.createClient === 'function') {
+                    // New format
+                    supabaseClient = window.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                } else {
+                    throw new Error('Supabase createClient not available');
+                }
+                
+                console.log('LOGIN: Supabase client created!', supabaseClient);
+                document.getElementById('debug').innerHTML = '✅ Login Ready!<br>Supabase connected.';
+                return true;
+            } catch (error) {
+                console.error('LOGIN: Supabase init failed:', error);
+                document.getElementById('debug').innerHTML = '❌ Login Failed:<br>' + error.message;
+                return false;
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('LOGIN: DOM ready, initializing...');
+            
+            // Initialize Supabase
+            setTimeout(() => {
+                initSupabase();
+            }, 1000);
+        });
+        
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            console.log('Form submitted!');
+            console.log('LOGIN: Form submitted!');
             
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            const submitBtn = document.querySelector('button[type="submit"]');
             
-            document.getElementById('debug').innerHTML += '<br>Form submitted: ' + email;
+            // Basic validation
+            if (!email || !password) {
+                alert('Please fill in both email and password.');
+                return;
+            }
             
-            if (email && password) {
-                alert('Login form working! Email: ' + email);
-            } else {
-                alert('Please fill in both fields.');
+            // Disable button
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Signing In...';
+            document.getElementById('debug').innerHTML += '<br>🔐 Logging in: ' + email;
+            
+            try {
+                // Make sure Supabase is ready
+                if (!supabaseClient) {
+                    const initSuccess = initSupabase();
+                    if (!initSuccess) {
+                        throw new Error('Could not initialize Supabase client');
+                    }
+                }
+                
+                console.log('LOGIN: Calling signInWithPassword...');
+                document.getElementById('debug').innerHTML += '<br>🚀 Authenticating...';
+                
+                // Supabase login
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+                
+                if (error) {
+                    throw error;
+                }
+                
+                console.log('LOGIN: SUCCESS!', data);
+                document.getElementById('debug').innerHTML += '<br>🎉 SUCCESS!<br>User: ' + data.user.email;
+                
+                // Success! Redirect to main app
+                alert('Login successful! Welcome ' + data.user.email);
+                
+                // Redirect to main application (you can change this URL)
+                setTimeout(() => {
+                    window.location.href = 'signature_generator.html'; // or index.html
+                }, 1000);
+                
+            } catch (error) {
+                console.error('LOGIN: Error:', error);
+                document.getElementById('debug').innerHTML += '<br>❌ ERROR: ' + error.message;
+                
+                let errorMessage = error.message;
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMessage = 'Invalid email or password. Please try again.';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMessage = 'Please check your email and confirm your account first.';
+                } else if (error.message.includes('Too many requests')) {
+                    errorMessage = 'Too many login attempts. Please wait a moment and try again.';
+                }
+                
+                alert('Login failed: ' + errorMessage);
+                
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Sign In';
             }
         });
         
-        console.log('Event listeners attached!');
+        console.log('LOGIN: Script loaded');
     </script>
 </body>
 </html>
