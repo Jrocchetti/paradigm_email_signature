@@ -228,9 +228,9 @@
                 // Success! Redirect to main app
                 alert('Login successful! Welcome ' + data.user.email);
                 
-                // Redirect to main application (you can change this URL)
+                // Redirect back to home page (now logged in)
                 setTimeout(() => {
-                    window.location.href = 'signature_generator.html'; // or index.html
+                    window.location.href = 'index.html';
                 }, 1000);
                 
             } catch (error) {
