@@ -1161,6 +1161,24 @@
                 return;
             }
 
+            // Get current user from BrandCentralAuth
+            if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
+                currentUser = window.BrandCentralAuth.getCurrentUser();
+            }
+            
+            console.log("👤 Current user:", currentUser?.email);
+            
+            if (!currentUser) {
+                alert("Please sign in to save signatures.");
+                return;
+            }
+            
+            // Check if user is restricted from saving signatures
+            if (currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com') {
+                alert("You do not have permission to save signatures.");
+                return;
+            }
+
             const name = document.getElementById("fullName").value;
             const title = document.getElementById("title").value;
             const phone = document.getElementById("phone").value;
@@ -1222,8 +1240,24 @@
                 return;
             }
             
+            // Get current user from BrandCentralAuth
+            if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
+                currentUser = window.BrandCentralAuth.getCurrentUser();
+            }
+            
+            console.log("👤 Current user for display:", currentUser?.email);
+            
+            if (!currentUser) {
+                container.innerHTML += "<div style='color:#ccc;'>Please sign in to view saved signatures.</div>";
+                return;
+            }
+            
+            // Temporarily removed restriction to show all signatures
+            
             try {
                 console.log("📋 Loading saved signatures...");
+                
+                // Show all signatures to see what exists in the database
                 const { data: signatures, error } = await supabase
                     .from('email_signatures')
                     .select('*')
@@ -1282,6 +1316,24 @@
                 return;
             }
             
+            // Get current user from BrandCentralAuth
+            if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
+                currentUser = window.BrandCentralAuth.getCurrentUser();
+            }
+            
+            console.log("👤 Current user for load:", currentUser?.email);
+            
+            if (!currentUser) {
+                alert("Please sign in to load signatures.");
+                return;
+            }
+            
+            // Check if user is restricted from loading signatures
+            if (currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com') {
+                alert("You do not have permission to load signatures.");
+                return;
+            }
+            
             try {
                 const { data: signature, error } = await supabase
                     .from('email_signatures')
@@ -1325,6 +1377,24 @@
             // Initialize Supabase client if not already done
             if (!supabase && !initializeSupabase()) {
                 alert("⏳ Please wait for authentication to complete...");
+                return;
+            }
+            
+            // Get current user from BrandCentralAuth
+            if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
+                currentUser = window.BrandCentralAuth.getCurrentUser();
+            }
+            
+            console.log("👤 Current user for delete:", currentUser?.email);
+            
+            if (!currentUser) {
+                alert("Please sign in to delete signatures.");
+                return;
+            }
+            
+            // Check if user is restricted from deleting signatures
+            if (currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com') {
+                alert("You do not have permission to delete signatures.");
                 return;
             }
             
