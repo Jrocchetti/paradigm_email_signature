@@ -346,8 +346,29 @@
         }
 
         .collapsible-content.active {
-            max-height: 800px;
+            max-height: 400px;
             padding: 20px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        /* Custom scrollbar for saved signatures */
+        .collapsible-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .collapsible-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+
+        .collapsible-content::-webkit-scrollbar-thumb {
+            background: rgba(63, 203, 255, 0.6);
+            border-radius: 4px;
+        }
+
+        .collapsible-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(63, 203, 255, 0.8);
         }
 
         .collapse-icon {
