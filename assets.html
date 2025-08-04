@@ -310,6 +310,9 @@
 
         .asset-info {
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            height: calc(100% - 200px); /* Account for preview height */
         }
 
         .asset-name {
@@ -346,6 +349,20 @@
             display: flex;
             gap: 0.5rem;
             flex-wrap: wrap;
+            margin-top: auto; /* Push buttons to bottom of card */
+        }
+
+        .asset-actions .btn {
+            flex: 1;
+            min-width: fit-content;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            justify-content: center;
+        }
+
+        .asset-actions .btn-primary {
+            flex: 2; /* Make download button bigger */
+            font-weight: 700;
         }
 
         /* Loading and Status */
@@ -1027,6 +1044,12 @@
                             <button class="btn btn-primary" onclick="downloadAsset('${asset.file_url}', '${escapeHtml(asset.name)}')">
                                 📥 Download
                             </button>
+                            <button class="btn btn-secondary" onclick="copyAssetUrl('${asset.file_url}')" title="Copy file URL">
+                                🔗 Copy Link
+                            </button>
+                            <button class="btn btn-secondary" onclick="openAssetInNewTab('${asset.file_url}')" title="Open in new tab">
+                                📂 Open
+                            </button>
                             ${isAdmin ? `
                                 <button class="btn btn-danger" onclick="deleteAsset('${asset.id}')">
                                     🗑️ Delete
@@ -1061,23 +1084,124 @@
         }
 
         // Download asset
-        function downloadAsset(url, filename) {
+        async function downloadAsset(url, filename) {
             try {
-                // Create download link
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = filename;
-                link.style.display = 'none';
+                showStatus(`📥 Preparing download for ${filename}...`, 'info');
                 
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+                // Method 1: Try Supabase signed URL for better download support
+                try {
+                    // Extract file path from URL for Supabase storage
+                    const urlParts = url.split('/storage/v1/object/public/assets/');
+                    if (urlParts.length > 1) {
+                        const filePath = urlParts[1];
+                        
+                        // Get a signed URL with download transformation
+                        const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+                            .from('assets')
+                            .createSignedUrl(filePath, 3600, {
+                                download: filename
+                            });
+                            
+                        if (!signedUrlError && signedUrlData?.signedUrl) {
+                            console.log('✅ Using Supabase signed URL for download');
+                            
+                            // Use the signed URL which should force download
+                            const link = document.createElement('a');
+                            link.href = signedUrlData.signedUrl;
+                            link.download = filename;
+                            link.style.display = 'none';
+                            
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                            
+                            showStatus(`✅ Download started: ${filename}`, 'success');
+                            return;
+                        } else {
+                            console.log('Signed URL failed, trying fetch method:', signedUrlError);
+                        }
+                    }
+                } catch (signedUrlError) {
+                    console.log('Signed URL method failed, trying fetch:', signedUrlError);
+                }
                 
-                showStatus(`📥 Downloading ${filename}...`, 'success');
+                // Method 2: Try fetch with blob conversion (fallback)
+                try {
+                    const response = await fetch(url);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const blob = await response.blob();
+                    
+                    // Create blob URL for download
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = filename;
+                    link.style.display = 'none';
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // Clean up blob URL
+                    setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+                    
+                    showStatus(`✅ Download started: ${filename}`, 'success');
+                    return;
+                    
+                } catch (fetchError) {
+                    console.log('Fetch method failed, trying fallback:', fetchError);
+                    
+                    // Method 2: Fallback to direct link (for same-origin or properly configured files)
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    link.target = '_blank'; // Open in new tab if download fails
+                    link.style.display = 'none';
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    showStatus(`📎 Download link opened: ${filename}`, 'info');
+                }
                 
             } catch (error) {
                 console.error('❌ Download error:', error);
-                showStatus('Download failed: ' + error.message, 'error');
+                showStatus(`❌ Download failed: ${error.message}`, 'error');
+                
+                // Final fallback: open in new window
+                try {
+                    window.open(url, '_blank');
+                    showStatus('📂 File opened in new tab', 'info');
+                } catch (openError) {
+                    showStatus('❌ Unable to access file', 'error');
+                }
+            }
+        }
+
+        // Copy asset URL to clipboard
+        async function copyAssetUrl(url) {
+            try {
+                await navigator.clipboard.writeText(url);
+                showStatus('🔗 Asset URL copied to clipboard', 'success');
+            } catch (error) {
+                console.error('Failed to copy URL:', error);
+                showStatus('❌ Failed to copy URL', 'error');
+            }
+        }
+
+        // Open asset in new tab
+        function openAssetInNewTab(url) {
+            try {
+                window.open(url, '_blank');
+                showStatus('📂 Asset opened in new tab', 'info');
+            } catch (error) {
+                console.error('Failed to open asset:', error);
+                showStatus('❌ Failed to open asset', 'error');
             }
         }
 
@@ -1233,13 +1357,17 @@
             console.log(`📤 Generated file path: ${filePath}`);
             
             try {
-                // Upload file to Supabase Storage
+                // Upload file to Supabase Storage with download headers
                 console.log('📤 Uploading to storage...');
                 const { data: uploadData, error: uploadError } = await supabase.storage
                     .from('assets')
                     .upload(filePath, file, {
                         cacheControl: '3600',
-                        upsert: false
+                        upsert: false,
+                        contentType: file.type,
+                        metadata: {
+                            'content-disposition': `attachment; filename="${file.name}"`
+                        }
                     });
                     
                 if (uploadError) {
