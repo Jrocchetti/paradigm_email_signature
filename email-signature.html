@@ -1278,27 +1278,40 @@
             try {
                 console.log("📋 Loading saved signatures...");
                 
-                // First, get the admin user ID by email
-                const adminEmail = 'Jrocchetti@paradigmproductionsgroup.com';
+                const isAdmin = currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com';
+                console.log("🔑 User is admin:", isAdmin);
                 
-                // Get all signatures for now (we'll filter by admin status later)
-                const { data: signatures, error } = await supabase
-                    .from('email_signatures')
-                    .select('*')
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    throw error;
+                let signatures;
+                
+                if (isAdmin) {
+                    // Admin sees all signatures they created
+                    const { data, error } = await supabase
+                        .from('email_signatures')
+                        .select('*')
+                        .eq('created_by', currentUser.id)
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    signatures = data;
+                    console.log("✅ Admin query completed. Found", signatures?.length || 0, "signatures");
+                } else {
+                    // Regular users see all signatures (we'll let RLS handle permissions)
+                    const { data, error } = await supabase
+                        .from('email_signatures')
+                        .select('*')
+                        .order('created_at', { ascending: false });
+                    
+                    if (error) throw error;
+                    signatures = data;
+                    console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
                 }
 
                 console.log("✅ Query completed. Found", signatures?.length || 0, "admin signatures");
                 
                 if (!signatures || signatures.length === 0) {
-                    container.innerHTML += "<div style='color:#ccc;'>No admin signatures found.</div>";
+                    container.innerHTML += "<div style='color:#ccc;'>No signatures found.</div>";
                     return;
                 }
-                
-                const isAdmin = currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com';
                 
                 signatures.forEach((signature) => {
                     console.log("Signature data:", signature);
@@ -1313,8 +1326,9 @@
                             <button onclick="deleteSignature('${signature.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
                         `;
                     } else {
-                        // Regular users can only copy
+                        // Regular users can load (to edit) and copy, but not delete
                         actionButtons = `
+                            <button onclick="loadSignature('${signature.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
                             <button onclick="copySignatureToClipboard('${signature.id}')" style="padding:4px 8px; background:#28a745; color:#fff; border:none; border-radius:8px; cursor:pointer;">Copy to Clipboard</button>
                         `;
                     }
