@@ -1194,9 +1194,9 @@
                 return;
             }
             
-            // Check if user is restricted from saving signatures
-            if (currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com') {
-                alert("You do not have permission to save signatures.");
+            // Only admin can save signatures
+            if (currentUser.email !== 'Jrocchetti@paradigmproductionsgroup.com') {
+                alert("Only admin can save signatures. You can copy existing signatures to your clipboard.");
                 return;
             }
 
@@ -1278,25 +1278,45 @@
             try {
                 console.log("📋 Loading saved signatures...");
                 
-                // Show all signatures to see what exists in the database
+                // Show only signatures created by admin (for all users to view)
                 const { data: signatures, error } = await supabase
                     .from('email_signatures')
                     .select('*')
+                    .eq('user_email', 'Jrocchetti@paradigmproductionsgroup.com')
                     .order('created_at', { ascending: false });
 
                 if (error) {
                     throw error;
                 }
 
-                console.log("✅ Query completed. Found", signatures?.length || 0, "signatures");
+                console.log("✅ Query completed. Found", signatures?.length || 0, "admin signatures");
                 
                 if (!signatures || signatures.length === 0) {
-                    container.innerHTML += "<div style='color:#ccc;'>No saved signatures found.</div>";
+                    container.innerHTML += "<div style='color:#ccc;'>No admin signatures found.</div>";
                     return;
                 }
                 
+                const isAdmin = currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com';
+                
                 signatures.forEach((signature) => {
                     console.log("Signature data:", signature);
+                    
+                    // Generate action buttons based on user type
+                    let actionButtons = '';
+                    if (isAdmin) {
+                        // Admin can load, copy, and delete
+                        actionButtons = `
+                            <button onclick="loadSignature('${signature.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
+                            <button onclick="copySignatureToClipboard('${signature.id}')" style="padding:4px 8px; background:#28a745; color:#fff; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Copy</button>
+                            <button onclick="deleteSignature('${signature.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
+                        `;
+                    } else {
+                        // Regular users can only copy
+                        actionButtons = `
+                            <button onclick="copySignatureToClipboard('${signature.id}')" style="padding:4px 8px; background:#28a745; color:#fff; border:none; border-radius:8px; cursor:pointer;">Copy to Clipboard</button>
+                        `;
+                    }
+                    
                     container.innerHTML += `
                         <div class="signature-card">
                             <div><strong>Name:</strong> ${signature.name || "Not specified"}</div>
@@ -1305,8 +1325,7 @@
                             <div><strong>Email Username:</strong> ${signature.email || "Not specified"}</div>
                             ${signature.headshot ? `<img src="${signature.headshot}" alt="Headshot">` : "<div style='color:#999;'>No headshot</div>"}
                             <div style="margin-top:8px;">
-                                <button onclick="loadSignature('${signature.id}')" style="padding:4px 8px; background:#3FCBFF; color:#1F1633; border:none; border-radius:8px; cursor:pointer; margin-right:8px;">Load</button>
-                                <button onclick="deleteSignature('${signature.id}')" style="padding:4px 8px; background:#ff6b6b; color:#fff; border:none; border-radius:8px; cursor:pointer;">Delete</button>
+                                ${actionButtons}
                             </div>
                         </div>
                     `;
@@ -1349,11 +1368,7 @@
                 return;
             }
             
-            // Check if user is restricted from loading signatures
-            if (currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com') {
-                alert("You do not have permission to load signatures.");
-                return;
-            }
+            // All authenticated users can view signatures created by admin
             
             try {
                 const { data: signature, error } = await supabase
@@ -1413,9 +1428,9 @@
                 return;
             }
             
-            // Check if user is restricted from deleting signatures
-            if (currentUser.email === 'Jrocchetti@paradigmproductionsgroup.com') {
-                alert("You do not have permission to delete signatures.");
+            // Only admin can delete signatures
+            if (currentUser.email !== 'Jrocchetti@paradigmproductionsgroup.com') {
+                alert("Only admin can delete signatures.");
                 return;
             }
             
@@ -1452,6 +1467,120 @@
                 }
             }
         };
+
+        // Function to copy a signature to clipboard as HTML
+        window.copySignatureToClipboard = async function(id) {
+            // Initialize Supabase client if not already done
+            if (!supabase && !initializeSupabase()) {
+                alert("Authentication system not ready. Please try again.");
+                return;
+            }
+
+            // Get current user from BrandCentralAuth
+            if (window.BrandCentralAuth && window.BrandCentralAuth.getCurrentUser) {
+                currentUser = window.BrandCentralAuth.getCurrentUser();
+            }
+
+            console.log("📋 Copying signature with ID:", id);
+            console.log("👤 Current user for copy:", currentUser?.email);
+            
+            if (!currentUser) {
+                alert("Please sign in to copy signatures.");
+                return;
+            }
+
+            try {
+                // Fetch the signature data
+                const { data: signature, error } = await supabase
+                    .from('email_signatures')
+                    .select('*')
+                    .eq('id', id)
+                    .single();
+
+                if (error) {
+                    throw error;
+                }
+
+                if (!signature) {
+                    alert("Signature not found.");
+                    return;
+                }
+
+                console.log("✅ Signature loaded for copy:", signature);
+
+                // Generate the HTML signature
+                const signatureHTML = generateSignatureHTML(
+                    signature.name,
+                    signature.title,
+                    signature.phone,
+                    signature.email,
+                    signature.headshot
+                );
+
+                // Copy to clipboard
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(signatureHTML);
+                        alert("✅ Signature copied to clipboard as HTML! You can paste it into your email client.");
+                    } catch (clipboardError) {
+                        console.warn("Clipboard API failed, falling back to text area method:", clipboardError);
+                        fallbackCopyToClipboard(signatureHTML);
+                    }
+                } else {
+                    fallbackCopyToClipboard(signatureHTML);
+                }
+
+            } catch (error) {
+                console.error("❌ Error copying signature:", error);
+                alert("Error copying signature: " + error.message);
+            }
+        };
+
+        // Fallback method for copying to clipboard
+        function fallbackCopyToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                alert("✅ Signature copied to clipboard as HTML! You can paste it into your email client.");
+            } catch (err) {
+                console.error('Fallback copy failed:', err);
+                alert("❌ Unable to copy to clipboard. Please try again or copy the signature manually.");
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
+        // Function to generate signature HTML from data
+        function generateSignatureHTML(name, title, phone, email, headshot) {
+            const logoUrl = "https://raw.githubusercontent.com/Jrocchetti/paradigm_email_signature/main/assets/logos/primary-logo.png";
+            const headshotHtml = headshot ? `<img src="${headshot}" alt="Headshot" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-right: 20px;">` : '';
+            
+            return `
+<table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333;">
+    <tr>
+        <td style="vertical-align: top; padding-right: 20px;">
+            ${headshotHtml}
+        </td>
+        <td style="vertical-align: top;">
+            <div style="font-weight: bold; font-size: 16px; color: #1F1633; margin-bottom: 4px;">${name}</div>
+            <div style="color: #3FCBFF; font-weight: 600; margin-bottom: 8px;">${title}</div>
+            <div style="margin-bottom: 2px;">📞 <a href="tel:${phone}" style="color: #333; text-decoration: none;">${phone}</a></div>
+            <div style="margin-bottom: 8px;">✉️ <a href="mailto:${email}@paradigmproductionsgroup.com" style="color: #3FCBFF; text-decoration: none;">${email}@paradigmproductionsgroup.com</a></div>
+            <div style="margin-top: 12px;">
+                <img src="${logoUrl}" alt="Paradigm Productions Group" style="height: 40px; width: auto;">
+            </div>
+        </td>
+    </tr>
+</table>`.trim();
+        }
 
         // Add auth state listener and initial load
         async function initializeSignatureGenerator() {
