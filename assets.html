@@ -536,6 +536,7 @@
                     <button class="btn btn-secondary" onclick="refreshAssets()">🔄 Refresh Assets</button>
                     <button class="btn btn-secondary" onclick="testUploadFunction()">🧪 Test Upload</button>
                     <button class="btn btn-secondary" onclick="addTestAssets()">➕ Add Test Assets</button>
+                    <button class="btn btn-secondary" onclick="toggleDebugInfo()">🔍 Toggle Debug</button>
                 </div>
             </div>
 
@@ -555,8 +556,8 @@
             <!-- Status Messages -->
             <div id="statusContainer"></div>
 
-            <!-- Debug Information -->
-            <div id="debugInfo" class="debug-info">
+            <!-- Debug Information - Hidden by default -->
+            <div id="debugInfo" class="debug-info hidden">
                 <strong>🔍 Debug Information:</strong><br>
                 <span id="debugContent">Initializing Supabase connection...</span>
             </div>
@@ -782,6 +783,7 @@
             const userEmail = document.getElementById('userEmail');
             const authButton = document.getElementById('authButton');
             const adminSection = document.getElementById('adminSection');
+            const debugInfo = document.getElementById('debugInfo');
             
             if (currentUser) {
                 userEmail.textContent = currentUser.email;
@@ -790,12 +792,25 @@
                 
                 if (isAdmin) {
                     adminSection.style.display = 'block';
+                    // Show debug info for admin users
+                    if (debugInfo) {
+                        debugInfo.classList.remove('hidden');
+                    }
+                } else {
+                    // Hide debug info for non-admin users
+                    if (debugInfo) {
+                        debugInfo.classList.add('hidden');
+                    }
                 }
             } else {
                 userEmail.textContent = '';
                 authButton.textContent = 'Sign In';
                 authButton.onclick = showSignInModal;
                 adminSection.style.display = 'none';
+                // Hide debug info for non-authenticated users
+                if (debugInfo) {
+                    debugInfo.classList.add('hidden');
+                }
             }
         }
 
@@ -1433,9 +1448,36 @@
 
         // Update debug information
         function updateDebugInfo(info) {
+            // Only show debug info for admin users
+            if (!isAdmin) {
+                return;
+            }
+            
             const debugContent = document.getElementById('debugContent');
+            const debugInfo = document.getElementById('debugInfo');
             const timestamp = new Date().toLocaleTimeString();
-            debugContent.innerHTML += `<br>[${timestamp}] ${info}`;
+            
+            // Show debug section for admin users
+            if (debugInfo) {
+                debugInfo.classList.remove('hidden');
+            }
+            
+            if (debugContent) {
+                debugContent.innerHTML += `<br>[${timestamp}] ${info}`;
+            }
+        }
+
+        // Toggle debug information visibility (admin only)
+        function toggleDebugInfo() {
+            if (!isAdmin) {
+                return;
+            }
+            
+            const debugInfo = document.getElementById('debugInfo');
+            if (debugInfo) {
+                debugInfo.classList.toggle('hidden');
+                showStatus(debugInfo.classList.contains('hidden') ? 'Debug info hidden' : 'Debug info shown', 'info');
+            }
         }
 
         // Test upload functionality (for debugging)
