@@ -1224,7 +1224,7 @@
                         phone: phone || "",
                         email: emailUser || "",
                         headshot: headshot,
-                        created_by: currentUser?.id || null,
+                        created_by: currentUser?.email || null,
                         created_at: new Date().toISOString()
                     }]);
 
@@ -1282,7 +1282,7 @@
                 const { data: signatures, error } = await supabase
                     .from('email_signatures')
                     .select('*')
-                    .eq('user_email', 'Jrocchetti@paradigmproductionsgroup.com')
+                    .eq('created_by', 'Jrocchetti@paradigmproductionsgroup.com')
                     .order('created_at', { ascending: false });
 
                 if (error) {
