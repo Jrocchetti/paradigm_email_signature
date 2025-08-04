@@ -646,6 +646,183 @@
             min-width: auto;
         }
 
+        /* Asset Tag Editor Modal */
+        .asset-tag-editor-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1002;
+        }
+
+        .asset-tag-editor-content {
+            background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .asset-tag-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .asset-tag-editor-title {
+            color: #3FCBFF;
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .close-tag-editor {
+            background: none;
+            border: none;
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-tag-editor:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .asset-info-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .asset-info-name {
+            color: #3FCBFF;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .current-tags-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .current-tags-section h4 {
+            color: #3FCBFF;
+            margin-bottom: 1rem;
+        }
+
+        .current-tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .current-tag {
+            background: rgba(63, 203, 255, 0.2);
+            color: #3FCBFF;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .remove-tag-btn {
+            background: none;
+            border: none;
+            color: #3FCBFF;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-tag-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .add-tags-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .add-tags-section h4 {
+            color: #3FCBFF;
+            margin-bottom: 1rem;
+        }
+
+        .available-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .available-tag {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFFFFF;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .available-tag:hover {
+            background: rgba(63, 203, 255, 0.3);
+            border-color: #3FCBFF;
+            color: #3FCBFF;
+        }
+
+        .available-tag.selected {
+            background: rgba(63, 203, 255, 0.2);
+            border-color: #3FCBFF;
+            color: #3FCBFF;
+        }
+
+        .tag-actions-section {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .no-tags-available {
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            text-align: center;
+            padding: 1rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .page-title {
@@ -758,6 +935,45 @@
             <div id="noAssetsMessage" class="loading hidden">
                 <h3>📂 No assets found</h3>
                 <p>No assets match your current search criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Asset Tag Editor Modal -->
+    <div id="assetTagEditorModal" class="asset-tag-editor-modal hidden">
+        <div class="asset-tag-editor-content">
+            <div class="asset-tag-editor-header">
+                <h3 class="asset-tag-editor-title">🏷️ Edit Asset Tags</h3>
+                <button class="close-tag-editor" onclick="closeAssetTagEditor()">&times;</button>
+            </div>
+
+            <div class="asset-info-section">
+                <div class="asset-info-name" id="editingAssetName">Asset Name</div>
+            </div>
+
+            <div class="current-tags-section">
+                <h4>Current Tags</h4>
+                <div class="current-tags-list" id="currentTagsList">
+                    <!-- Current tags will be populated here -->
+                </div>
+                <div id="noCurrentTags" class="no-tags-available" style="display: none;">
+                    No tags assigned to this asset
+                </div>
+            </div>
+
+            <div class="add-tags-section">
+                <h4>Available Tags</h4>
+                <div class="available-tags" id="availableTagsList">
+                    <!-- Available tags will be populated here -->
+                </div>
+                <div id="noAvailableTags" class="no-tags-available" style="display: none;">
+                    No tags available. Create tags in Tag Management first.
+                </div>
+            </div>
+
+            <div class="tag-actions-section">
+                <button class="btn btn-secondary" onclick="closeAssetTagEditor()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAssetTags()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -1255,6 +1471,9 @@
                                 📂 Open
                             </button>
                             ${isAdmin ? `
+                                <button class="btn btn-secondary" onclick="editAssetTags('${asset.id}', '${escapeHtml(asset.name)}')" title="Edit tags">
+                                    🏷️ Edit Tags
+                                </button>
                                 <button class="btn btn-danger" onclick="deleteAsset('${asset.id}')">
                                     🗑️ Delete
                                 </button>
@@ -1887,6 +2106,171 @@
             }
         }
 
+        // Asset Tag Editor Functions
+        let currentEditingAsset = null;
+        let currentAssetTags = [];
+        let selectedTagsToAdd = [];
+
+        function editAssetTags(assetId, assetName) {
+            if (!isAdmin) {
+                showStatus('Access denied. Admin privileges required.', 'error');
+                return;
+            }
+
+            // Find the asset
+            const asset = allAssets.find(a => a.id === assetId);
+            if (!asset) {
+                showStatus('Asset not found.', 'error');
+                return;
+            }
+
+            currentEditingAsset = asset;
+            currentAssetTags = [...(asset.tags || [])];
+            selectedTagsToAdd = [];
+
+            // Update UI
+            document.getElementById('editingAssetName').textContent = assetName;
+            
+            // Show modal
+            const modal = document.getElementById('assetTagEditorModal');
+            modal.classList.remove('hidden');
+
+            // Load current and available tags
+            displayCurrentAssetTags();
+            displayAvailableTags();
+        }
+
+        function closeAssetTagEditor() {
+            const modal = document.getElementById('assetTagEditorModal');
+            modal.classList.add('hidden');
+            
+            // Reset state
+            currentEditingAsset = null;
+            currentAssetTags = [];
+            selectedTagsToAdd = [];
+        }
+
+        function displayCurrentAssetTags() {
+            const currentTagsList = document.getElementById('currentTagsList');
+            const noCurrentTags = document.getElementById('noCurrentTags');
+
+            if (currentAssetTags.length === 0) {
+                currentTagsList.innerHTML = '';
+                noCurrentTags.style.display = 'block';
+                return;
+            }
+
+            noCurrentTags.style.display = 'none';
+            currentTagsList.innerHTML = currentAssetTags.map(tag => `
+                <div class="current-tag">
+                    <span>${escapeHtml(tag)}</span>
+                    <button class="remove-tag-btn" onclick="removeCurrentTag('${escapeHtml(tag)}')" title="Remove tag">
+                        ×
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function displayAvailableTags() {
+            const availableTagsList = document.getElementById('availableTagsList');
+            const noAvailableTags = document.getElementById('noAvailableTags');
+
+            // Filter out tags that are already assigned
+            const availableTags = allTags.filter(tag => 
+                !currentAssetTags.includes(tag.name)
+            );
+
+            if (availableTags.length === 0) {
+                availableTagsList.innerHTML = '';
+                noAvailableTags.style.display = 'block';
+                return;
+            }
+
+            noAvailableTags.style.display = 'none';
+            availableTagsList.innerHTML = availableTags.map(tag => `
+                <div class="available-tag ${selectedTagsToAdd.includes(tag.name) ? 'selected' : ''}" 
+                     onclick="toggleTagSelection('${escapeHtml(tag.name)}')"
+                     title="${tag.description ? escapeHtml(tag.description) : 'Click to add this tag'}">
+                    ${escapeHtml(tag.name)}
+                </div>
+            `).join('');
+        }
+
+        function removeCurrentTag(tagName) {
+            // Remove from current tags
+            currentAssetTags = currentAssetTags.filter(tag => tag !== tagName);
+            
+            // Also remove from selected tags if it was there
+            selectedTagsToAdd = selectedTagsToAdd.filter(tag => tag !== tagName);
+            
+            // Update displays
+            displayCurrentAssetTags();
+            displayAvailableTags();
+        }
+
+        function toggleTagSelection(tagName) {
+            if (selectedTagsToAdd.includes(tagName)) {
+                // Remove from selection
+                selectedTagsToAdd = selectedTagsToAdd.filter(tag => tag !== tagName);
+            } else {
+                // Add to selection
+                selectedTagsToAdd.push(tagName);
+            }
+
+            // Update display
+            displayAvailableTags();
+        }
+
+        async function saveAssetTags() {
+            if (!currentEditingAsset) {
+                showStatus('No asset selected for editing.', 'error');
+                return;
+            }
+
+            try {
+                console.log('💾 Saving asset tags...');
+                showStatus('Saving tags...', 'info');
+
+                // Combine current tags with newly selected tags
+                const finalTags = [...currentAssetTags, ...selectedTagsToAdd];
+                
+                // Remove duplicates (just in case)
+                const uniqueTags = [...new Set(finalTags)];
+
+                console.log('📝 Final tags for asset:', uniqueTags);
+
+                // Update asset in database
+                const { error } = await supabase
+                    .from('assets')
+                    .update({ tags: uniqueTags })
+                    .eq('id', currentEditingAsset.id);
+
+                if (error) {
+                    throw error;
+                }
+
+                // Update local asset data
+                const assetIndex = allAssets.findIndex(a => a.id === currentEditingAsset.id);
+                if (assetIndex !== -1) {
+                    allAssets[assetIndex].tags = uniqueTags;
+                }
+
+                console.log('✅ Asset tags updated successfully');
+                showStatus(`Asset tags updated successfully!`, 'success');
+
+                // Close modal
+                closeAssetTagEditor();
+
+                // Refresh display
+                const filteredAssets = getFilteredAssets();
+                displayAssets(filteredAssets);
+
+            } catch (error) {
+                console.error('❌ Error saving asset tags:', error);
+                showStatus(`Error saving tags: ${error.message}`, 'error');
+            }
+        }
+
         // Tag Management Functions
         function showManageTags() {
             if (!isAdmin) {
@@ -2157,6 +2541,16 @@
                 tagModal.addEventListener('click', function(e) {
                     if (e.target === tagModal) {
                         closeTagManagement();
+                    }
+                });
+            }
+
+            // Close asset tag editor modal when clicking outside
+            const assetTagEditorModal = document.getElementById('assetTagEditorModal');
+            if (assetTagEditorModal) {
+                assetTagEditorModal.addEventListener('click', function(e) {
+                    if (e.target === assetTagEditorModal) {
+                        closeAssetTagEditor();
                     }
                 });
             }
