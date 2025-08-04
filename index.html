@@ -999,8 +999,8 @@
                 return;
             }
             
-            if (window.brandCentralAuth && window.brandCentralAuth.isInitialized()) {
-                if (window.brandCentralAuth.isAuthenticated()) {
+            if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized()) {
+                if (window.BrandCentralAuth.isAuthenticated()) {
                     console.log('✅ User is signed in, redirecting to email signature...');
                     window.location.href = 'https://brandcentral.netlify.app/email-signature.html';
                 } else {
@@ -1010,11 +1010,11 @@
             } else {
                 // Debug what's actually happening
                 console.log('🔍 Debug Auth Status:');
-                console.log('  window.brandCentralAuth exists:', !!window.brandCentralAuth);
-                console.log('  window.brandCentralAuth:', window.brandCentralAuth);
-                if (window.brandCentralAuth) {
-                    console.log('  isInitialized():', window.brandCentralAuth.isInitialized());
-                    console.log('  isAuthenticated():', window.brandCentralAuth.isAuthenticated());
+                console.log('  window.BrandCentralAuth exists:', !!window.BrandCentralAuth);
+                console.log('  window.BrandCentralAuth:', window.BrandCentralAuth);
+                if (window.BrandCentralAuth) {
+                    console.log('  isInitialized():', window.BrandCentralAuth.isInitialized());
+                    console.log('  isAuthenticated():', window.BrandCentralAuth.isAuthenticated());
                 }
                 
                 console.log('⏳ Auth not ready, waiting... (attempt', retryCount + 1, ')');
@@ -1028,8 +1028,8 @@
         // Show Assets Manager link for admin users
         document.addEventListener('DOMContentLoaded', () => {
             function checkAdminForNav() {
-                if (window.brandCentralAuth && window.brandCentralAuth.isInitialized()) {
-                    if (window.brandCentralAuth.isAdmin()) {
+                if (window.BrandCentralAuth && window.BrandCentralAuth.isInitialized()) {
+                    if (window.BrandCentralAuth.isAdmin()) {
                         const assetsManagerLink = document.getElementById('admin-assets-manager');
                         if (assetsManagerLink) {
                             assetsManagerLink.style.display = 'block';
