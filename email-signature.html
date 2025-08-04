@@ -1195,7 +1195,7 @@
             }
             
             // Only admin can save signatures
-            if (currentUser.email !== 'john.rocchetti@firstupfilms.com') {
+            if (currentUser.email !== 'jrocchetti@paradigmproductionsgroup.com') {
                 alert("Only admin can save signatures. You can copy existing signatures to your clipboard.");
                 return;
             }
@@ -1278,7 +1278,7 @@
             try {
                 console.log("📋 Loading saved signatures...");
                 
-                const isAdmin = currentUser.email === 'john.rocchetti@firstupfilms.com';
+                const isAdmin = currentUser.email === 'jrocchetti@paradigmproductionsgroup.com';
                 console.log("🔑 User is admin:", isAdmin);
                 console.log("👤 Current user email:", currentUser.email);
                 
@@ -1446,7 +1446,7 @@
             }
             
             // Only admin can delete signatures
-            if (currentUser.email !== 'john.rocchetti@firstupfilms.com') {
+            if (currentUser.email !== 'jrocchetti@paradigmproductionsgroup.com') {
                 alert("Only admin can delete signatures.");
                 return;
             }
