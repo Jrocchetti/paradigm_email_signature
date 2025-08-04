@@ -1225,6 +1225,7 @@
                         email: emailUser || "",
                         headshot: headshot,
                         created_by: currentUser?.id || null,
+                        is_public: true,  // Make admin signatures public for all users
                         created_at: new Date().toISOString()
                     }]);
 
@@ -1297,39 +1298,56 @@
                     console.log("📄 Sample admin signatures:", signatures?.slice(0, 2));
                 } else {
                     // Regular users see all signatures that are publicly available
-                    // Try multiple approaches to get signatures
                     console.log("🔍 Trying to get signatures for regular user...");
                     
-                    // First try: Get all signatures (may be blocked by RLS)
-                    let { data: allSignatures, error: allError } = await supabase
-                        .from('email_signatures')
-                        .select('*')
-                        .order('created_at', { ascending: false });
-                    
-                    if (allError) {
-                        console.warn("⚠️ All signatures query failed:", allError);
-                        signatures = [];
-                    } else {
-                        signatures = allSignatures || [];
-                        console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
-                        console.log("📄 Sample signatures:", signatures?.slice(0, 2));
-                    }
-                    
-                    // If no signatures found, try getting admin-created ones specifically
-                    if (!signatures || signatures.length === 0) {
-                        console.log("🔍 No signatures found, trying admin-specific query...");
-                        
-                        // Try filtering by known admin email (if stored in created_by as email)
-                        const { data: adminSigs, error: adminError } = await supabase
+                    // For now, let's try to get all signatures without filtering
+                    // This might be blocked by RLS, but let's see what we get
+                    try {
+                        // First try: Get all public signatures
+                        const { data: publicSignatures, error: publicError } = await supabase
                             .from('email_signatures')
                             .select('*')
-                            .eq('created_by', 'jrocchetti@paradigmproductionsgroup.com')
+                            .eq('is_public', true)
                             .order('created_at', { ascending: false });
                         
-                        if (!adminError && adminSigs) {
-                            signatures = adminSigs;
-                            console.log("✅ Found", adminSigs.length, "admin signatures via email filter");
+                        if (!publicError && publicSignatures && publicSignatures.length > 0) {
+                            signatures = publicSignatures;
+                            console.log("✅ Found", signatures.length, "public signatures");
+                            console.log("📄 Sample signatures:", signatures?.slice(0, 2));
+                        } else {
+                            // Fallback: Try to get all signatures (may be blocked by RLS)
+                            const { data: allSignatures, error: allError } = await supabase
+                                .from('email_signatures')
+                                .select('*')
+                                .order('created_at', { ascending: false });
+                            
+                            if (allError) {
+                                console.warn("⚠️ All signatures query failed:", allError);
+                                signatures = [];
+                            } else {
+                                signatures = allSignatures || [];
+                                console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
+                                console.log("📄 Sample signatures:", signatures?.slice(0, 2));
+                            }
                         }
+                        
+                        // If RLS is blocking, we need to make signatures public
+                        // For now, let's show a helpful message and suggest admin to re-save signatures
+                        if (!signatures || signatures.length === 0) {
+                            console.log("🔍 No signatures accessible due to RLS.");
+                            console.log("💡 Admin needs to re-save signatures to make them public.");
+                            
+                            // Show a helpful message to users
+                            container.innerHTML += "<div style='color:#ff9800; background:rgba(255,152,0,0.1); padding:15px; border-radius:8px; margin-bottom:15px;'>" +
+                                "<strong>📋 No Signatures Available</strong><br>" +
+                                "The admin hasn't created any public signatures yet. " +
+                                "Please ask the admin to create some signature templates for you to use." +
+                                "</div>";
+                        }
+                        
+                    } catch (error) {
+                        console.error("❌ Database query error:", error);
+                        signatures = [];
                     }
                 }
 
