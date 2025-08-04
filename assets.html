@@ -480,6 +480,172 @@
             display: none !important;
         }
 
+        /* Tag Management Modal */
+        .tag-management-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+
+        .tag-management-content {
+            background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .tag-management-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag-management-title {
+            color: #3FCBFF;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .close-tag-modal {
+            background: none;
+            border: none;
+            color: #FFFFFF;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+        }
+
+        .close-tag-modal:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tag-form {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .tag-form h3 {
+            color: #3FCBFF;
+            margin-bottom: 1rem;
+        }
+
+        .tag-form-row {
+            display: flex;
+            gap: 1rem;
+            align-items: end;
+        }
+
+        .tag-form-field {
+            flex: 1;
+        }
+
+        .tag-form input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(63, 203, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .tag-form input:focus {
+            outline: none;
+            border-color: #3FCBFF;
+        }
+
+        .tag-list {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .tag-list h3 {
+            color: #3FCBFF;
+            margin-bottom: 1rem;
+        }
+
+        .tag-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(63, 203, 255, 0.2);
+        }
+
+        .tag-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .tag-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .tag-name {
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 4px;
+        }
+
+        .tag-description {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .tag-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tag-usage-count {
+            background: rgba(63, 203, 255, 0.2);
+            color: #3FCBFF;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .no-tags-message {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 2rem;
+            font-style: italic;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            min-width: auto;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .page-title {
@@ -592,6 +758,44 @@
             <div id="noAssetsMessage" class="loading hidden">
                 <h3>📂 No assets found</h3>
                 <p>No assets match your current search criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tag Management Modal -->
+    <div id="tagManagementModal" class="tag-management-modal hidden">
+        <div class="tag-management-content">
+            <div class="tag-management-header">
+                <h2 class="tag-management-title">🏷️ Manage Tags</h2>
+                <button class="close-tag-modal" onclick="closeTagManagement()">&times;</button>
+            </div>
+
+            <!-- Add New Tag Form -->
+            <div class="tag-form">
+                <h3>Add New Tag</h3>
+                <form id="addTagForm">
+                    <div class="tag-form-row">
+                        <div class="tag-form-field">
+                            <label for="tagName">Tag Name</label>
+                            <input type="text" id="tagName" placeholder="Enter tag name" required>
+                        </div>
+                        <div class="tag-form-field">
+                            <label for="tagDescription">Description (Optional)</label>
+                            <input type="text" id="tagDescription" placeholder="Enter description">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">Add Tag</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Existing Tags List -->
+            <div class="tag-list">
+                <h3>Existing Tags</h3>
+                <div id="tagsList">
+                    <div class="no-tags-message">Loading tags...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -1683,10 +1887,280 @@
             }
         }
 
-        // Placeholder functions for admin features
+        // Tag Management Functions
         function showManageTags() {
-            showStatus('Tag management feature coming soon!', 'info');
+            if (!isAdmin) {
+                showStatus('Access denied. Admin privileges required.', 'error');
+                return;
+            }
+
+            const modal = document.getElementById('tagManagementModal');
+            modal.classList.remove('hidden');
+            
+            // Load and display current tags
+            loadTagsForManagement();
         }
+
+        function closeTagManagement() {
+            const modal = document.getElementById('tagManagementModal');
+            modal.classList.add('hidden');
+            
+            // Clear form
+            document.getElementById('addTagForm').reset();
+        }
+
+        async function loadTagsForManagement() {
+            const tagsList = document.getElementById('tagsList');
+            
+            try {
+                tagsList.innerHTML = '<div class="no-tags-message">Loading tags...</div>';
+                
+                // Get all tags
+                const { data: tags, error: tagsError } = await supabase
+                    .from('asset_tags')
+                    .select('*')
+                    .order('name');
+
+                if (tagsError) {
+                    throw tagsError;
+                }
+
+                // Get tag usage counts
+                const tagUsageCounts = {};
+                if (allAssets.length > 0) {
+                    allAssets.forEach(asset => {
+                        if (asset.tags && Array.isArray(asset.tags)) {
+                            asset.tags.forEach(tag => {
+                                tagUsageCounts[tag] = (tagUsageCounts[tag] || 0) + 1;
+                            });
+                        }
+                    });
+                }
+
+                if (!tags || tags.length === 0) {
+                    tagsList.innerHTML = '<div class="no-tags-message">No tags found. Create your first tag above!</div>';
+                    return;
+                }
+
+                // Display tags
+                tagsList.innerHTML = tags.map(tag => `
+                    <div class="tag-item">
+                        <div class="tag-info">
+                            <div class="tag-name">${escapeHtml(tag.name)}</div>
+                            ${tag.description ? `<div class="tag-description">${escapeHtml(tag.description)}</div>` : ''}
+                        </div>
+                        <div class="tag-actions">
+                            <span class="tag-usage-count">${tagUsageCounts[tag.name] || 0} assets</span>
+                            <button class="btn btn-sm btn-secondary" onclick="editTag(${tag.id}, '${escapeHtml(tag.name)}', '${escapeHtml(tag.description || '')}')">
+                                ✏️ Edit
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTag(${tag.id}, '${escapeHtml(tag.name)}', ${tagUsageCounts[tag.name] || 0})">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                console.error('❌ Error loading tags for management:', error);
+                tagsList.innerHTML = '<div class="no-tags-message" style="color: #e74c3c;">Error loading tags. Please try again.</div>';
+                showStatus(`Error loading tags: ${error.message}`, 'error');
+            }
+        }
+
+        async function addNewTag(name, description) {
+            try {
+                console.log('🏷️ Adding new tag:', name);
+                
+                // Check if tag already exists
+                const existingTag = allTags.find(tag => tag.name.toLowerCase() === name.toLowerCase());
+                if (existingTag) {
+                    throw new Error('A tag with this name already exists');
+                }
+
+                const tagData = {
+                    name: name.trim(),
+                    description: description ? description.trim() : null,
+                    created_at: new Date().toISOString()
+                };
+
+                const { data, error } = await supabase
+                    .from('asset_tags')
+                    .insert([tagData])
+                    .select();
+
+                if (error) {
+                    throw error;
+                }
+
+                console.log('✅ Tag added successfully:', data);
+                showStatus(`Tag "${name}" added successfully!`, 'success');
+                
+                // Reload tags in main app and management modal
+                await loadTags();
+                await loadTagsForManagement();
+                
+                return data[0];
+
+            } catch (error) {
+                console.error('❌ Error adding tag:', error);
+                showStatus(`Error adding tag: ${error.message}`, 'error');
+                throw error;
+            }
+        }
+
+        function editTag(tagId, currentName, currentDescription) {
+            const newName = prompt(`Edit tag name:`, currentName);
+            if (newName === null) return; // User cancelled
+            
+            if (newName.trim() === '') {
+                showStatus('Tag name cannot be empty', 'error');
+                return;
+            }
+
+            const newDescription = prompt(`Edit description (optional):`, currentDescription || '');
+            if (newDescription === null) return; // User cancelled
+
+            updateTag(tagId, newName.trim(), newDescription ? newDescription.trim() : null);
+        }
+
+        async function updateTag(tagId, newName, newDescription) {
+            try {
+                console.log('✏️ Updating tag:', tagId, newName);
+
+                // Check if new name conflicts with existing tags (excluding current tag)
+                const existingTag = allTags.find(tag => tag.id !== tagId && tag.name.toLowerCase() === newName.toLowerCase());
+                if (existingTag) {
+                    throw new Error('A tag with this name already exists');
+                }
+
+                const { error } = await supabase
+                    .from('asset_tags')
+                    .update({
+                        name: newName,
+                        description: newDescription
+                    })
+                    .eq('id', tagId);
+
+                if (error) {
+                    throw error;
+                }
+
+                console.log('✅ Tag updated successfully');
+                showStatus(`Tag updated successfully!`, 'success');
+                
+                // Reload tags in main app and management modal
+                await loadTags();
+                await loadTagsForManagement();
+
+            } catch (error) {
+                console.error('❌ Error updating tag:', error);
+                showStatus(`Error updating tag: ${error.message}`, 'error');
+            }
+        }
+
+        async function deleteTag(tagId, tagName, usageCount) {
+            const confirmMessage = usageCount > 0 
+                ? `Are you sure you want to delete the tag "${tagName}"?\n\nThis tag is currently used by ${usageCount} asset(s). It will be removed from all assets.\n\nThis action cannot be undone.`
+                : `Are you sure you want to delete the tag "${tagName}"?\n\nThis action cannot be undone.`;
+
+            if (!confirm(confirmMessage)) {
+                return;
+            }
+
+            try {
+                console.log('🗑️ Deleting tag:', tagId, tagName);
+                showStatus('Deleting tag...', 'info');
+
+                // Delete from asset_tags table
+                const { error } = await supabase
+                    .from('asset_tags')
+                    .delete()
+                    .eq('id', tagId);
+
+                if (error) {
+                    throw error;
+                }
+
+                // If tag was in use, we should update assets to remove this tag
+                if (usageCount > 0) {
+                    console.log('🔄 Removing tag from assets...');
+                    
+                    // Get assets that use this tag
+                    const assetsWithTag = allAssets.filter(asset => 
+                        asset.tags && asset.tags.includes(tagName)
+                    );
+
+                    // Update each asset to remove the tag
+                    for (const asset of assetsWithTag) {
+                        const updatedTags = asset.tags.filter(tag => tag !== tagName);
+                        
+                        const { error: updateError } = await supabase
+                            .from('assets')
+                            .update({ tags: updatedTags })
+                            .eq('id', asset.id);
+
+                        if (updateError) {
+                            console.warn(`Warning: Could not remove tag from asset ${asset.id}:`, updateError);
+                        }
+                    }
+                }
+
+                console.log('✅ Tag deleted successfully');
+                showStatus(`Tag "${tagName}" deleted successfully!`, 'success');
+                
+                // Reload everything
+                await loadTags();
+                await loadAssets();
+                await loadTagsForManagement();
+
+            } catch (error) {
+                console.error('❌ Error deleting tag:', error);
+                showStatus(`Error deleting tag: ${error.message}`, 'error');
+            }
+        }
+
+        // Handle add tag form submission
+        document.addEventListener('DOMContentLoaded', function() {
+            const addTagForm = document.getElementById('addTagForm');
+            if (addTagForm) {
+                addTagForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const nameInput = document.getElementById('tagName');
+                    const descriptionInput = document.getElementById('tagDescription');
+                    
+                    const name = nameInput.value.trim();
+                    const description = descriptionInput.value.trim();
+                    
+                    if (!name) {
+                        showStatus('Tag name is required', 'error');
+                        return;
+                    }
+
+                    try {
+                        await addNewTag(name, description);
+                        
+                        // Clear form on success
+                        nameInput.value = '';
+                        descriptionInput.value = '';
+                        
+                    } catch (error) {
+                        // Error already handled in addNewTag function
+                    }
+                });
+            }
+
+            // Close modal when clicking outside
+            const tagModal = document.getElementById('tagManagementModal');
+            if (tagModal) {
+                tagModal.addEventListener('click', function(e) {
+                    if (e.target === tagModal) {
+                        closeTagManagement();
+                    }
+                });
+            }
+        });
 
         async function deleteAsset(assetId) {
             if (!isAdmin) {
