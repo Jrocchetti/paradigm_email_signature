@@ -1225,7 +1225,6 @@
                         email: emailUser || "",
                         headshot: headshot,
                         created_by: currentUser?.id || null,
-                        is_public: true,  // Make admin signatures public for all users
                         created_at: new Date().toISOString()
                     }]);
 
@@ -1303,45 +1302,33 @@
                     // For now, let's try to get all signatures without filtering
                     // This might be blocked by RLS, but let's see what we get
                     try {
-                        // First try: Get all public signatures
-                        const { data: publicSignatures, error: publicError } = await supabase
+                        // Get all signatures that users can access
+                        // The RLS policy should handle what users can see
+                        const { data: allSignatures, error: allError } = await supabase
                             .from('email_signatures')
                             .select('*')
-                            .eq('is_public', true)
                             .order('created_at', { ascending: false });
                         
-                        if (!publicError && publicSignatures && publicSignatures.length > 0) {
-                            signatures = publicSignatures;
-                            console.log("✅ Found", signatures.length, "public signatures");
-                            console.log("📄 Sample signatures:", signatures?.slice(0, 2));
+                        if (allError) {
+                            console.warn("⚠️ All signatures query failed:", allError);
+                            signatures = [];
                         } else {
-                            // Fallback: Try to get all signatures (may be blocked by RLS)
-                            const { data: allSignatures, error: allError } = await supabase
-                                .from('email_signatures')
-                                .select('*')
-                                .order('created_at', { ascending: false });
-                            
-                            if (allError) {
-                                console.warn("⚠️ All signatures query failed:", allError);
-                                signatures = [];
-                            } else {
-                                signatures = allSignatures || [];
-                                console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
-                                console.log("📄 Sample signatures:", signatures?.slice(0, 2));
-                            }
+                            signatures = allSignatures || [];
+                            console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
+                            console.log("📄 Sample signatures:", signatures?.slice(0, 2));
                         }
                         
-                        // If RLS is blocking, we need to make signatures public
-                        // For now, let's show a helpful message and suggest admin to re-save signatures
+                        // If no signatures found, it's likely due to RLS policies
                         if (!signatures || signatures.length === 0) {
-                            console.log("🔍 No signatures accessible due to RLS.");
-                            console.log("💡 Admin needs to re-save signatures to make them public.");
+                            console.log("🔍 No signatures accessible. This may be due to database permissions.");
                             
                             // Show a helpful message to users
                             container.innerHTML += "<div style='color:#ff9800; background:rgba(255,152,0,0.1); padding:15px; border-radius:8px; margin-bottom:15px;'>" +
                                 "<strong>📋 No Signatures Available</strong><br>" +
-                                "The admin hasn't created any public signatures yet. " +
-                                "Please ask the admin to create some signature templates for you to use." +
+                                "No signature templates are currently available. This could be due to:<br>" +
+                                "• Database permissions need to be updated<br>" +
+                                "• Admin signatures need to be made accessible<br>" +
+                                "Please contact the admin for assistance." +
                                 "</div>";
                         }
                         
