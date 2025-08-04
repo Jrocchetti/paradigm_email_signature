@@ -1296,16 +1296,41 @@
                     console.log("✅ Admin query completed. Found", signatures?.length || 0, "signatures");
                     console.log("📄 Sample admin signatures:", signatures?.slice(0, 2));
                 } else {
-                    // Regular users see all signatures (we'll let RLS handle permissions)
-                    const { data, error } = await supabase
+                    // Regular users see all signatures that are publicly available
+                    // Try multiple approaches to get signatures
+                    console.log("🔍 Trying to get signatures for regular user...");
+                    
+                    // First try: Get all signatures (may be blocked by RLS)
+                    let { data: allSignatures, error: allError } = await supabase
                         .from('email_signatures')
                         .select('*')
                         .order('created_at', { ascending: false });
                     
-                    if (error) throw error;
-                    signatures = data;
-                    console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
-                    console.log("📄 Sample signatures:", signatures?.slice(0, 2));
+                    if (allError) {
+                        console.warn("⚠️ All signatures query failed:", allError);
+                        signatures = [];
+                    } else {
+                        signatures = allSignatures || [];
+                        console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
+                        console.log("📄 Sample signatures:", signatures?.slice(0, 2));
+                    }
+                    
+                    // If no signatures found, try getting admin-created ones specifically
+                    if (!signatures || signatures.length === 0) {
+                        console.log("🔍 No signatures found, trying admin-specific query...");
+                        
+                        // Try filtering by known admin email (if stored in created_by as email)
+                        const { data: adminSigs, error: adminError } = await supabase
+                            .from('email_signatures')
+                            .select('*')
+                            .eq('created_by', 'jrocchetti@paradigmproductionsgroup.com')
+                            .order('created_at', { ascending: false });
+                        
+                        if (!adminError && adminSigs) {
+                            signatures = adminSigs;
+                            console.log("✅ Found", adminSigs.length, "admin signatures via email filter");
+                        }
+                    }
                 }
 
                 console.log("✅ Query completed. Found", signatures?.length || 0, "admin signatures");
