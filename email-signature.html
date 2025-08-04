@@ -1224,7 +1224,7 @@
                         phone: phone || "",
                         email: emailUser || "",
                         headshot: headshot,
-                        created_by: currentUser?.email || null,
+                        created_by: currentUser?.id || null,
                         created_at: new Date().toISOString()
                     }]);
 
@@ -1278,11 +1278,13 @@
             try {
                 console.log("📋 Loading saved signatures...");
                 
-                // Show only signatures created by admin (for all users to view)
+                // First, get the admin user ID by email
+                const adminEmail = 'Jrocchetti@paradigmproductionsgroup.com';
+                
+                // Get all signatures for now (we'll filter by admin status later)
                 const { data: signatures, error } = await supabase
                     .from('email_signatures')
                     .select('*')
-                    .eq('created_by', 'Jrocchetti@paradigmproductionsgroup.com')
                     .order('created_at', { ascending: false });
 
                 if (error) {
