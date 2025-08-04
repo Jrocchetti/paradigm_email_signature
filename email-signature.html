@@ -1285,16 +1285,16 @@
                 let signatures;
                 
                 if (isAdmin) {
-                    // Admin sees all signatures they created
+                    // Admin sees all signatures (temporarily showing all to debug)
                     const { data, error } = await supabase
                         .from('email_signatures')
                         .select('*')
-                        .eq('created_by', currentUser.id)
                         .order('created_at', { ascending: false });
                     
                     if (error) throw error;
                     signatures = data;
                     console.log("✅ Admin query completed. Found", signatures?.length || 0, "signatures");
+                    console.log("📄 Sample admin signatures:", signatures?.slice(0, 2));
                 } else {
                     // Regular users see all signatures (we'll let RLS handle permissions)
                     const { data, error } = await supabase
@@ -1305,6 +1305,7 @@
                     if (error) throw error;
                     signatures = data;
                     console.log("✅ User query completed. Found", signatures?.length || 0, "signatures");
+                    console.log("📄 Sample signatures:", signatures?.slice(0, 2));
                 }
 
                 console.log("✅ Query completed. Found", signatures?.length || 0, "admin signatures");
