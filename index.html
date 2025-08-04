@@ -1008,6 +1008,15 @@
                     window.location.href = 'login.html';
                 }
             } else {
+                // Debug what's actually happening
+                console.log('🔍 Debug Auth Status:');
+                console.log('  window.brandCentralAuth exists:', !!window.brandCentralAuth);
+                console.log('  window.brandCentralAuth:', window.brandCentralAuth);
+                if (window.brandCentralAuth) {
+                    console.log('  isInitialized():', window.brandCentralAuth.isInitialized());
+                    console.log('  isAuthenticated():', window.brandCentralAuth.isAuthenticated());
+                }
+                
                 console.log('⏳ Auth not ready, waiting... (attempt', retryCount + 1, ')');
                 // If auth isn't ready yet, wait a bit and try again
                 setTimeout(() => {
