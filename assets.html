@@ -1011,13 +1011,19 @@
                 // Check authentication state
                 await checkAuthState();
                 
-                // Load data
-                await loadTags();
-                await loadAssets();
-                
-                // Test storage connectivity if user is admin
-                if (isAdmin) {
-                    setTimeout(() => testStorageConnectivity(), 1000);
+                // Only load data if user is authenticated
+                if (currentUser) {
+                    console.log('✅ User authenticated, loading data...');
+                    await loadTags();
+                    await loadAssets();
+                    
+                    // Test storage connectivity if user is admin
+                    if (isAdmin) {
+                        setTimeout(() => testStorageConnectivity(), 1000);
+                    }
+                } else {
+                    console.log('⚠️ User not authenticated, showing login prompt');
+                    showAuthenticationRequired();
                 }
                 
                 console.log('✅ Application initialized successfully');
@@ -1113,12 +1119,32 @@
                 // Listen for auth changes
                 supabase.auth.onAuthStateChange(async (event, session) => {
                     console.log('Auth state changed:', event);
+                    
+                    const wasAuthenticated = !!currentUser;
+                    
                     if (session) {
                         currentUser = session.user;
                         await checkAdminStatus();
+                        
+                        // If user just logged in, load data
+                        if (!wasAuthenticated) {
+                            console.log('✅ User authenticated, loading data...');
+                            await loadTags();
+                            await loadAssets();
+                            hideAuthenticationRequired();
+                        }
                     } else {
                         currentUser = null;
                         isAdmin = false;
+                        
+                        // If user just logged out, clear data and show auth required
+                        if (wasAuthenticated) {
+                            console.log('⚠️ User logged out, clearing data...');
+                            allAssets = [];
+                            allTags = [];
+                            displayAssets([]);
+                            showAuthenticationRequired();
+                        }
                     }
                     updateAuthUI();
                 });
@@ -1263,14 +1289,18 @@
                     throw error;
                 }
                 
-                showStatus('Successfully signed in!', 'success');
+                showStatus('Successfully signed in! Loading your assets...', 'success');
                 closeModal();
+                
+                // Data will be loaded automatically by the auth state change handler
                 
             } catch (error) {
                 console.error('❌ Sign in error:', error);
                 const errorDiv = document.getElementById('signInError');
-                errorDiv.textContent = error.message;
-                errorDiv.style.display = 'block';
+                if (errorDiv) {
+                    errorDiv.textContent = error.message;
+                    errorDiv.style.display = 'block';
+                }
             }
         }
 
@@ -1294,8 +1324,68 @@
             modals.forEach(modal => modal.remove());
         }
 
+        // Show authentication required screen
+        function showAuthenticationRequired() {
+            const assetsContainer = document.getElementById('assetsContainer');
+            const noAssetsMessage = document.getElementById('noAssetsMessage');
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const controls = document.querySelector('.controls');
+            
+            // Hide loading and other elements
+            if (loadingIndicator) {
+                loadingIndicator.style.display = 'none';
+            }
+            if (noAssetsMessage) {
+                noAssetsMessage.classList.add('hidden');
+            }
+            if (controls) {
+                controls.style.display = 'none';
+            }
+            
+            // Show authentication required message
+            if (assetsContainer) {
+                assetsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 3rem; background: rgba(255, 255, 255, 0.05); border-radius: 15px; border: 2px dashed rgba(63, 203, 255, 0.3);">
+                        <div style="font-size: 4rem; margin-bottom: 1rem;">🔒</div>
+                        <h2 style="color: #3FCBFF; margin-bottom: 1rem;">Authentication Required</h2>
+                        <p style="color: rgba(255, 255, 255, 0.8); margin-bottom: 2rem; max-width: 500px; margin-left: auto; margin-right: auto;">
+                            This is a secure brand asset management system. Please sign in to access brand assets and resources.
+                        </p>
+                        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="showSignInModal()" style="font-size: 1.1rem; padding: 15px 30px;">
+                                🔐 Sign In
+                            </button>
+                            <button class="btn btn-secondary" onclick="window.location.href='signup.html'" style="font-size: 1.1rem; padding: 15px 30px;">
+                                ✨ Create Account
+                            </button>
+                        </div>
+                        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+                            <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9rem;">
+                                🛡️ Your security is our priority. All assets are protected and only accessible to authorized users.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Hide authentication required screen
+        function hideAuthenticationRequired() {
+            const controls = document.querySelector('.controls');
+            if (controls) {
+                controls.style.display = 'flex';
+            }
+        }
+
         // Load tags from database
         async function loadTags() {
+            // Security check: Only authenticated users can load tags
+            if (!currentUser) {
+                console.warn('🚫 Access denied: User not authenticated');
+                showStatus('Please sign in to access tags.', 'error');
+                return;
+            }
+
             try {
                 const { data, error } = await supabase
                     .from('asset_tags')
@@ -1313,11 +1403,23 @@
             } catch (error) {
                 console.error('❌ Error loading tags:', error);
                 showStatus('Error loading tags: ' + error.message, 'error');
+                
+                // If unauthorized, show login
+                if (error.message.includes('401') || error.message.includes('unauthorized')) {
+                    showAuthenticationRequired();
+                }
             }
         }
 
         // Load assets from database
         async function loadAssets() {
+            // Security check: Only authenticated users can load assets
+            if (!currentUser) {
+                console.warn('🚫 Access denied: User not authenticated');
+                showAuthenticationRequired();
+                return;
+            }
+
             const loadingIndicator = document.getElementById('loadingIndicator');
             const assetsContainer = document.getElementById('assetsContainer');
             const noAssetsMessage = document.getElementById('noAssetsMessage');
@@ -1360,6 +1462,13 @@
                         code: error.code
                     });
                     updateDebugInfo(`❌ Database Error: ${error.message} (Code: ${error.code})`);
+                    
+                    // If unauthorized, show login
+                    if (error.message.includes('401') || error.message.includes('unauthorized')) {
+                        showAuthenticationRequired();
+                        return;
+                    }
+                    
                     throw error;
                 }
                 
@@ -1466,6 +1575,14 @@
 
         // Download asset
         async function downloadAsset(url, filename) {
+            // Security check: Only authenticated users can download assets
+            if (!currentUser) {
+                console.warn('🚫 Access denied: User not authenticated');
+                showStatus('Please sign in to download assets.', 'error');
+                showSignInModal();
+                return;
+            }
+
             try {
                 showStatus(`📥 Preparing download for ${filename}...`, 'info');
                 
@@ -1529,6 +1646,14 @@
 
         // Copy asset URL to clipboard
         async function copyAssetUrl(url) {
+            // Security check: Only authenticated users can copy asset URLs
+            if (!currentUser) {
+                console.warn('🚫 Access denied: User not authenticated');
+                showStatus('Please sign in to access asset URLs.', 'error');
+                showSignInModal();
+                return;
+            }
+
             try {
                 await navigator.clipboard.writeText(url);
                 showStatus('🔗 Asset URL copied to clipboard', 'success');
@@ -1540,6 +1665,14 @@
 
         // Open asset in new tab
         function openAssetInNewTab(url) {
+            // Security check: Only authenticated users can open assets
+            if (!currentUser) {
+                console.warn('🚫 Access denied: User not authenticated');
+                showStatus('Please sign in to access assets.', 'error');
+                showSignInModal();
+                return;
+            }
+
             try {
                 window.open(url, '_blank');
                 showStatus('📂 Asset opened in new tab', 'info');
