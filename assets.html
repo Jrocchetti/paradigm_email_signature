@@ -480,6 +480,129 @@
             display: none !important;
         }
 
+        /* Edit Asset Tags Modal */
+        .edit-tags-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 20px;
+        }
+
+        .edit-tags-modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #1F1633;
+        }
+
+        .edit-tags-modal h2 {
+            color: #1F1633;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .edit-tags-asset-info {
+            background: rgba(63, 203, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+        }
+
+        .edit-tags-asset-name {
+            font-weight: 600;
+            color: #1F1633;
+            margin-bottom: 5px;
+        }
+
+        .edit-tags-current-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .edit-tags-current-tags .tag {
+            background: rgba(63, 203, 255, 0.2);
+            color: #1F1633;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            border: 1px solid rgba(63, 203, 255, 0.4);
+        }
+
+        .edit-tags-available-section {
+            margin-bottom: 25px;
+        }
+
+        .edit-tags-available-section h3 {
+            color: #1F1633;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .available-tags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid rgba(63, 203, 255, 0.3);
+            border-radius: 12px;
+            background: rgba(63, 203, 255, 0.05);
+        }
+
+        .available-tag-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.2s ease;
+        }
+
+        .available-tag-item:hover {
+            background: rgba(63, 203, 255, 0.1);
+        }
+
+        .available-tag-checkbox {
+            margin: 0;
+        }
+
+        .available-tag-label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 14px;
+            color: #1F1633;
+        }
+
+        .edit-tags-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+        }
+
+        .edit-tags-actions .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+
         /* Tag Management Modal */
         .tag-management-modal {
             position: fixed;
@@ -822,6 +945,31 @@
                 <div id="tagsList">
                     <div class="no-tags-message">Loading tags...</div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Asset Tags Modal -->
+    <div id="editTagsModal" class="edit-tags-modal hidden">
+        <div class="edit-tags-modal-content">
+            <h2>Edit Asset Tags</h2>
+            
+            <div class="edit-tags-asset-info">
+                <div class="edit-tags-asset-name" id="editTagsAssetName"></div>
+                <div>Current Tags:</div>
+                <div class="edit-tags-current-tags" id="editTagsCurrentTags"></div>
+            </div>
+
+            <div class="edit-tags-available-section">
+                <h3>Available Tags</h3>
+                <div class="available-tags-grid" id="availableTagsGrid">
+                    <!-- Tags will be populated here -->
+                </div>
+            </div>
+
+            <div class="edit-tags-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeEditTags()">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveAssetTags()">Save Changes</button>
             </div>
         </div>
     </div>
@@ -1281,6 +1429,9 @@
                                 📂 Open
                             </button>
                             ${isAdmin ? `
+                                <button class="btn btn-secondary" onclick="editAssetTags('${asset.id}', '${escapeHtml(asset.name)}', ${JSON.stringify(asset.tags || []).replace(/"/g, '&quot;')})" title="Edit tags">
+                                    🏷️ Edit Tags
+                                </button>
                                 <button class="btn btn-danger" onclick="deleteAsset('${asset.id}')">
                                     🗑️ Delete
                                 </button>
@@ -2138,6 +2289,129 @@
                 tagModal.addEventListener('click', function(e) {
                     if (e.target === tagModal) {
                         closeTagManagement();
+                    }
+                });
+            }
+        });
+
+        // Edit Asset Tags Functions
+        let currentEditingAsset = null;
+
+        function editAssetTags(assetId, assetName, currentTags) {
+            if (!isAdmin) {
+                showStatus('Access denied. Admin privileges required.', 'error');
+                return;
+            }
+
+            currentEditingAsset = {
+                id: assetId,
+                name: assetName,
+                tags: currentTags || []
+            };
+
+            const modal = document.getElementById('editTagsModal');
+            const assetNameEl = document.getElementById('editTagsAssetName');
+            const currentTagsEl = document.getElementById('editTagsCurrentTags');
+            
+            // Set asset info
+            assetNameEl.textContent = assetName;
+            
+            // Display current tags
+            if (currentTags && currentTags.length > 0) {
+                currentTagsEl.innerHTML = currentTags.map(tag => 
+                    `<span class="tag">${escapeHtml(tag)}</span>`
+                ).join('');
+            } else {
+                currentTagsEl.innerHTML = '<span style="color: #888; font-style: italic;">No tags assigned</span>';
+            }
+
+            // Load available tags
+            loadAvailableTagsForEditing();
+            
+            // Show modal
+            modal.classList.remove('hidden');
+        }
+
+        function loadAvailableTagsForEditing() {
+            const grid = document.getElementById('availableTagsGrid');
+            
+            if (!allTags || allTags.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 20px;">No tags available. Create some tags first!</div>';
+                return;
+            }
+
+            grid.innerHTML = allTags.map(tag => `
+                <div class="available-tag-item">
+                    <input type="checkbox" 
+                           class="available-tag-checkbox" 
+                           id="tag-${tag.id}" 
+                           value="${escapeHtml(tag.name)}"
+                           ${currentEditingAsset.tags.includes(tag.name) ? 'checked' : ''}>
+                    <label for="tag-${tag.id}" class="available-tag-label">
+                        ${escapeHtml(tag.name)}
+                        ${tag.description ? `<br><small style="color: #666;">${escapeHtml(tag.description)}</small>` : ''}
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function closeEditTags() {
+            const modal = document.getElementById('editTagsModal');
+            modal.classList.add('hidden');
+            currentEditingAsset = null;
+        }
+
+        async function saveAssetTags() {
+            if (!currentEditingAsset) {
+                return;
+            }
+
+            try {
+                // Get selected tags
+                const checkboxes = document.querySelectorAll('.available-tag-checkbox:checked');
+                const selectedTags = Array.from(checkboxes).map(cb => cb.value);
+
+                console.log('🏷️ Updating asset tags:', currentEditingAsset.id, selectedTags);
+                showStatus('Updating tags...', 'info');
+
+                // Update asset in database
+                const { error } = await supabase
+                    .from('assets')
+                    .update({ tags: selectedTags })
+                    .eq('id', currentEditingAsset.id);
+
+                if (error) {
+                    throw error;
+                }
+
+                console.log('✅ Asset tags updated successfully');
+                showStatus(`Tags updated for "${currentEditingAsset.name}"!`, 'success');
+
+                // Update local asset data
+                const asset = allAssets.find(a => a.id === currentEditingAsset.id);
+                if (asset) {
+                    asset.tags = selectedTags;
+                }
+
+                // Refresh display
+                displayAssets(allAssets);
+                
+                // Close modal
+                closeEditTags();
+
+            } catch (error) {
+                console.error('❌ Error updating asset tags:', error);
+                showStatus(`Error updating tags: ${error.message}`, 'error');
+            }
+        }
+
+        // Add click outside to close for edit tags modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const editTagsModal = document.getElementById('editTagsModal');
+            if (editTagsModal) {
+                editTagsModal.addEventListener('click', function(e) {
+                    if (e.target === editTagsModal) {
+                        closeEditTags();
                     }
                 });
             }
