@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template Builder - Brand Central</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px 0;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            height: calc(100vh - 200px);
+            min-height: 600px;
+        }
+
+        .left-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-panel {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: linear-gradient(135deg, #111827 0%, #374151 100%);
+            color: #ffffff;
+            padding: 20px 25px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow: auto;
+            padding: 25px;
+        }
+
+        /* Template Library Styles */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .template-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .template-card:hover {
+            border-color: #F7921E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .template-thumbnail {
+            width: 100%;
+            height: 120px;
+            overflow: hidden;
+            background: #f8f9fa;
+        }
+
+        .template-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .template-info {
+            padding: 15px;
+        }
+
+        .template-info h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .template-info p {
+            font-size: 0.9em;
+            color: #6b7280;
+            line-height: 1.4;
+            margin-bottom: 15px;
+        }
+
+        .select-template-btn {
+            background: linear-gradient(135deg, #F7921E 0%, #e67e22 100%);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .select-template-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(247, 146, 30, 0.3);
+        }
+
+        /* Editor Styles */
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .editor-header h3 {
+            font-size: 1.3em;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .back-btn {
+            background: #6b7280;
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
+        .field-group {
+            margin-bottom: 20px;
+        }
+
+        .field-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #374151;
+        }
+
+        .required {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        .field-group input,
+        .field-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease;
+            font-family: inherit;
+        }
+
+        .field-group input:focus,
+        .field-group textarea:focus {
+            outline: none;
+            border-color: #F7921E;
+            box-shadow: 0 0 0 3px rgba(247, 146, 30, 0.1);
+        }
+
+        .field-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .field-group small {
+            display: block;
+            margin-top: 4px;
+            color: #6b7280;
+            font-size: 0.8em;
+        }
+
+        #editorPanel {
+            display: none;
+        }
+
+        /* Preview Styles */
+        .preview-container {
+            position: relative;
+        }
+
+        #emailPreview {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+            background: #ffffff;
+            min-height: 400px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #F7921E 0%, #e67e22 100%);
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(247, 146, 30, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: #ffffff;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-outline:hover {
+            border-color: #F7921E;
+            color: #F7921E;
+        }
+
+        /* HTML Source Panel */
+        #htmlSource {
+            display: none;
+            margin-top: 20px;
+            background: #1f2937;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        #htmlSource pre {
+            margin: 0;
+            padding: 20px;
+            color: #e5e7eb;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            overflow: auto;
+            max-height: 300px;
+        }
+
+        /* Message Styles */
+        #messageContainer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .message {
+            background: #ffffff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-left: 4px solid;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message-success {
+            border-left-color: #10b981;
+            color: #065f46;
+        }
+
+        .message-error {
+            border-left-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .message-info {
+            border-left-color: #3b82f6;
+            color: #1e40af;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .template-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                flex: none;
+            }
+
+            .editor-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Email Template Builder</h1>
+            <p>Create professional, branded email templates with our easy-to-use builder. Select a template, customize your content, and generate Outlook-ready HTML.</p>
+        </div>
+
+        <div class="main-layout">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <!-- Template Library Panel -->
+                <div id="templateLibraryPanel">
+                    <div class="panel-header">
+                        <div>📧 Template Library</div>
+                    </div>
+                    <div class="panel-content">
+                        <div id="templateLibrary" class="template-grid">
+                            <!-- Templates will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editor Panel -->
+                <div id="editorPanel">
+                    <div class="panel-header">
+                        <div>✏️ Edit Template</div>
+                    </div>
+                    <div class="panel-content">
+                        <div id="fieldEditor">
+                            <!-- Editor form will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="panel-header">
+                    <div>👁️ Live Preview</div>
+                </div>
+                <div class="panel-content">
+                    <div class="preview-container">
+                        <iframe id="emailPreview" 
+                                srcdoc="<div style='display: flex; align-items: center; justify-content: center; height: 400px; color: #6b7280; font-family: Inter, sans-serif;'><div style='text-align: center;'><div style='font-size: 48px; margin-bottom: 16px;'>📧</div><div style='font-size: 18px; font-weight: 500; margin-bottom: 8px;'>Select a Template</div><div>Choose a template from the library to start building your email</div></div></div>">
+                        </iframe>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="copyToClipboard" class="action-btn btn-primary" disabled>
+                            📋 Copy to Clipboard
+                        </button>
+                        <button id="downloadHtml" class="action-btn btn-secondary" disabled>
+                            💾 Download HTML
+                        </button>
+                        <button id="showHtml" class="action-btn btn-outline" disabled>
+                            🔍 Show HTML
+                        </button>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button id="saveDraft" class="action-btn btn-outline" disabled>
+                            💾 Save Draft
+                        </button>
+                        <button id="loadDraft" class="action-btn btn-outline">
+                            📂 Load Draft
+                        </button>
+                    </div>
+
+                    <div id="htmlSource">
+                        <pre><code id="htmlCode"></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Message Container for Notifications -->
+    <div id="messageContainer"></div>
+
+    <!-- Include the Email Template Builder JavaScript -->
+    <script src="email-templates.js"></script>
+    
+    <script>
+        // Additional UI enhancements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Enable action buttons when template is selected
+            function enableActionButtons() {
+                const buttons = ['copyToClipboard', 'downloadHtml', 'showHtml', 'saveDraft'];
+                buttons.forEach(id => {
+                    const btn = document.getElementById(id);
+                    if (btn) {
+                        btn.disabled = false;
+                    }
+                });
+            }
+
+            // Override the selectTemplate function to enable buttons
+            const originalSelectTemplate = emailBuilder.selectTemplate;
+            emailBuilder.selectTemplate = function(templateId) {
+                originalSelectTemplate.call(this, templateId);
+                enableActionButtons();
+            };
+
+            // Add keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey) {
+                    switch(e.key) {
+                        case 's':
+                            e.preventDefault();
+                            if (emailBuilder.currentTemplate) {
+                                emailBuilder.saveDraft();
+                            }
+                            break;
+                        case 'Enter':
+                            e.preventDefault();
+                            if (emailBuilder.currentTemplate) {
+                                emailBuilder.copyToClipboard();
+                            }
+                            break;
+                    }
+                }
+                
+                if (e.key === 'Escape') {
+                    if (emailBuilder.currentTemplate) {
+                        emailBuilder.backToLibrary();
+                    }
+                }
+            });
+
+            // Add tooltips for keyboard shortcuts
+            const copyBtn = document.getElementById('copyToClipboard');
+            if (copyBtn) {
+                copyBtn.title = 'Copy to Clipboard (Ctrl+Enter)';
+            }
+
+            const saveDraftBtn = document.getElementById('saveDraft');
+            if (saveDraftBtn) {
+                saveDraftBtn.title = 'Save Draft (Ctrl+S)';
+            }
+
+            // Auto-save draft every 30 seconds
+            setInterval(() => {
+                if (emailBuilder.currentTemplate && Object.keys(emailBuilder.currentValues).length > 0) {
+                    emailBuilder.saveDraft();
+                }
+            }, 30000);
+
+            // Form validation
+            function validateForm() {
+                if (!emailBuilder.currentTemplate) return false;
+                
+                const requiredFields = emailBuilder.currentTemplate.dynamicFields
+                    .filter(field => field.required)
+                    .map(field => field.key);
+                
+                for (let fieldKey of requiredFields) {
+                    const value = emailBuilder.currentValues[fieldKey];
+                    if (!value || value.trim().length === 0) {
+                        return false;
+                    }
+                }
+                
+                return true;
+            }
+
+            // Update button states based on form validation
+            function updateButtonStates() {
+                const isValid = validateForm();
+                const copyBtn = document.getElementById('copyToClipboard');
+                const downloadBtn = document.getElementById('downloadHtml');
+                
+                if (copyBtn) {
+                    copyBtn.disabled = !isValid;
+                    copyBtn.style.opacity = isValid ? '1' : '0.5';
+                }
+                
+                if (downloadBtn) {
+                    downloadBtn.disabled = !isValid;
+                    downloadBtn.style.opacity = isValid ? '1' : '0.5';
+                }
+            }
+
+            // Override updateField to include validation
+            const originalUpdateField = emailBuilder.updateField;
+            emailBuilder.updateField = function(key, value) {
+                originalUpdateField.call(this, key, value);
+                updateButtonStates();
+            };
+        });
+    </script>
+</body>
+</html>

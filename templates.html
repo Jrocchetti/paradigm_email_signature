@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Templates - Brand Central</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 3em;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .launch-btn {
+            background: linear-gradient(135deg, #F7921E 0%, #e67e22 100%);
+            color: #ffffff;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(247, 146, 30, 0.3);
+        }
+
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(247, 146, 30, 0.4);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #111827;
+        }
+
+        .feature-card p {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .templates-preview {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .templates-preview h2 {
+            text-align: center;
+            font-size: 2em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #111827;
+        }
+
+        .template-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .template-type {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .template-type:hover {
+            border-color: #F7921E;
+            transform: translateY(-2px);
+        }
+
+        .template-type h4 {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .template-type p {
+            color: #6b7280;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .cta-section {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .cta-section h2 {
+            font-size: 2em;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #111827;
+        }
+
+        .cta-section p {
+            color: #6b7280;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .back-to-brand-central {
+            display: inline-block;
+            margin-top: 20px;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-to-brand-central:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .header p {
+                font-size: 1.1em;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .template-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 Email Templates</h1>
+            <p>Professional, branded email templates for every business situation. Select from our library of pre-designed templates and customize them with your content.</p>
+            <a href="email-template-builder.html" class="launch-btn">
+                🚀 Launch Template Builder
+            </a>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Template Library</h3>
+                <p>Choose from 5 professionally designed templates covering client prospecting, acquisition, onboarding, follow-up, and thank-you scenarios.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✏️</div>
+                <h3>Dynamic Editing</h3>
+                <p>Edit only the content that matters while keeping your brand elements locked and consistent across all communications.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👁️</div>
+                <h3>Live Preview</h3>
+                <p>See your changes instantly with our real-time preview system. What you see is exactly what your recipients will receive.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📧</div>
+                <h3>Outlook Ready</h3>
+                <p>All templates are optimized for Outlook with VML button fallbacks and table-based layouts for maximum compatibility.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📋</div>
+                <h3>Easy Export</h3>
+                <p>Copy directly to clipboard or download as HTML files. Seamlessly paste into Outlook, Gmail, or any email client.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💾</div>
+                <h3>Save Drafts</h3>
+                <p>Save your work locally and return to finish later. Never lose your progress with automatic draft saving.</p>
+            </div>
+        </div>
+
+        <div class="templates-preview">
+            <h2>Available Templates</h2>
+            <div class="template-types">
+                <div class="template-type">
+                    <h4>📈 Client Prospecting</h4>
+                    <p>Cold outreach template for introducing your services to potential clients</p>
+                </div>
+
+                <div class="template-type">
+                    <h4>🤝 Client Acquisition</h4>
+                    <p>Follow-up template after initial introduction and proposal submission</p>
+                </div>
+
+                <div class="template-type">
+                    <h4>🎉 Client Onboarding</h4>
+                    <p>Welcome template for new clients after project approval and contract signing</p>
+                </div>
+
+                <div class="template-type">
+                    <h4>📝 Post-Event Follow-Up</h4>
+                    <p>Professional follow-up template for gathering feedback after event completion</p>
+                </div>
+
+                <div class="template-type">
+                    <h4>🙏 Loss Thank-You</h4>
+                    <p>Gracious follow-up template when not selected, maintaining relationships for future opportunities</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Ready to Create Professional Emails?</h2>
+            <p>Start building branded email templates that represent your company professionally and drive results.</p>
+            <a href="email-template-builder.html" class="launch-btn">
+                🎨 Start Building Now
+            </a>
+        </div>
+
+        <a href="index.html" class="back-to-brand-central">← Back to Brand Central</a>
+    </div>
+
+    <script>
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate feature cards on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Initially hide feature cards
+            const featureCards = document.querySelectorAll('.feature-card');
+            featureCards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+                observer.observe(card);
+            });
+
+            // Add click handlers for template types
+            const templateTypes = document.querySelectorAll('.template-type');
+            templateTypes.forEach(template => {
+                template.addEventListener('click', function() {
+                    // Add visual feedback
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-2px)';
+                        // Redirect to builder with template pre-selected
+                        window.location.href = 'email-template-builder.html';
+                    }, 150);
+                });
+            });
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && e.target.classList.contains('launch-btn')) {
+                    e.target.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
