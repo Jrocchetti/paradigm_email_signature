@@ -23,156 +23,195 @@ class EmailTemplateBuilder {
     }
 
     /**
-     * Load predefined templates (Phase 1: Hardcoded)
+     * Load predefined templates organized by category
      */
     loadTemplates() {
-        this.templates = [
+        this.templateCategories = [
             {
-                id: "client-prospecting-v1",
-                name: "Client Prospecting",
-                description: "Cold outreach template introducing PPG to a prospect.",
-                thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBQcm9zcGVjdGluZzwvdGV4dD48L3N2Zz4=",
-                lockedFields: {
-                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                    brandHex: "#1F1633",
-                    accentHex: "#3FCBFF",
-                    secondaryHex: "#3F105E",
-                    supportingHex: "#B8A9D9",
-                    companyName: "Paradigm Productions Group",
-                    companyTagline: "Boutique Service Built on Trust",
-                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                    companyPhone: "(407) 909 - 1338",
-                    companyEmail: "hello@paradigmproductionsgroup.com",
-                    companyWebsite: "www.paradigmproductionsgroup.com"
-                },
-                dynamicFields: [
-                    {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                    {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
-                    {key: "introLine", label: "Introduction", type: "textarea", placeholder: "We help companies deliver unforgettable events...", required: true},
-                    {key: "valueProposition", label: "Value Proposition", type: "textarea", placeholder: "Our team blends technical precision with creative direction...", required: true},
-                    {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Schedule a Call", required: true},
-                    {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg", required: true}
-                ],
-                htmlTemplate: this.getClientProspectingTemplate()
+                id: "prospect-sales",
+                name: "Prospect & Sales",
+                description: "Templates for initial outreach and sales activities",
+                templates: [
+                    {
+                        id: "client-prospecting-v1",
+                        name: "Client Prospecting",
+                        description: "Cold outreach template introducing PPG to a prospect.",
+                        category: "prospect-sales",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBQcm9zcGVjdGluZzwvdGV4dD48L3N2Zz4=",
+                        lockedFields: {
+                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                            brandHex: "#1F1633",
+                            accentHex: "#3FCBFF",
+                            secondaryHex: "#3F105E",
+                            supportingHex: "#B8A9D9",
+                            companyName: "Paradigm Productions Group",
+                            companyTagline: "Boutique Service Built on Trust",
+                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                            companyPhone: "(407) 909 - 1338",
+                            companyEmail: "hello@paradigmproductionsgroup.com",
+                            companyWebsite: "www.paradigmproductionsgroup.com"
+                        },
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
+                            {key: "introLine", label: "Introduction", type: "textarea", placeholder: "We help companies deliver unforgettable events...", required: true},
+                            {key: "valueProposition", label: "Value Proposition", type: "textarea", placeholder: "Our team blends technical precision with creative direction...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Schedule a Call", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg", required: true}
+                        ],
+                        htmlTemplate: this.getClientProspectingTemplate()
+                    }
+                ]
             },
             {
-                id: "client-acquisition-v1",
-                name: "Client Acquisition",
-                description: "Follow-up template after initial introduction and proposal.",
-                thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBBY3F1aXNpdGlvbjwvdGV4dD48L3N2Zz4=",
-                lockedFields: {
-                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                    brandHex: "#1F1633",
-                    accentHex: "#3FCBFF",
-                    secondaryHex: "#3F105E",
-                    supportingHex: "#B8A9D9",
-                    companyName: "Paradigm Productions Group",
-                    companyTagline: "Boutique Service Built on Trust",
-                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                    companyPhone: "(407) 909 - 1338",
-                    companyEmail: "hello@paradigmproductionsgroup.com",
-                    companyWebsite: "www.paradigmproductionsgroup.com"
-                },
-                dynamicFields: [
-                    {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                    {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
-                    {key: "proposalReference", label: "Proposal Reference", type: "text", placeholder: "PPG-2025-001", required: true},
-                    {key: "projectDetails", label: "Project Details", type: "textarea", placeholder: "Annual company meeting with 200 attendees...", required: true},
-                    {key: "nextSteps", label: "Next Steps", type: "textarea", placeholder: "Please review the attached proposal and let us know...", required: true},
-                    {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Review Proposal", required: true},
-                    {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://proposal.paradigmproductionsgroup.com", required: true}
-                ],
-                htmlTemplate: this.getClientAcquisitionTemplate()
+                id: "acquisition-onboarding", 
+                name: "Acquisition & Onboarding",
+                description: "Templates for closing deals and welcoming new clients",
+                templates: [
+                    {
+                        id: "client-acquisition-v1",
+                        name: "Client Acquisition",
+                        description: "Follow-up template after initial introduction and proposal.",
+                        category: "acquisition-onboarding",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBBY3F1aXNpdGlvbjwvdGV4dD48L3N2Zz4=",
+                        lockedFields: {
+                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                            brandHex: "#1F1633",
+                            accentHex: "#3FCBFF",
+                            secondaryHex: "#3F105E",
+                            supportingHex: "#B8A9D9",
+                            companyName: "Paradigm Productions Group",
+                            companyTagline: "Boutique Service Built on Trust",
+                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                            companyPhone: "(407) 909 - 1338",
+                            companyEmail: "hello@paradigmproductionsgroup.com",
+                            companyWebsite: "www.paradigmproductionsgroup.com"
+                        },
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
+                            {key: "proposalReference", label: "Proposal Reference", type: "text", placeholder: "PPG-2025-001", required: true},
+                            {key: "projectDetails", label: "Project Details", type: "textarea", placeholder: "Annual company meeting with 200 attendees...", required: true},
+                            {key: "nextSteps", label: "Next Steps", type: "textarea", placeholder: "Please review the attached proposal and let us know...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Review Proposal", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://proposal.paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getClientAcquisitionTemplate()
+                    },
+                    {
+                        id: "client-onboarding-v1",
+                        name: "Client Onboarding",
+                        description: "Welcome template for new clients after project approval.",
+                        category: "acquisition-onboarding",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: {
+                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                            brandHex: "#1F1633",
+                            accentHex: "#3FCBFF",
+                            secondaryHex: "#3F105E",
+                            supportingHex: "#B8A9D9",
+                            companyName: "Paradigm Productions Group",
+                            companyTagline: "Boutique Service Built on Trust",
+                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                            companyPhone: "(407) 909 - 1338",
+                            companyEmail: "hello@paradigmproductionsgroup.com",
+                            companyWebsite: "www.paradigmproductionsgroup.com"
+                        },
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
+                            {key: "projectName", label: "Project Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "projectManager", label: "Project Manager", type: "text", placeholder: "John Smith", required: true},
+                            {key: "kickoffDate", label: "Kickoff Date", type: "text", placeholder: "September 15, 2025", required: true},
+                            {key: "nextSteps", label: "Immediate Next Steps", type: "list", placeholder: "Discovery call scheduled|Contract signing|Initial planning meeting", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Access Client Portal", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://portal.paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getClientOnboardingTemplate()
+                    }
+                ]
             },
             {
-                id: "client-onboarding-v1",
-                name: "Client Onboarding",
-                description: "Welcome template for new clients after project approval.",
-                thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
-                lockedFields: {
-                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                    brandHex: "#1F1633",
-                    accentHex: "#3FCBFF",
-                    secondaryHex: "#3F105E",
-                    supportingHex: "#B8A9D9",
-                    companyName: "Paradigm Productions Group",
-                    companyTagline: "Boutique Service Built on Trust",
-                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                    companyPhone: "(407) 909 - 1338",
-                    companyEmail: "hello@paradigmproductionsgroup.com",
-                    companyWebsite: "www.paradigmproductionsgroup.com"
-                },
-                dynamicFields: [
-                    {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                    {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
-                    {key: "projectName", label: "Project Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
-                    {key: "projectManager", label: "Project Manager", type: "text", placeholder: "John Smith", required: true},
-                    {key: "kickoffDate", label: "Kickoff Date", type: "text", placeholder: "September 15, 2025", required: true},
-                    {key: "nextSteps", label: "Immediate Next Steps", type: "list", placeholder: "Discovery call scheduled|Contract signing|Initial planning meeting", required: true},
-                    {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Access Client Portal", required: true},
-                    {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://portal.paradigmproductionsgroup.com", required: true}
-                ],
-                htmlTemplate: this.getClientOnboardingTemplate()
+                id: "post-event",
+                name: "Post-Event",
+                description: "Templates for follow-up after event completion",
+                templates: [
+                    {
+                        id: "post-event-followup-v1",
+                        name: "Post-Event Follow-Up",
+                        description: "Follow-up template for gathering feedback after event completion.",
+                        category: "post-event",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgRm9sbG93LVVwPC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: {
+                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                            brandHex: "#1F1633",
+                            accentHex: "#3FCBFF",
+                            secondaryHex: "#3F105E",
+                            supportingHex: "#B8A9D9",
+                            companyName: "Paradigm Productions Group",
+                            companyTagline: "Boutique Service Built on Trust",
+                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                            companyPhone: "(407) 909 - 1338",
+                            companyEmail: "hello@paradigmproductionsgroup.com",
+                            companyWebsite: "www.paradigmproductionsgroup.com"
+                        },
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
+                            {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "eventDate", label: "Event Date", type: "text", placeholder: "September 15, 2025", required: true},
+                            {key: "personalMessage", label: "Personal Message", type: "textarea", placeholder: "Thank you for trusting us with your important event...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Share Your Feedback", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://feedback.paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getPostEventTemplate()
+                    }
+                ]
             },
             {
-                id: "post-event-followup-v1",
-                name: "Post-Event Follow-Up",
-                description: "Follow-up template for gathering feedback after event completion.",
-                thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgRm9sbG93LVVwPC90ZXh0Pjwvc3ZnPg==",
-                lockedFields: {
-                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                    brandHex: "#1F1633",
-                    accentHex: "#3FCBFF",
-                    secondaryHex: "#3F105E",
-                    supportingHex: "#B8A9D9",
-                    companyName: "Paradigm Productions Group",
-                    companyTagline: "Boutique Service Built on Trust",
-                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                    companyPhone: "(407) 909 - 1338",
-                    companyEmail: "hello@paradigmproductionsgroup.com",
-                    companyWebsite: "www.paradigmproductionsgroup.com"
-                },
-                dynamicFields: [
-                    {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                    {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
-                    {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
-                    {key: "eventDate", label: "Event Date", type: "text", placeholder: "September 15, 2025", required: true},
-                    {key: "personalMessage", label: "Personal Message", type: "textarea", placeholder: "Thank you for trusting us with your important event...", required: true},
-                    {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Share Your Feedback", required: true},
-                    {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://feedback.paradigmproductionsgroup.com", required: true}
-                ],
-                htmlTemplate: this.getPostEventTemplate()
-            },
-            {
-                id: "loss-thankyou-v1",
-                name: "Loss Thank-You",
-                description: "Gracious follow-up template when not selected for a project.",
-                thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgVGhhbmstWW91PC90ZXh0Pjwvc3ZnPg==",
-                lockedFields: {
-                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                    brandHex: "#1F1633",
-                    accentHex: "#3FCBFF",
-                    secondaryHex: "#3F105E",
-                    supportingHex: "#B8A9D9",
-                    companyName: "Paradigm Productions Group",
-                    companyTagline: "Boutique Service Built on Trust",
-                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                    companyPhone: "(407) 909 - 1338",
-                    companyEmail: "hello@paradigmproductionsgroup.com",
-                    companyWebsite: "www.paradigmproductionsgroup.com"
-                },
-                dynamicFields: [
-                    {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                    {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
-                    {key: "projectReference", label: "Project Reference", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
-                    {key: "personalMessage", label: "Personal Message", type: "textarea", placeholder: "While we're disappointed we won't be working together this time...", required: true},
-                    {key: "futureOffering", label: "Future Offering", type: "textarea", placeholder: "We'd love to stay connected for future opportunities...", required: true},
-                    {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Stay Connected", required: true},
-                    {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/newsletter", required: true}
-                ],
-                htmlTemplate: this.getLossThankYouTemplate()
+                id: "relationship-maintenance",
+                name: "Relationship Maintenance", 
+                description: "Templates for maintaining client relationships and future opportunities",
+                templates: [
+                    {
+                        id: "loss-thankyou-v1",
+                        name: "Loss Thank-You",
+                        description: "Gracious follow-up template when not selected for a project.",
+                        category: "relationship-maintenance",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgVGhhbmstWW91PC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: {
+                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                            brandHex: "#1F1633",
+                            accentHex: "#3FCBFF",
+                            secondaryHex: "#3F105E",
+                            supportingHex: "#B8A9D9",
+                            companyName: "Paradigm Productions Group",
+                            companyTagline: "Boutique Service Built on Trust",
+                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                            companyPhone: "(407) 909 - 1338",
+                            companyEmail: "hello@paradigmproductionsgroup.com",
+                            companyWebsite: "www.paradigmproductionsgroup.com"
+                        },
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
+                            {key: "projectReference", label: "Project Reference", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "personalMessage", label: "Personal Message", type: "textarea", placeholder: "While we're disappointed we won't be working together this time...", required: true},
+                            {key: "futureOffering", label: "Future Offering", type: "textarea", placeholder: "We'd love to stay connected for future opportunities...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Stay Connected", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/newsletter", required: true}
+                        ],
+                        htmlTemplate: this.getLossThankYouTemplate()
+                    }
+                ]
             }
         ];
+
+        // Create flat array for backward compatibility
+        this.templates = [];
+        this.templateCategories.forEach(category => {
+            this.templates.push(...category.templates);
+        });
     }
 
     /**
@@ -226,17 +265,28 @@ class EmailTemplateBuilder {
         const container = document.getElementById('templateLibrary');
         if (!container) return;
 
-        container.innerHTML = this.templates.map(template => `
-            <div class="template-card" data-template-id="${template.id}">
-                <div class="template-thumbnail">
-                    <img src="${template.thumbnail}" alt="${template.name}" />
+        // Render templates organized by categories
+        container.innerHTML = this.templateCategories.map(category => `
+            <div class="template-category">
+                <div class="category-header">
+                    <h2 class="category-title">${category.name}</h2>
+                    <p class="category-description">${category.description}</p>
                 </div>
-                <div class="template-info">
-                    <h3>${template.name}</h3>
-                    <p>${template.description}</p>
-                    <button class="select-template-btn" onclick="emailBuilder.selectTemplate('${template.id}')">
-                        Select Template
-                    </button>
+                <div class="category-templates">
+                    ${category.templates.map(template => `
+                        <div class="template-card" data-template-id="${template.id}">
+                            <div class="template-thumbnail">
+                                <img src="${template.thumbnail}" alt="${template.name}" />
+                            </div>
+                            <div class="template-info">
+                                <h3>${template.name}</h3>
+                                <p>${template.description}</p>
+                                <button class="select-template-btn" onclick="emailBuilder.selectTemplate('${template.id}')">
+                                    Select Template
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
                 </div>
             </div>
         `).join('');
