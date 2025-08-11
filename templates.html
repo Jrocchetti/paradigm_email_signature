@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Templates - Brand Central</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,11 +12,83 @@
             box-sizing: border-box;
         }
 
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(31, 22, 51, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 15px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: #3FCBFF;
+            text-decoration: none;
+        }
+
+        .logo img {
+            height: 28px;
+            margin-right: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #FFFFFF;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #3FCBFF;
+        }
+
+        .back-btn-nav {
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            color: #1F1633 !important;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+        }
+
+        .back-btn-nav:hover {
+            color: #1F1633 !important;
+            transform: translateY(-2px);
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Manrope', sans-serif;
+            background: #1F1633;
+            color: #FFFFFF;
+            padding: 80px 20px 20px;
+            margin: 0;
             min-height: 100vh;
-            color: #333;
         }
 
         .container {
@@ -32,7 +104,7 @@
         }
 
         .header h1 {
-            color: #ffffff;
+            color: #3FCBFF;
             font-size: 3em;
             font-weight: 700;
             margin-bottom: 16px;
@@ -48,8 +120,8 @@
         }
 
         .launch-btn {
-            background: linear-gradient(135deg, #F7921E 0%, #e67e22 100%);
-            color: #ffffff;
+            background: linear-gradient(45deg, #3FCBFF, #2db8e8);
+            color: #1F1633;
             padding: 16px 32px;
             border: none;
             border-radius: 50px;
@@ -59,12 +131,13 @@
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-            box-shadow: 0 4px 15px rgba(247, 146, 30, 0.3);
+            box-shadow: 0 4px 15px rgba(63, 203, 255, 0.3);
+            font-family: 'Manrope', sans-serif;
         }
 
         .launch-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(247, 146, 30, 0.4);
+            box-shadow: 0 8px 25px rgba(63, 203, 255, 0.4);
         }
 
         .features-grid {
@@ -75,15 +148,16 @@
         }
 
         .feature-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(63, 203, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
             border-radius: 16px;
             padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
+            border-color: rgba(63, 203, 255, 0.4);
         }
 
         .feature-icon {
@@ -95,20 +169,20 @@
             font-size: 1.4em;
             font-weight: 600;
             margin-bottom: 12px;
-            color: #111827;
+            color: #3FCBFF;
         }
 
         .feature-card p {
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.6;
         }
 
         .templates-preview {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(63, 203, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
             border-radius: 16px;
             padding: 40px;
             margin-bottom: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .templates-preview h2 {
@@ -116,7 +190,7 @@
             font-size: 2em;
             font-weight: 600;
             margin-bottom: 30px;
-            color: #111827;
+            color: #3FCBFF;
         }
 
         .template-types {
@@ -126,49 +200,51 @@
         }
 
         .template-type {
-            background: #f8f9fa;
+            background: rgba(63, 203, 255, 0.1);
             border-radius: 12px;
             padding: 20px;
             text-align: center;
-            border: 2px solid transparent;
+            border: 2px solid rgba(63, 203, 255, 0.2);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .template-type:hover {
-            border-color: #F7921E;
+            border-color: #3FCBFF;
             transform: translateY(-2px);
+            background: rgba(63, 203, 255, 0.15);
         }
 
         .template-type h4 {
             font-size: 1.1em;
             font-weight: 600;
             margin-bottom: 8px;
-            color: #111827;
+            color: #3FCBFF;
         }
 
         .template-type p {
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 0.9em;
             line-height: 1.4;
         }
 
         .cta-section {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(63, 203, 255, 0.05);
+            border: 1px solid rgba(63, 203, 255, 0.2);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .cta-section h2 {
             font-size: 2em;
             font-weight: 600;
             margin-bottom: 16px;
-            color: #111827;
+            color: #3FCBFF;
         }
 
         .cta-section p {
-            color: #6b7280;
+            color: rgba(255, 255, 255, 0.8);
             font-size: 1.1em;
             margin-bottom: 30px;
             line-height: 1.6;
@@ -184,7 +260,7 @@
         }
 
         .back-to-brand-central:hover {
-            color: #ffffff;
+            color: #3FCBFF;
         }
 
         @media (max-width: 768px) {
@@ -208,10 +284,30 @@
             .template-types {
                 grid-template-columns: 1fr;
             }
+
+            .nav-links {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span>📧 Brand Central</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="guidelines.html">Guidelines</a></li>
+                <li><a href="assets.html">Assets</a></li>
+                <li><a href="resources.html">Tools</a></li>
+                <li><a href="boost.html">Boost</a></li>
+                <li><a href="index.html" class="back-btn-nav">← Back to Home</a></li>
+            </ul>
+        </div>
+    </nav>
     <div class="container">
         <div class="header">
             <h1>🎨 Email Templates</h1>
