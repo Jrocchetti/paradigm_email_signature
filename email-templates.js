@@ -33,13 +33,17 @@ class EmailTemplateBuilder {
                 description: "Cold outreach template introducing PPG to a prospect.",
                 thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBQcm9zcGVjdGluZzwvdGV4dD48L3N2Zz4=",
                 lockedFields: {
-                    logoUrl: "https://paradigmproductionsgroup.com/assets/logo.png",
-                    brandHex: "#111827",
-                    accentHex: "#F7921E",
+                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                    brandHex: "#1F1633",
+                    accentHex: "#3FCBFF",
+                    secondaryHex: "#3F105E",
+                    supportingHex: "#B8A9D9",
                     companyName: "Paradigm Productions Group",
-                    companyAddress: "123 Business Ave, Suite 100, City, State 12345",
-                    companyPhone: "(555) 123-4567",
-                    companyEmail: "hello@paradigmproductionsgroup.com"
+                    companyTagline: "Boutique Service Built on Trust",
+                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                    companyPhone: "(407) 909 - 1338",
+                    companyEmail: "hello@paradigmproductionsgroup.com",
+                    companyWebsite: "www.paradigmproductionsgroup.com"
                 },
                 dynamicFields: [
                     {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -57,13 +61,17 @@ class EmailTemplateBuilder {
                 description: "Follow-up template after initial introduction and proposal.",
                 thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBBY3F1aXNpdGlvbjwvdGV4dD48L3N2Zz4=",
                 lockedFields: {
-                    logoUrl: "https://paradigmproductionsgroup.com/assets/logo.png",
-                    brandHex: "#111827",
-                    accentHex: "#F7921E",
+                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                    brandHex: "#1F1633",
+                    accentHex: "#3FCBFF",
+                    secondaryHex: "#3F105E",
+                    supportingHex: "#B8A9D9",
                     companyName: "Paradigm Productions Group",
-                    companyAddress: "123 Business Ave, Suite 100, City, State 12345",
-                    companyPhone: "(555) 123-4567",
-                    companyEmail: "hello@paradigmproductionsgroup.com"
+                    companyTagline: "Boutique Service Built on Trust",
+                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                    companyPhone: "(407) 909 - 1338",
+                    companyEmail: "hello@paradigmproductionsgroup.com",
+                    companyWebsite: "www.paradigmproductionsgroup.com"
                 },
                 dynamicFields: [
                     {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -82,13 +90,17 @@ class EmailTemplateBuilder {
                 description: "Welcome template for new clients after project approval.",
                 thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
                 lockedFields: {
-                    logoUrl: "https://paradigmproductionsgroup.com/assets/logo.png",
-                    brandHex: "#111827",
-                    accentHex: "#F7921E",
+                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                    brandHex: "#1F1633",
+                    accentHex: "#3FCBFF",
+                    secondaryHex: "#3F105E",
+                    supportingHex: "#B8A9D9",
                     companyName: "Paradigm Productions Group",
-                    companyAddress: "123 Business Ave, Suite 100, City, State 12345",
-                    companyPhone: "(555) 123-4567",
-                    companyEmail: "hello@paradigmproductionsgroup.com"
+                    companyTagline: "Boutique Service Built on Trust",
+                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                    companyPhone: "(407) 909 - 1338",
+                    companyEmail: "hello@paradigmproductionsgroup.com",
+                    companyWebsite: "www.paradigmproductionsgroup.com"
                 },
                 dynamicFields: [
                     {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -108,13 +120,17 @@ class EmailTemplateBuilder {
                 description: "Follow-up template for gathering feedback after event completion.",
                 thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgRm9sbG93LVVwPC90ZXh0Pjwvc3ZnPg==",
                 lockedFields: {
-                    logoUrl: "https://paradigmproductionsgroup.com/assets/logo.png",
-                    brandHex: "#111827",
-                    accentHex: "#F7921E",
+                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                    brandHex: "#1F1633",
+                    accentHex: "#3FCBFF",
+                    secondaryHex: "#3F105E",
+                    supportingHex: "#B8A9D9",
                     companyName: "Paradigm Productions Group",
-                    companyAddress: "123 Business Ave, Suite 100, City, State 12345",
-                    companyPhone: "(555) 123-4567",
-                    companyEmail: "hello@paradigmproductionsgroup.com"
+                    companyTagline: "Boutique Service Built on Trust",
+                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                    companyPhone: "(407) 909 - 1338",
+                    companyEmail: "hello@paradigmproductionsgroup.com",
+                    companyWebsite: "www.paradigmproductionsgroup.com"
                 },
                 dynamicFields: [
                     {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -133,13 +149,17 @@ class EmailTemplateBuilder {
                 description: "Gracious follow-up template when not selected for a project.",
                 thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgVGhhbmstWW91PC90ZXh0Pjwvc3ZnPg==",
                 lockedFields: {
-                    logoUrl: "https://paradigmproductionsgroup.com/assets/logo.png",
-                    brandHex: "#111827",
-                    accentHex: "#F7921E",
+                    logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+                    brandHex: "#1F1633",
+                    accentHex: "#3FCBFF",
+                    secondaryHex: "#3F105E",
+                    supportingHex: "#B8A9D9",
                     companyName: "Paradigm Productions Group",
-                    companyAddress: "123 Business Ave, Suite 100, City, State 12345",
-                    companyPhone: "(555) 123-4567",
-                    companyEmail: "hello@paradigmproductionsgroup.com"
+                    companyTagline: "Boutique Service Built on Trust",
+                    companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+                    companyPhone: "(407) 909 - 1338",
+                    companyEmail: "hello@paradigmproductionsgroup.com",
+                    companyWebsite: "www.paradigmproductionsgroup.com"
                 },
                 dynamicFields: [
                     {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -546,12 +566,13 @@ class EmailTemplateBuilder {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{recipientName}} - Partnership Opportunity</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
     <!--[if mso]>
     <nxml:namespace xmlns:nxml="urn:schemas-microsoft-com:office:office" />
     <nxml:namespace xmlns:w="urn:schemas-microsoft-com:office:word" />
     <![endif]-->
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f8f9fa;">
+<body style="margin: 0; padding: 0; font-family: 'Manrope', Arial, sans-serif; background-color: #f8f9fa;">
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa;">
         <tr>
             <td align="center" style="padding: 20px 0;">
@@ -560,25 +581,28 @@ class EmailTemplateBuilder {
                     <tr>
                         <td style="padding: 30px 40px 20px; text-align: center; background-color: {{brandHex}}; border-radius: 8px 8px 0 0;">
                             <img src="{{logoUrl}}" alt="{{companyName}}" style="max-height: 50px; height: auto;" />
+                            <div style="margin-top: 10px; font-size: 14px; font-style: italic; color: {{accentHex}}; font-weight: 400;">
+                                {{companyTagline}}
+                            </div>
                         </td>
                     </tr>
                     
                     <!-- Content -->
                     <tr>
                         <td style="padding: 30px 40px;">
-                            <h1 style="margin: 0 0 20px; font-size: 24px; color: {{brandHex}}; font-weight: bold;">
+                            <h1 style="margin: 0 0 20px; font-size: 24px; color: {{brandHex}}; font-weight: 600; font-family: 'Manrope', Arial, sans-serif;">
                                 Hello {{recipientName}},
                             </h1>
                             
-                            <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #333333;">
+                            <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #333333; font-family: 'Manrope', Arial, sans-serif;">
                                 I hope this message finds you well. I'm reaching out from {{companyName}} regarding an exciting opportunity for {{recipientCompany}}.
                             </p>
                             
-                            <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #333333;">
+                            <p style="margin: 0 0 20px; font-size: 16px; line-height: 1.6; color: #333333; font-family: 'Manrope', Arial, sans-serif;">
                                 {{introLine}}
                             </p>
                             
-                            <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.6; color: #333333;">
+                            <p style="margin: 0 0 30px; font-size: 16px; line-height: 1.6; color: #333333; font-family: 'Manrope', Arial, sans-serif;">
                                 {{valueProposition}}
                             </p>
                             
@@ -589,35 +613,34 @@ class EmailTemplateBuilder {
                                         <!--[if mso]>
                                         <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ctaUrl}}" style="height:50px;v-text-anchor:middle;width:200px;" arcsize="10%" stroke="f" fillcolor="{{accentHex}}">
                                             <w:anchorlock/>
-                                            <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">{{ctaText}}</center>
+                                            <center style="color:#ffffff;font-family:'Manrope',Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
                                         </v:roundrect>
                                         <![endif]-->
-                                        <a href="{{ctaUrl}}" style="background-color: {{accentHex}}; border: none; border-radius: 5px; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
+                                        <!--[if !mso]><!-->
+                                        <a href="{{ctaUrl}}" style="display: inline-block; padding: 15px 30px; background-color: {{accentHex}}; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: 600; font-size: 16px; font-family: 'Manrope', Arial, sans-serif;">{{ctaText}}</a>
+                                        <!--<![endif]-->
                                     </td>
                                 </tr>
                             </table>
                             
-                            <p style="margin: 30px 0 0; font-size: 16px; line-height: 1.6; color: #333333;">
-                                I'd love to discuss how we can help make your next event unforgettable. Looking forward to hearing from you!
-                            </p>
-                            
-                            <p style="margin: 20px 0 0; font-size: 16px; line-height: 1.6; color: #333333;">
-                                Best regards,<br>
-                                <strong>{{companyName}} Team</strong>
+                            <p style="margin: 30px 0 0; font-size: 16px; line-height: 1.6; color: #333333; font-family: 'Manrope', Arial, sans-serif;">
+                                I'd love to discuss how we can bring exceptional value to your next event. Would you be available for a brief call this week?
                             </p>
                         </td>
                     </tr>
                     
                     <!-- Footer -->
                     <tr>
-                        <td style="padding: 30px 40px; background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
+                        <td style="padding: 20px 40px 30px; background-color: #f8f9fa; border-radius: 0 0 8px 8px;">
                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                 <tr>
-                                    <td style="font-size: 14px; color: #666666; line-height: 1.4;">
-                                        <strong>{{companyName}}</strong><br>
-                                        {{companyAddress}}<br>
-                                        Phone: {{companyPhone}}<br>
-                                        Email: <a href="mailto:{{companyEmail}}" style="color: {{accentHex}}; text-decoration: none;">{{companyEmail}}</a>
+                                    <td style="text-align: center;">
+                                        <p style="margin: 0 0 10px; font-size: 14px; color: #666666; font-family: 'Manrope', Arial, sans-serif;">
+                                            <strong>{{companyName}}</strong><br>
+                                            {{companyAddress}}<br>
+                                            Phone: {{companyPhone}} | Email: {{companyEmail}}<br>
+                                            <a href="https://{{companyWebsite}}" style="color: {{accentHex}}; text-decoration: none;">{{companyWebsite}}</a>
+                                        </p>
                                     </td>
                                 </tr>
                             </table>
