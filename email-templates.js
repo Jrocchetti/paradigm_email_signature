@@ -6,24 +6,20 @@
 
 class EmailTemplateBuilder {
     constructor() {
-        console.log('EmailTemplateBuilder constructor called');
         this.templates = [];
         this.currentTemplate = null;
         this.currentValues = {};
         this.previewElement = null;
         this.init();
-        console.log('EmailTemplateBuilder constructor completed');
     }
 
     /**
      * Initialize the template builder
      */
     init() {
-        console.log('EmailTemplateBuilder init() called');
         this.loadTemplates();
         this.setupEventListeners();
         this.renderTemplateLibrary();
-        console.log('EmailTemplateBuilder init() completed');
     }
 
     /**
@@ -1173,71 +1169,49 @@ class EmailTemplateBuilder {
      * Bind UI event handlers
      */
     bindUIEvents() {
-        console.log('Binding UI events...');
-        
         // Copy to clipboard button
         const copyBtn = document.getElementById('copyToClipboard');
         if (copyBtn) {
-            console.log('Copy button found, adding event listener');
             copyBtn.addEventListener('click', (e) => {
-                console.log('Copy button clicked');
                 e.preventDefault();
                 this.copyToClipboard();
             });
-        } else {
-            console.warn('Copy button not found');
         }
 
         // Download HTML button
         const downloadBtn = document.getElementById('downloadHtml');
         if (downloadBtn) {
-            console.log('Download button found, adding event listener');
             downloadBtn.addEventListener('click', (e) => {
-                console.log('Download button clicked');
                 e.preventDefault();
                 this.downloadHtml();
             });
-        } else {
-            console.warn('Download button not found');
         }
 
         // Show/Hide HTML button
         const showHtmlBtn = document.getElementById('showHtml');
         if (showHtmlBtn) {
-            console.log('Show HTML button found, adding event listener');
             showHtmlBtn.addEventListener('click', (e) => {
-                console.log('Show HTML button clicked');
                 e.preventDefault();
                 this.toggleHtmlView();
             });
-        } else {
-            console.warn('Show HTML button not found');
         }
 
         // Save draft button
         const saveDraftBtn = document.getElementById('saveDraft');
         if (saveDraftBtn) {
-            console.log('Save draft button found, adding event listener');
             saveDraftBtn.addEventListener('click', (e) => {
-                console.log('Save draft button clicked');
                 e.preventDefault();
                 this.saveDraft();
             });
-        } else {
-            console.warn('Save draft button not found');
         }
 
         // Load draft button
         const loadDraftBtn = document.getElementById('loadDraft');
         if (loadDraftBtn) {
-            console.log('Load draft button found, adding event listener');
             loadDraftBtn.addEventListener('click', (e) => {
-                console.log('Load draft button clicked');
                 e.preventDefault();
                 this.loadDraft();
             });
-        } else {
-            console.warn('Load draft button not found');
         }
 
         console.log('UI events binding complete');
@@ -1767,12 +1741,7 @@ class EmailTemplateBuilder {
      * Save current draft to localStorage
      */
     saveDraft() {
-        console.log('saveDraft called');
-        console.log('currentTemplate:', this.currentTemplate);
-        console.log('currentValues:', this.currentValues);
-        
         if (!this.currentTemplate) {
-            console.warn('No template to save');
             this.showMessage('❌ No template selected to save as draft.', 'error');
             return;
         }
@@ -1785,10 +1754,8 @@ class EmailTemplateBuilder {
                 updatedAt: new Date().toISOString()
             };
 
-            console.log('Saving draft:', draft);
             localStorage.setItem('emailBuilderDraft', JSON.stringify(draft));
             this.showMessage('✅ Draft saved locally!', 'success');
-            console.log('Draft saved successfully');
         } catch (error) {
             console.error('Error saving draft:', error);
             this.showMessage('❌ Failed to save draft. Please try again.', 'error');
@@ -2401,10 +2368,8 @@ let emailBuilder;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM loaded, initializing EmailTemplateBuilder...');
     try {
         emailBuilder = new EmailTemplateBuilder();
-        console.log('EmailTemplateBuilder initialized successfully:', emailBuilder);
         window.emailBuilder = emailBuilder; // Make it globally accessible for debugging
     } catch (error) {
         console.error('Failed to initialize EmailTemplateBuilder:', error);
