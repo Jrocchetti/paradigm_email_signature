@@ -440,11 +440,13 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0; font-weight: 600;">Would you be open to a short call next week?</p>
                         
                         <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF" href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=66787bae-306b-4977-9474-ebeff52a7072&anonymous&ismsaljsauthenabled&ep=mlink">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Let's Connect</center>
-                        </v:textbox>
-                        </v:roundrect>
+                        <table role="presentation" cellspacing="0" cellpadding="0" border="0">
+                            <tr>
+                                <td style="border-radius: 6px; background: #3FCBFF;">
+                                    <a href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=66787bae-306b-4977-9474-ebeff52a7072&anonymous&ismsaljsauthenabled&ep=mlink" style="background: #3FCBFF; border: 12px solid #3FCBFF; color: #1F1633; font-family: Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 16px; text-decoration: none; text-transform: none; display: block; border-radius: 6px;">Let's Connect</a>
+                                </td>
+                            </tr>
+                        </table>
                         <![endif]-->
                         <a href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=66787bae-306b-4977-9474-ebeff52a7072&anonymous&ismsaljsauthenabled&ep=mlink" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Connect</a>
                         
