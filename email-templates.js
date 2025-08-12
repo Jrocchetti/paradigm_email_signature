@@ -383,7 +383,7 @@ class EmailTemplateBuilder {
                                 <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
                             </div>
                             <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700; font-family: Arial, sans-serif;">Boutique AV Service Built on Trust</h1>
-                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px; font-family: Arial, sans-serif;">Precision show calling • Creative previsualizations • Technical mastery</p>
+                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px; font-family: Arial, sans-serif;">Precision show calling &bull; Creative previsualizations &bull; Technical mastery</p>
                         </div>
                     </td>
                 </tr>
@@ -393,7 +393,7 @@ class EmailTemplateBuilder {
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I'm {{yourName}}, {{title}} at Paradigm Productions Group — an AV partner known for delivering boutique service built on trust for {{industryVertical}} events.</p>
                         
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">We recently partnered with {{relevantEventClient}}, providing {{specificPainPoint}}—solutions that kept the show running flawlessly — from rough CAD layouts to conceptual previsualization and precision show calling.</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">We recently partnered with {{relevantEventClient}}, providing {{specificPainPoint}}&mdash;solutions that kept the show running flawlessly &mdash; from rough CAD layouts to conceptual previsualization and precision show calling.</p>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I thought you might be interested in seeing how our approach blends:</p>
                         
@@ -1954,7 +1954,20 @@ class EmailTemplateBuilder {
                 return;
             }
             
-            const blob = new Blob([html], { type: 'text/html' });
+            // Wrap in proper HTML document with UTF-8 encoding
+            const fullHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+</head>
+<body>
+${html}
+</body>
+</html>`;
+            
+            const blob = new Blob([fullHtml], { type: 'text/html; charset=utf-8' });
             const url = URL.createObjectURL(blob);
             
             const a = document.createElement('a');
