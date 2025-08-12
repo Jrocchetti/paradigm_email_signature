@@ -1030,13 +1030,10 @@
                     </div>
 
                     <div class="action-buttons">
-                        <button id="copyToClipboard" class="action-btn btn-primary" disabled>
-                            📋 Copy to Clipboard
-                        </button>
-                        <button id="downloadHtml" class="action-btn btn-secondary" disabled>
+                        <button id="downloadHtml" class="action-btn btn-primary" disabled>
                             💾 Download HTML
                         </button>
-                        <button id="showHtml" class="action-btn btn-outline" disabled>
+                        <button id="showHtml" class="action-btn btn-secondary" disabled>
                             🔍 Show HTML
                         </button>
                     </div>
@@ -1090,7 +1087,7 @@
                             case 'Enter':
                                 e.preventDefault();
                                 if (emailBuilder.currentTemplate) {
-                                    emailBuilder.copyToClipboard();
+                                    emailBuilder.downloadHtml();
                                 }
                                 break;
                         }

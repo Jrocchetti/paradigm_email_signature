@@ -1326,15 +1326,6 @@ class EmailTemplateBuilder {
      * Bind UI event handlers
      */
     bindUIEvents() {
-        // Copy to clipboard button
-        const copyBtn = document.getElementById('copyToClipboard');
-        if (copyBtn) {
-            copyBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.copyToClipboard();
-            });
-        }
-
         // Download HTML button
         const downloadBtn = document.getElementById('downloadHtml');
         if (downloadBtn) {
@@ -1599,7 +1590,7 @@ class EmailTemplateBuilder {
      * Enable action buttons when template is loaded
      */
     enableActionButtons() {
-        const buttons = ['copyToClipboard', 'downloadHtml', 'showHtml', 'saveDraft'];
+        const buttons = ['downloadHtml', 'showHtml', 'saveDraft'];
         buttons.forEach(id => {
             const btn = document.getElementById(id);
             if (btn) {
@@ -1934,38 +1925,6 @@ class EmailTemplateBuilder {
     /**
      * Copy generated HTML to clipboard
      */
-    async copyToClipboard() {
-        try {
-            const html = this.generateHtml();
-            if (!html) {
-                this.showMessage('❌ No content to copy. Please fill in the template fields.', 'error');
-                return;
-            }
-            
-            const plainText = this.htmlToPlainText(html);
-
-            // Try to write both HTML and plain text to clipboard
-            await navigator.clipboard.write([
-                new ClipboardItem({
-                    'text/html': new Blob([html], { type: 'text/html' }),
-                    'text/plain': new Blob([plainText], { type: 'text/plain' })
-                })
-            ]);
-            
-            this.showMessage('✅ Email copied to clipboard! You can now paste it into Outlook.', 'success');
-        } catch (err) {
-            // Fallback to plain text only
-            try {
-                const html = this.generateHtml();
-                await navigator.clipboard.writeText(html);
-                this.showMessage('✅ HTML copied to clipboard!', 'success');
-            } catch (fallbackErr) {
-                this.showMessage('❌ Failed to copy to clipboard. Please try again.', 'error');
-                console.error('Clipboard error:', fallbackErr);
-            }
-        }
-    }
-
     /**
      * Download generated HTML as file
      */
