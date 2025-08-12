@@ -1407,9 +1407,14 @@ class EmailTemplateBuilder {
      * Select a template and render the editor
      */
     selectTemplate(templateId) {
+        console.log('🎯 selectTemplate called with:', templateId);
         this.currentTemplate = this.templates.find(t => t.id === templateId);
-        if (!this.currentTemplate) return;
+        if (!this.currentTemplate) {
+            console.error('❌ Template not found:', templateId);
+            return;
+        }
 
+        console.log('✅ Found template:', this.currentTemplate.name);
         // Reset current values
         this.currentValues = {};
         
@@ -1417,10 +1422,16 @@ class EmailTemplateBuilder {
         this.currentTemplate.dynamicFields.forEach(field => {
             this.currentValues[field.key] = '';
         });
+        console.log('📝 Current values initialized:', this.currentValues);
 
         this.renderFieldEditor();
+        console.log('📋 Field editor rendered');
+        
         this.updatePreview();
+        console.log('🖼️ Preview update called');
+        
         this.showEditor();
+        console.log('👁️ Editor shown');
         
         // Enable action buttons when template is selected
         this.enableActionButtons();
@@ -1551,25 +1562,49 @@ class EmailTemplateBuilder {
      * Update the live preview
      */
     updatePreview() {
-        if (!this.currentTemplate) return;
+        console.log('🖼️ updatePreview called');
+        console.log('📄 Current template:', this.currentTemplate ? this.currentTemplate.name : 'null');
+        
+        if (!this.currentTemplate) {
+            console.warn('⚠️ No current template, exiting updatePreview');
+            return;
+        }
 
         const preview = document.getElementById('emailPreview');
-        if (!preview) return;
+        if (!preview) {
+            console.error('❌ Preview iframe not found');
+            return;
+        }
+        console.log('✅ Preview iframe found:', preview);
 
         try {
+            console.log('🏗️ Generating HTML...');
             const html = this.generateHtml();
+            console.log('✅ HTML generated, length:', html.length);
+            console.log('📝 HTML preview:', html.substring(0, 200) + '...');
             
             // Use data URL to avoid CSP issues with srcdoc
             const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+            console.log('🔗 Data URL created, length:', dataUrl.length);
+            
             preview.src = dataUrl;
+            console.log('✅ Preview src set to data URL');
+            
+            // Also try srcdoc as backup
+            preview.srcdoc = html;
+            console.log('✅ Preview srcdoc also set as backup');
+            
         } catch (error) {
-            console.error('Error updating preview:', error);
+            console.error('❌ Error updating preview:', error);
+            console.error('Stack trace:', error.stack);
+            
             // Fallback: try srcdoc
             try {
                 const html = this.generateHtml();
                 preview.srcdoc = html;
+                console.log('🔄 Fallback: Preview updated with srcdoc');
             } catch (fallbackError) {
-                console.error('Fallback preview error:', fallbackError);
+                console.error('❌ Fallback preview error:', fallbackError);
                 this.showMessage('❌ Preview update failed. Please refresh the page.', 'error');
             }
         }
@@ -1579,21 +1614,26 @@ class EmailTemplateBuilder {
      * Generate the final HTML from template and values
      */
     generateHtml() {
+        console.log('🏗️ generateHtml called');
         if (!this.currentTemplate) {
-            console.warn('No template selected');
+            console.warn('❌ No template selected');
             return '';
         }
 
         if (!this.currentTemplate.htmlTemplate) {
-            console.warn('No HTML template found');
+            console.warn('❌ No HTML template found');
             return '';
         }
+        
+        console.log('📋 Template name:', this.currentTemplate.name);
+        console.log('📄 HTML template length:', this.currentTemplate.htmlTemplate.length);
 
         let html = this.currentTemplate.htmlTemplate;
         
         try {
             // Replace locked fields
             if (this.currentTemplate.lockedFields) {
+                console.log('🔒 Processing locked fields:', Object.keys(this.currentTemplate.lockedFields));
                 Object.entries(this.currentTemplate.lockedFields).forEach(([key, value]) => {
                     const regex = new RegExp(`{{${key}}}`, 'g');
                     html = html.replace(regex, value || '');
@@ -1602,6 +1642,7 @@ class EmailTemplateBuilder {
 
             // Replace dynamic fields
             if (this.currentValues) {
+                console.log('🔄 Processing dynamic fields:', Object.keys(this.currentValues));
                 Object.entries(this.currentValues).forEach(([key, value]) => {
                     const field = this.currentTemplate.dynamicFields?.find(f => f.key === key);
                     let processedValue = value || '';
@@ -1619,10 +1660,14 @@ class EmailTemplateBuilder {
 
             // Clean up any remaining placeholders
             html = html.replace(/{{[^}]+}}/g, '');
+            
+            console.log('✅ Final HTML generated, length:', html.length);
+            console.log('📝 HTML preview (first 300 chars):', html.substring(0, 300));
 
             return html;
         } catch (error) {
-            console.error('Error generating HTML:', error);
+            console.error('❌ Error generating HTML:', error);
+            console.error('Stack trace:', error.stack);
             return '';
         }
     }
