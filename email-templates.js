@@ -88,13 +88,13 @@ class EmailTemplateBuilder {
                         thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb3Bvc2FsIFN1Ym1pc3Npb248L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
-                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                            {key: "proposalReference", label: "Proposal Reference", type: "text", placeholder: "PPG-2025-001", required: true},
-                            {key: "projectSummary", label: "Project Summary", type: "textarea", placeholder: "Annual company meeting with 200 attendees...", required: true},
-                            {key: "decisionTimeline", label: "Decision Timeline", type: "text", placeholder: "by Friday, September 20th", required: true},
-                            {key: "nextSteps", label: "Next Steps", type: "textarea", placeholder: "Please review the attached proposal and let us know...", required: true},
-                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Review Proposal", required: true},
-                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://proposal.paradigmproductionsgroup.com", required: true}
+                            {key: "recipientFirstName", label: "Recipient First Name", type: "text", placeholder: "Jane", required: true},
+                            {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting", required: true},
+                            {key: "proposalLink", label: "Proposal Link", type: "url", placeholder: "https://proposal.paradigmproductionsgroup.com", required: true},
+                            {key: "decisionDate", label: "Decision Date", type: "text", placeholder: "Friday, September 20th", required: true},
+                            {key: "senderName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
+                            {key: "phoneNumber", label: "Phone Number", type: "text", placeholder: "(555) 123-4567", required: true},
+                            {key: "websiteUrl", label: "Website URL", type: "url", placeholder: "https://paradigmproductionsgroup.com", required: true}
                         ],
                         htmlTemplate: this.getProposalSubmissionTemplate()
                     },
@@ -316,7 +316,7 @@ class EmailTemplateBuilder {
      */
     getLockedFields() {
         return {
-            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+            logoUrl: "https://brandcentral.netlify.app/assets/images/paradigm-logo.png",
             brandHex: "#1F1633",
             accentHex: "#3FCBFF",
             secondaryHex: "#3F105E",
@@ -337,10 +337,21 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="Paradigm Productions Group Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique AV Service Built on Trust</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Precision show calling • Creative previsualizations • Technical mastery</p>
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <!--[if gte mso 9]>
+                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:200px;">
+                        <v:fill type="gradient" color="#1F1633" color2="#3F105E" angle="135" />
+                        <v:textbox inset="0,0,0,0">
+                        <![endif]-->
+                        <div style="background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);">
+                            <img src="{{logoUrl}}" alt="Paradigm Productions Group Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
+                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique AV Service Built on Trust</h1>
+                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Precision show calling • Creative previsualizations • Technical mastery</p>
+                        </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
@@ -354,27 +365,39 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I thought you might be interested in seeing how our approach blends:</p>
                         
                         <div style="margin: 20px 0;">
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
-                                <div style="width: 8px; height: 8px; background: #3FCBFF; border-radius: 50%; margin-top: 8px; margin-right: 12px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Technical mastery</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Gear specs, CADs, and signal flow you can count on.</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
-                                <div style="width: 8px; height: 8px; background: #3FCBFF; border-radius: 50%; margin-top: 8px; margin-right: 12px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Creative impact</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Previsualizations that let you see the stage before show day.</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 15px;">
-                                <div style="width: 8px; height: 8px; background: #3FCBFF; border-radius: 50%; margin-top: 8px; margin-right: 12px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Trusted partnership</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">A familiar team that feels like an extension of yours.</p>
-                                </div>
-                            </div>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                                <tr>
+                                    <td style="width: 20px; vertical-align: top; padding-top: 8px;">
+                                        <div style="width: 8px; height: 8px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Technical mastery</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Gear specs, CADs, and signal flow you can count on.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                                <tr>
+                                    <td style="width: 20px; vertical-align: top; padding-top: 8px;">
+                                        <div style="width: 8px; height: 8px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Creative impact</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Previsualizations that let you see the stage before show day.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                                <tr>
+                                    <td style="width: 20px; vertical-align: top; padding-top: 8px;">
+                                        <div style="width: 8px; height: 8px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Trusted partnership</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">A familiar team that feels like an extension of yours.</p>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Here's a quick look at our work: <a href="{{portfolioLink}}" style="color: #3FCBFF; text-decoration: none; font-weight: 600;">{{portfolioLink}}</a></p>
@@ -390,7 +413,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="mailto:{{email}}?subject=Let's Connect - AV Partnership Discussion" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Connect</a>
+                        <a href="mailto:{{email}}?subject=Let's Connect - AV Partnership Discussion" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Connect</a>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">Warm regards,</p>
                     </td>
@@ -426,10 +449,26 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="Paradigm Productions Group Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">High-touch client care • Precision execution • Zero margin for error</p>
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <!--[if gte mso 9]>
+                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:200px;">
+                        <v:fill type="gradient" color="#1F1633" color2="#3F105E" angle="135" />
+                        <v:textbox inset="0,0,0,0">
+                        <![endif]-->
+                        <div style="background: #1F1633;">
+                            <img src="{{logoUrl}}" alt="Paradigm Productions Group Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
+                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
+                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">High-touch client care • Precision execution • Zero margin for error</p>
+                        </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
@@ -445,34 +484,50 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; font-weight: 600;">We focus on four core strengths:</p>
                         
                         <div style="margin: 20px 0;">
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
-                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Technical Direction</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">From gear specs to cue calls, we orchestrate the entire show flow with precision.</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
-                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Show Management</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">We lead rehearsals, wrangle timelines, and keep every moment running flawlessly.</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
-                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">On-Site Execution</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Our team shows up early, stays late, and sweats the details so you don't have to.</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
-                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
-                                <div>
-                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Creative Direction</p>
-                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">From branding to motion design, we ensure every visual is on-message and show-ready.</p>
-                                </div>
-                            </div>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 18px;">
+                                <tr>
+                                    <td style="width: 25px; vertical-align: top; padding-top: 6px;">
+                                        <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Technical Direction</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">From gear specs to cue calls, we orchestrate the entire show flow with precision.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 18px;">
+                                <tr>
+                                    <td style="width: 25px; vertical-align: top; padding-top: 6px;">
+                                        <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Show Management</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">We lead rehearsals, wrangle timelines, and keep every moment running flawlessly.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 18px;">
+                                <tr>
+                                    <td style="width: 25px; vertical-align: top; padding-top: 6px;">
+                                        <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">On-Site Execution</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Our team shows up early, stays late, and sweats the details so you don't have to.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                            <table role="presentation" style="width: 100%; border-collapse: collapse; margin-bottom: 18px;">
+                                <tr>
+                                    <td style="width: 25px; vertical-align: top; padding-top: 6px;">
+                                        <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; mso-border-radius-alt: 0; margin: 0;"></div>
+                                    </td>
+                                    <td style="vertical-align: top;">
+                                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Creative Direction</p>
+                                        <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">From branding to motion design, we ensure every visual is on-message and show-ready.</p>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Our sweet spot? High-stakes productions for pharma, finance, and national associations — where every detail matters, timelines are unforgiving, and the margin for error is zero.</p>
@@ -482,13 +537,13 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Let's continue the conversation and explore how we can make {{eventName}} your most seamless, impactful production yet.</p>
                         
                         <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:220px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
                         <v:textbox inset="0,0,0,0">
                         <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Let's Continue the Conversation</center>
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="mailto:{{yourEmail}}?subject=Continue Our Conversation - {{eventName}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Continue the Conversation</a>
+                        <a href="mailto:{{yourEmail}}?subject=Continue Our Conversation - {{eventName}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Continue the Conversation</a>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">Warm regards,</p>
                     </td>
@@ -524,30 +579,62 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Your Proposal is Ready</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Tailored specifically for {{recipientCompany}}</p>
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <!--[if gte mso 9]>
+                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:200px;">
+                        <v:fill type="gradient" color="#1F1633" color2="#3F105E" angle="135" />
+                        <v:textbox inset="0,0,0,0">
+                        <![endif]-->
+                        <div style="background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);">
+                            <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
+                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
+                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Proposal Submission – {{eventName}}</p>
+                        </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for the opportunity to propose our services for {{projectName}}. We've carefully crafted a proposal that addresses your specific needs and vision.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Proposal Highlights</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{proposalHighlights}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientFirstName}},</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for the opportunity to submit our proposal for {{eventName}}.</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">At Paradigm Productions Group, we deliver <strong>Boutique Service Built on Trust</strong> — a seamless blend of precise technical direction, polished execution, and creative solutions that make every event exceptional.</p>
+                        
+                        <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 25px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Here's what happens next:</h3>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <p style="color: #3FCBFF; font-weight: 600; margin: 0 0 8px 0; font-size: 16px;">📋 Proposal Review</p>
+                                <p style="color: #1F1633; font-size: 15px; line-height: 1.5; margin: 0;">You can review the full proposal <a href="{{proposalLink}}" style="color: #3FCBFF; text-decoration: none; font-weight: 600;">here</a>. We're available to walk through it in detail, answer questions, and ensure every element is aligned with your vision.</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 20px;">
+                                <p style="color: #3FCBFF; font-weight: 600; margin: 0 0 8px 0; font-size: 16px;">⏰ Decision Timeline</p>
+                                <p style="color: #1F1633; font-size: 15px; line-height: 1.5; margin: 0;">We understand that decisions will be made by {{decisionDate}}. If that changes, please let us know so we can adjust accordingly.</p>
+                            </div>
+                            
+                            <div style="margin-bottom: 0;">
+                                <p style="color: #3FCBFF; font-weight: 600; margin: 0 0 8px 0; font-size: 16px;">🎯 Pre-Event Planning</p>
+                                <p style="color: #1F1633; font-size: 15px; line-height: 1.5; margin: 0;">Upon confirmation, we'll begin refining CAD layouts, finalizing gear specs, and preparing conceptual previsualizations to ensure a flawless show flow.</p>
+                            </div>
                         </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Timeline:</strong> {{projectTimeline}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">We're excited about the possibility of partnering with you to bring this vision to life. Please review the attached proposal and let me know if you have any questions.</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">This proposal was built with your audience, objectives, and budget in mind — ensuring every element supports your goals. We look forward to the opportunity to build on the strong foundation we've already established and deliver an event that exceeds expectations.</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">If it's helpful, we can schedule a quick proposal walkthrough call this week to review details together.</p>
+                        
                         <!--[if mso]>
                         <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
                         <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Review Proposal</center>
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{proposalLink}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 15px 30px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all; margin-bottom: 20px;">Review Proposal</a>
                     </td>
                 </tr>
                 <tr>
@@ -555,17 +642,15 @@ class EmailTemplateBuilder {
                         <table role="presentation" style="width: 100%; border-collapse: collapse;">
                             <tr>
                                 <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #1F1633; font-size: 16px; margin: 0 0 5px 0;">Warm regards,</p>
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 5px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">Creative Director</p>
                                     <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
                                     <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                        <a href="tel:{{phoneNumber}}" style="color: #3FCBFF; text-decoration: none;">{{phoneNumber}}</a> | 
+                                        <a href="{{websiteUrl}}" style="color: #3FCBFF; text-decoration: none;">{{websiteUrl}}</a>
                                     </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">{{companyAddress}}</p>
                                 </td>
                             </tr>
                         </table>
@@ -582,10 +667,15 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for the Opportunity</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Building relationships for the future</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
@@ -602,7 +692,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{companyWebsite}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Stay Connected</a>
+                        <a href="{{companyWebsite}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Stay Connected</a>
                     </td>
                 </tr>
                 <tr>
@@ -637,17 +727,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Welcome to the {{companyName}} Family!</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We're thrilled to partner with you</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}} and the entire {{recipientCompany}} team,</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{welcomeMessage}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">What's Next</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{nextSteps}}</p>
                         </div>
@@ -660,7 +755,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -695,17 +790,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Get Started</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your onboarding information and next steps</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Welcome to {{companyName}}! We're excited to begin working with {{recipientCompany}} on {{projectName}}.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Onboarding Checklist</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{onboardingSteps}}</p>
                         </div>
@@ -720,7 +820,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -755,17 +855,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for an Amazing Event!</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{eventName}} wrap-up and highlights</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">What an incredible {{eventName}}! Thank you for trusting {{companyName}} to bring your vision to life. {{eventSuccess}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Highlights</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventHighlights}}</p>
                         </div>
@@ -779,7 +884,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -814,17 +919,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{holidayTitle}}</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">From the {{companyName}} family to yours</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{holidayMessage}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0; text-align: center;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0; text-align: center;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">{{yearReflection}}</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{yearHighlights}}</p>
                         </div>
@@ -837,7 +947,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{companyWebsite}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Our Portfolio</a>
+                        <a href="{{companyWebsite}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Our Portfolio</a>
                     </td>
                 </tr>
                 <tr>
@@ -872,10 +982,15 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Help Us Improve</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your feedback matters to us</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
@@ -883,7 +998,7 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for choosing {{companyName}} for {{eventName}}. We hope you had an amazing experience!</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">To help us continue delivering exceptional events, we'd love to hear your feedback. The survey takes approximately {{estimatedTime}} to complete.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0; text-align: center;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0; text-align: center;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Survey Incentive</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">Complete the survey and receive {{surveyIncentive}} as a thank you!</p>
                         </div>
@@ -895,7 +1010,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -930,17 +1045,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Share Your Success Story</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Help inspire other clients</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{eventName}} was such a tremendous success, and we'd love to share your story to inspire other clients.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Success Metrics</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventSuccessMetrics}}</p>
                         </div>
@@ -953,7 +1073,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -988,17 +1108,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Remembering {{eventName}}</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{anniversaryDate}}</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{anniversaryDate}}, we had the privilege of producing {{eventName}}. {{eventMemory}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Highlights</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventStats}}</p>
                         </div>
@@ -1011,7 +1136,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -1046,17 +1171,22 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{insightTitle}}</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Industry insights from {{companyName}}</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I thought you might find this industry insight interesting and relevant to your upcoming events.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Key Insights</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{keyInsights}}</p>
                         </div>
@@ -1070,7 +1200,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -1105,10 +1235,15 @@ class EmailTemplateBuilder {
         return `
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
-                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px; display: block;">
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Reconnect</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We've been busy creating amazing events</p>
+                    </div>
+                        <!--[if gte mso 9]>
+                        </v:textbox>
+                        </v:rect>
+                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
@@ -1116,7 +1251,7 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I was just thinking about {{lastInteraction}} and wanted to reach out to reconnect.</p>
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{recentWorkExamples}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3FCBFF; margin: 20px 0;">
                             <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">What's New at {{companyName}}</h3>
                             <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{valueProposition}}</p>
                         </div>
@@ -1129,7 +1264,7 @@ class EmailTemplateBuilder {
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
                     </td>
                 </tr>
                 <tr>
@@ -1899,7 +2034,7 @@ class EmailTemplateBuilder {
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa;">
         <tr>
             <td align="center" style="padding: 20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; mso-border-radius-alt: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="padding: 30px 40px 20px; text-align: center; background-color: {{brandHex}}; border-radius: 8px 8px 0 0;">
@@ -1940,7 +2075,7 @@ class EmailTemplateBuilder {
                                         </v:roundrect>
                                         <![endif]-->
                                         <!--[if !mso]><!-->
-                                        <a href="{{ctaUrl}}" style="display: inline-block; padding: 15px 30px; background-color: {{accentHex}}; color: #ffffff; text-decoration: none; border-radius: 5px; font-weight: 600; font-size: 16px; font-family: 'Manrope', Arial, sans-serif;">{{ctaText}}</a>
+                                        <a href="{{ctaUrl}}" style="display: inline-block; padding: 15px 30px; background-color: {{accentHex}}; color: #ffffff; text-decoration: none; border-radius: 5px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; font-family: 'Manrope', Arial, sans-serif;">{{ctaText}}</a>
                                         <!--<![endif]-->
                                     </td>
                                 </tr>
@@ -1989,7 +2124,7 @@ class EmailTemplateBuilder {
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa;">
         <tr>
             <td align="center" style="padding: 20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; mso-border-radius-alt: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="padding: 30px 40px 20px; text-align: center; background: linear-gradient(135deg, {{brandHex}} 0%, #374151 100%);">
@@ -2008,7 +2143,7 @@ class EmailTemplateBuilder {
                                 Following our recent conversation about {{recipientCompany}}'s upcoming project, I wanted to provide you with our detailed proposal for your review.
                             </p>
                             
-                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0;">
+                            <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; mso-border-radius-alt: 0; margin: 20px 0;">
                                 <h3 style="margin: 0 0 10px; font-size: 18px; color: {{brandHex}};">
                                     Proposal Reference: {{proposalReference}}
                                 </h3>
@@ -2031,7 +2166,7 @@ class EmailTemplateBuilder {
                                             <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">{{ctaText}}</center>
                                         </v:roundrect>
                                         <![endif]-->
-                                        <a href="{{ctaUrl}}" style="background-color: {{accentHex}}; border: none; border-radius: 5px; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
+                                        <a href="{{ctaUrl}}" style="background-color: {{accentHex}}; border: none; border-radius: 5px; mso-border-radius-alt: 0; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
                                     </td>
                                 </tr>
                             </table>
@@ -2082,7 +2217,7 @@ class EmailTemplateBuilder {
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f0fdf4;">
         <tr>
             <td align="center" style="padding: 20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; mso-border-radius-alt: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="padding: 30px 40px 20px; text-align: center; background: linear-gradient(135deg, #10b981 0%, {{accentHex}} 100%);">
@@ -2104,7 +2239,7 @@ class EmailTemplateBuilder {
                                 We're thrilled to officially welcome {{recipientCompany}} to the {{companyName}} family! Thank you for choosing us to bring your vision to life.
                             </p>
                             
-                            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); padding: 25px; border-radius: 8px; border-left: 4px solid #10b981; margin: 25px 0;">
+                            <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); padding: 25px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #10b981; margin: 25px 0;">
                                 <h3 style="margin: 0 0 15px; font-size: 18px; color: {{brandHex}};">
                                     Project: {{projectName}}
                                 </h3>
@@ -2133,7 +2268,7 @@ class EmailTemplateBuilder {
                                             <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">{{ctaText}}</center>
                                         </v:roundrect>
                                         <![endif]-->
-                                        <a href="{{ctaUrl}}" style="background-color: #10b981; border: none; border-radius: 5px; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 220px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
+                                        <a href="{{ctaUrl}}" style="background-color: #10b981; border: none; border-radius: 5px; mso-border-radius-alt: 0; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 220px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
                                     </td>
                                 </tr>
                             </table>
@@ -2184,7 +2319,7 @@ class EmailTemplateBuilder {
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #fef3c0;">
         <tr>
             <td align="center" style="padding: 20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; mso-border-radius-alt: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="padding: 30px 40px 20px; text-align: center; background: linear-gradient(135deg, #f59e0b 0%, {{accentHex}} 100%);">
@@ -2206,7 +2341,7 @@ class EmailTemplateBuilder {
                                 What an incredible event! {{eventName}} on {{eventDate}} was truly special, and we're so grateful that {{recipientCompany}} trusted us to bring your vision to life.
                             </p>
                             
-                            <div style="background: linear-gradient(135deg, #fef3c0 0%, #fde68a 100%); padding: 25px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 25px 0;">
+                            <div style="background: linear-gradient(135deg, #fef3c0 0%, #fde68a 100%); padding: 25px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #f59e0b; margin: 25px 0;">
                                 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333333; font-style: italic;">
                                     {{personalMessage}}
                                 </p>
@@ -2226,7 +2361,7 @@ class EmailTemplateBuilder {
                                             <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">{{ctaText}}</center>
                                         </v:roundrect>
                                         <![endif]-->
-                                        <a href="{{ctaUrl}}" style="background-color: #f59e0b; border: none; border-radius: 5px; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 220px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
+                                        <a href="{{ctaUrl}}" style="background-color: #f59e0b; border: none; border-radius: 5px; mso-border-radius-alt: 0; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 220px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
                                     </td>
                                 </tr>
                             </table>
@@ -2281,7 +2416,7 @@ class EmailTemplateBuilder {
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #fef2f9;">
         <tr>
             <td align="center" style="padding: 20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: #ffffff; border-radius: 8px; mso-border-radius-alt: 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <!-- Header -->
                     <tr>
                         <td style="padding: 30px 40px 20px; text-align: center; background: linear-gradient(135deg, {{brandHex}} 0%, #6b7280 100%);">
@@ -2303,7 +2438,7 @@ class EmailTemplateBuilder {
                                 Thank you for considering {{companyName}} for {{projectReference}}. While we're disappointed we won't be working together on this project, we deeply appreciate the time you invested in the selection process.
                             </p>
                             
-                            <div style="background: linear-gradient(135deg, #fef2f9 0%, #fce7f3 100%); padding: 25px; border-radius: 8px; border-left: 4px solid #ec4899; margin: 25px 0;">
+                            <div style="background: linear-gradient(135deg, #fef2f9 0%, #fce7f3 100%); padding: 25px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #ec4899; margin: 25px 0;">
                                 <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #333333;">
                                     {{personalMessage}}
                                 </p>
@@ -2327,7 +2462,7 @@ class EmailTemplateBuilder {
                                             <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">{{ctaText}}</center>
                                         </v:roundrect>
                                         <![endif]-->
-                                        <a href="{{ctaUrl}}" style="background-color: {{accentHex}}; border: none; border-radius: 5px; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
+                                        <a href="{{ctaUrl}}" style="background-color: {{accentHex}}; border: none; border-radius: 5px; mso-border-radius-alt: 0; color: #ffffff; display: inline-block; font-family: Arial, sans-serif; font-size: 16px; font-weight: bold; line-height: 50px; text-align: center; text-decoration: none; width: 200px; -webkit-text-size-adjust: none; mso-hide: all;">{{ctaText}}</a>
                                     </td>
                                 </tr>
                             </table>
