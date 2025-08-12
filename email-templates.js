@@ -6,20 +6,24 @@
 
 class EmailTemplateBuilder {
     constructor() {
+        console.log('EmailTemplateBuilder constructor called');
         this.templates = [];
         this.currentTemplate = null;
         this.currentValues = {};
         this.previewElement = null;
         this.init();
+        console.log('EmailTemplateBuilder constructor completed');
     }
 
     /**
      * Initialize the template builder
      */
     init() {
+        console.log('EmailTemplateBuilder init() called');
         this.loadTemplates();
         this.setupEventListeners();
         this.renderTemplateLibrary();
+        console.log('EmailTemplateBuilder init() completed');
     }
 
     /**
@@ -1169,35 +1173,74 @@ class EmailTemplateBuilder {
      * Bind UI event handlers
      */
     bindUIEvents() {
+        console.log('Binding UI events...');
+        
         // Copy to clipboard button
         const copyBtn = document.getElementById('copyToClipboard');
         if (copyBtn) {
-            copyBtn.addEventListener('click', () => this.copyToClipboard());
+            console.log('Copy button found, adding event listener');
+            copyBtn.addEventListener('click', (e) => {
+                console.log('Copy button clicked');
+                e.preventDefault();
+                this.copyToClipboard();
+            });
+        } else {
+            console.warn('Copy button not found');
         }
 
         // Download HTML button
         const downloadBtn = document.getElementById('downloadHtml');
         if (downloadBtn) {
-            downloadBtn.addEventListener('click', () => this.downloadHtml());
+            console.log('Download button found, adding event listener');
+            downloadBtn.addEventListener('click', (e) => {
+                console.log('Download button clicked');
+                e.preventDefault();
+                this.downloadHtml();
+            });
+        } else {
+            console.warn('Download button not found');
         }
 
         // Show/Hide HTML button
         const showHtmlBtn = document.getElementById('showHtml');
         if (showHtmlBtn) {
-            showHtmlBtn.addEventListener('click', () => this.toggleHtmlView());
+            console.log('Show HTML button found, adding event listener');
+            showHtmlBtn.addEventListener('click', (e) => {
+                console.log('Show HTML button clicked');
+                e.preventDefault();
+                this.toggleHtmlView();
+            });
+        } else {
+            console.warn('Show HTML button not found');
         }
 
         // Save draft button
         const saveDraftBtn = document.getElementById('saveDraft');
         if (saveDraftBtn) {
-            saveDraftBtn.addEventListener('click', () => this.saveDraft());
+            console.log('Save draft button found, adding event listener');
+            saveDraftBtn.addEventListener('click', (e) => {
+                console.log('Save draft button clicked');
+                e.preventDefault();
+                this.saveDraft();
+            });
+        } else {
+            console.warn('Save draft button not found');
         }
 
         // Load draft button
         const loadDraftBtn = document.getElementById('loadDraft');
         if (loadDraftBtn) {
-            loadDraftBtn.addEventListener('click', () => this.loadDraft());
+            console.log('Load draft button found, adding event listener');
+            loadDraftBtn.addEventListener('click', (e) => {
+                console.log('Load draft button clicked');
+                e.preventDefault();
+                this.loadDraft();
+            });
+        } else {
+            console.warn('Load draft button not found');
         }
+
+        console.log('UI events binding complete');
     }
 
     /**
@@ -1548,8 +1591,23 @@ class EmailTemplateBuilder {
         const preview = document.getElementById('emailPreview');
         if (!preview) return;
 
-        const html = this.generateHtml();
-        preview.srcdoc = html;
+        try {
+            const html = this.generateHtml();
+            
+            // Use data URL to avoid CSP issues with srcdoc
+            const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+            preview.src = dataUrl;
+        } catch (error) {
+            console.error('Error updating preview:', error);
+            // Fallback: try srcdoc
+            try {
+                const html = this.generateHtml();
+                preview.srcdoc = html;
+            } catch (fallbackError) {
+                console.error('Fallback preview error:', fallbackError);
+                this.showMessage('❌ Preview update failed. Please refresh the page.', 'error');
+            }
+        }
     }
 
     /**
@@ -1709,17 +1767,32 @@ class EmailTemplateBuilder {
      * Save current draft to localStorage
      */
     saveDraft() {
-        if (!this.currentTemplate) return;
+        console.log('saveDraft called');
+        console.log('currentTemplate:', this.currentTemplate);
+        console.log('currentValues:', this.currentValues);
+        
+        if (!this.currentTemplate) {
+            console.warn('No template to save');
+            this.showMessage('❌ No template selected to save as draft.', 'error');
+            return;
+        }
 
-        const draft = {
-            templateId: this.currentTemplate.id,
-            values: { ...this.currentValues },
-            owner: 'current-user', // TODO: Get from auth system
-            updatedAt: new Date().toISOString()
-        };
+        try {
+            const draft = {
+                templateId: this.currentTemplate.id,
+                values: { ...this.currentValues },
+                owner: 'current-user', // TODO: Get from auth system
+                updatedAt: new Date().toISOString()
+            };
 
-        localStorage.setItem('emailBuilderDraft', JSON.stringify(draft));
-        this.showMessage('✅ Draft saved locally!', 'success');
+            console.log('Saving draft:', draft);
+            localStorage.setItem('emailBuilderDraft', JSON.stringify(draft));
+            this.showMessage('✅ Draft saved locally!', 'success');
+            console.log('Draft saved successfully');
+        } catch (error) {
+            console.error('Error saving draft:', error);
+            this.showMessage('❌ Failed to save draft. Please try again.', 'error');
+        }
     }
 
     /**
@@ -2328,7 +2401,14 @@ let emailBuilder;
 
 // Initialize when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    emailBuilder = new EmailTemplateBuilder();
+    console.log('DOM loaded, initializing EmailTemplateBuilder...');
+    try {
+        emailBuilder = new EmailTemplateBuilder();
+        console.log('EmailTemplateBuilder initialized successfully:', emailBuilder);
+        window.emailBuilder = emailBuilder; // Make it globally accessible for debugging
+    } catch (error) {
+        console.error('Failed to initialize EmailTemplateBuilder:', error);
+    }
 });
 
 // Export for external access
