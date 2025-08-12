@@ -28,104 +28,124 @@ class EmailTemplateBuilder {
     loadTemplates() {
         this.templateCategories = [
             {
-                id: "prospect-sales",
-                name: "Prospect & Sales",
+                id: "prospect",
+                name: "Prospect",
                 description: "Templates for initial outreach and sales activities",
+                icon: "📧",
+                color: "#3FCBFF",
                 templates: [
                     {
-                        id: "client-prospecting-v1",
-                        name: "Client Prospecting",
-                        description: "Cold outreach template introducing PPG to a prospect.",
-                        category: "prospect-sales",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBQcm9zcGVjdGluZzwvdGV4dD48L3N2Zz4=",
-                        lockedFields: {
-                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                            brandHex: "#1F1633",
-                            accentHex: "#3FCBFF",
-                            secondaryHex: "#3F105E",
-                            supportingHex: "#B8A9D9",
-                            companyName: "Paradigm Productions Group",
-                            companyTagline: "Boutique Service Built on Trust",
-                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                            companyPhone: "(407) 909 - 1338",
-                            companyEmail: "hello@paradigmproductionsgroup.com",
-                            companyWebsite: "www.paradigmproductionsgroup.com"
-                        },
+                        id: "prospect-outreach-v1",
+                        name: "Prospect Outreach",
+                        description: "Personalized intro to PPG with portfolio link",
+                        category: "prospect",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb3NwZWN0IE91dHJlYWNoPC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
                             {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
                             {key: "introLine", label: "Introduction", type: "textarea", placeholder: "We help companies deliver unforgettable events...", required: true},
-                            {key: "valueProposition", label: "Value Proposition", type: "textarea", placeholder: "Our team blends technical precision with creative direction...", required: true},
-                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Schedule a Call", required: true},
-                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg", required: true}
+                            {key: "portfolioHighlight", label: "Portfolio Highlight", type: "textarea", placeholder: "Recent successes include...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "View Our Portfolio", required: true},
+                            {key: "ctaUrl", label: "Portfolio URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/portfolio", required: true}
                         ],
-                        htmlTemplate: this.getClientProspectingTemplate()
-                    }
-                ]
-            },
-            {
-                id: "acquisition-onboarding", 
-                name: "Acquisition & Onboarding",
-                description: "Templates for closing deals and welcoming new clients",
-                templates: [
+                        htmlTemplate: this.getProspectOutreachTemplate()
+                    },
                     {
-                        id: "client-acquisition-v1",
-                        name: "Client Acquisition",
-                        description: "Follow-up template after initial introduction and proposal.",
-                        category: "acquisition-onboarding",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBBY3F1aXNpdGlvbjwvdGV4dD48L3N2Zz4=",
-                        lockedFields: {
-                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                            brandHex: "#1F1633",
-                            accentHex: "#3FCBFF",
-                            secondaryHex: "#3F105E",
-                            supportingHex: "#B8A9D9",
-                            companyName: "Paradigm Productions Group",
-                            companyTagline: "Boutique Service Built on Trust",
-                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                            companyPhone: "(407) 909 - 1338",
-                            companyEmail: "hello@paradigmproductionsgroup.com",
-                            companyWebsite: "www.paradigmproductionsgroup.com"
-                        },
+                        id: "capabilities-followup-v1",
+                        name: "Capabilities Follow-Up",
+                        description: "Sent after networking or a discovery call",
+                        category: "prospect",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcGFiaWxpdGllcyBGb2xsb3ctVXA8L3RleHQ+PC9zdmc+",
+                        lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
+                            {key: "meetingReference", label: "Meeting Reference", type: "text", placeholder: "Our conversation at the trade show", required: true},
+                            {key: "keyCapabilities", label: "Key Capabilities", type: "textarea", placeholder: "Full-service event production, AV design, creative direction...", required: true},
+                            {key: "relevantExperience", label: "Relevant Experience", type: "textarea", placeholder: "Similar events we've produced...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Schedule a Consultation", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg", required: true}
+                        ],
+                        htmlTemplate: this.getCapabilitiesFollowUpTemplate()
+                    },
+                    {
+                        id: "proposal-submission-v1",
+                        name: "Proposal Submission Cover Email",
+                        description: "Sets expectations, confirms timeline",
+                        category: "prospect",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb3Bvc2FsIFN1Ym1pc3Npb248L3RleHQ+PC9zdmc+",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
                             {key: "proposalReference", label: "Proposal Reference", type: "text", placeholder: "PPG-2025-001", required: true},
-                            {key: "projectDetails", label: "Project Details", type: "textarea", placeholder: "Annual company meeting with 200 attendees...", required: true},
+                            {key: "projectSummary", label: "Project Summary", type: "textarea", placeholder: "Annual company meeting with 200 attendees...", required: true},
+                            {key: "decisionTimeline", label: "Decision Timeline", type: "text", placeholder: "by Friday, September 20th", required: true},
                             {key: "nextSteps", label: "Next Steps", type: "textarea", placeholder: "Please review the attached proposal and let us know...", required: true},
                             {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Review Proposal", required: true},
                             {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://proposal.paradigmproductionsgroup.com", required: true}
                         ],
-                        htmlTemplate: this.getClientAcquisitionTemplate()
+                        htmlTemplate: this.getProposalSubmissionTemplate()
                     },
                     {
-                        id: "client-onboarding-v1",
-                        name: "Client Onboarding",
-                        description: "Welcome template for new clients after project approval.",
-                        category: "acquisition-onboarding",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
-                        lockedFields: {
-                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                            brandHex: "#1F1633",
-                            accentHex: "#3FCBFF",
-                            secondaryHex: "#3F105E",
-                            supportingHex: "#B8A9D9",
-                            companyName: "Paradigm Productions Group",
-                            companyTagline: "Boutique Service Built on Trust",
-                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                            companyPhone: "(407) 909 - 1338",
-                            companyEmail: "hello@paradigmproductionsgroup.com",
-                            companyWebsite: "www.paradigmproductionsgroup.com"
-                        },
+                        id: "loss-bid-thankyou-v1",
+                        name: "Loss of Bid Thank You",
+                        description: "Polite closeout, keeps door open",
+                        category: "prospect",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgQmlkIFRoYW5rIFlvdTwvdGV4dD48L3N2Zz4=",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "projectReference", label: "Project Reference", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "congratulatoryMessage", label: "Congratulatory Message", type: "textarea", placeholder: "Congratulations on selecting your event partner...", required: true},
+                            {key: "futureOffering", label: "Future Offering", type: "textarea", placeholder: "We'd love to stay connected for future opportunities...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Stay Connected", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/newsletter", required: true}
+                        ],
+                        htmlTemplate: this.getLossBidThankYouTemplate()
+                    }
+                ]
+            },
+            {
+                id: "acquisition", 
+                name: "Acquisition",
+                description: "Templates for closing deals and welcoming new clients",
+                icon: "🤝",
+                color: "#B8A9D9",
+                templates: [
+                    {
+                        id: "new-client-welcome-v1",
+                        name: "New Client Welcome",
+                        description: "Celebrates partnership, shares points of contact",
+                        category: "acquisition",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5ldyBDbGllbnQgV2VsY29tZTwvdGV4dD48L3N2Zz4=",
+                        lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
                             {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
                             {key: "projectName", label: "Project Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
                             {key: "projectManager", label: "Project Manager", type: "text", placeholder: "John Smith", required: true},
+                            {key: "accountManager", label: "Account Manager", type: "text", placeholder: "Sarah Johnson", required: true},
                             {key: "kickoffDate", label: "Kickoff Date", type: "text", placeholder: "September 15, 2025", required: true},
-                            {key: "nextSteps", label: "Immediate Next Steps", type: "list", placeholder: "Discovery call scheduled|Contract signing|Initial planning meeting", required: true},
                             {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Access Client Portal", required: true},
                             {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://portal.paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getNewClientWelcomeTemplate()
+                    },
+                    {
+                        id: "client-onboarding-v1",
+                        name: "Client Onboarding",
+                        description: "Event questionnaire, file-sharing links, kickoff schedule",
+                        category: "acquisition",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "projectName", label: "Project Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "questionnaireUrl", label: "Event Questionnaire URL", type: "url", placeholder: "https://forms.paradigmproductionsgroup.com/event-brief", required: true},
+                            {key: "fileSharingUrl", label: "File Sharing URL", type: "url", placeholder: "https://share.paradigmproductionsgroup.com/client", required: true},
+                            {key: "kickoffSchedule", label: "Kickoff Schedule", type: "textarea", placeholder: "Discovery call: Sept 10|Planning meeting: Sept 15|Design review: Sept 20", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Complete Event Brief", required: true},
+                            {key: "ctaUrl", label: "Primary Action URL", type: "url", placeholder: "https://forms.paradigmproductionsgroup.com/event-brief", required: true}
                         ],
                         htmlTemplate: this.getClientOnboardingTemplate()
                     }
@@ -135,36 +155,60 @@ class EmailTemplateBuilder {
                 id: "post-event",
                 name: "Post-Event",
                 description: "Templates for follow-up after event completion",
+                icon: "🎉",
+                color: "#3F105E",
                 templates: [
                     {
-                        id: "post-event-followup-v1",
-                        name: "Post-Event Follow-Up",
-                        description: "Follow-up template for gathering feedback after event completion.",
+                        id: "post-event-thankyou-v1",
+                        name: "Post-Event Thank You & Recap",
+                        description: "Quick wins, warm wrap-up",
                         category: "post-event",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgRm9sbG93LVVwPC90ZXh0Pjwvc3ZnPg==",
-                        lockedFields: {
-                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                            brandHex: "#1F1633",
-                            accentHex: "#3FCBFF",
-                            secondaryHex: "#3F105E",
-                            supportingHex: "#B8A9D9",
-                            companyName: "Paradigm Productions Group",
-                            companyTagline: "Boutique Service Built on Trust",
-                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                            companyPhone: "(407) 909 - 1338",
-                            companyEmail: "hello@paradigmproductionsgroup.com",
-                            companyWebsite: "www.paradigmproductionsgroup.com"
-                        },
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgVGhhbmsgWW91PC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
                             {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
                             {key: "eventDate", label: "Event Date", type: "text", placeholder: "September 15, 2025", required: true},
+                            {key: "eventHighlights", label: "Event Highlights", type: "textarea", placeholder: "200+ attendees|98% satisfaction rating|Zero technical issues", required: true},
                             {key: "personalMessage", label: "Personal Message", type: "textarea", placeholder: "Thank you for trusting us with your important event...", required: true},
                             {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Share Your Feedback", required: true},
                             {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://feedback.paradigmproductionsgroup.com", required: true}
                         ],
-                        htmlTemplate: this.getPostEventTemplate()
+                        htmlTemplate: this.getPostEventThankYouTemplate()
+                    },
+                    {
+                        id: "survey-request-v1",
+                        name: "Survey Request",
+                        description: "Short, branded feedback request",
+                        category: "post-event",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlN1cnZleSBSZXF1ZXN0PC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "surveyIncentive", label: "Survey Incentive", type: "text", placeholder: "$50 Amazon gift card", required: false},
+                            {key: "estimatedTime", label: "Estimated Time", type: "text", placeholder: "5 minutes", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Take Survey", required: true},
+                            {key: "ctaUrl", label: "Survey URL", type: "url", placeholder: "https://survey.paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getSurveyRequestTemplate()
+                    },
+                    {
+                        id: "case-study-request-v1",
+                        name: "Case Study Request",
+                        description: "Permission to feature the event in PPG's portfolio",
+                        category: "post-event",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhc2UgU3R1ZHkgUmVxdWVzdDwvdGV4dD48L3N2Zz4=",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
+                            {key: "eventSuccessMetrics", label: "Event Success Metrics", type: "textarea", placeholder: "200+ attendees|98% satisfaction|$50K under budget", required: true},
+                            {key: "portfolioBenefit", label: "Portfolio Benefit", type: "textarea", placeholder: "Help other clients see the possibilities...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Give Permission", required: true},
+                            {key: "ctaUrl", label: "Permission Form URL", type: "url", placeholder: "https://forms.paradigmproductionsgroup.com/case-study", required: true}
+                        ],
+                        htmlTemplate: this.getCaseStudyRequestTemplate()
                     }
                 ]
             },
@@ -172,36 +216,77 @@ class EmailTemplateBuilder {
                 id: "relationship-maintenance",
                 name: "Relationship Maintenance", 
                 description: "Templates for maintaining client relationships and future opportunities",
+                icon: "💬",
+                color: "#1F1633",
                 templates: [
                     {
-                        id: "loss-thankyou-v1",
-                        name: "Loss Thank-You",
-                        description: "Gracious follow-up template when not selected for a project.",
+                        id: "holiday-greeting-v1",
+                        name: "Holiday / Year-End Greeting",
+                        description: "Seasonal, warm, non-salesy",
                         category: "relationship-maintenance",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgVGhhbmstWW91PC90ZXh0Pjwvc3ZnPg==",
-                        lockedFields: {
-                            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
-                            brandHex: "#1F1633",
-                            accentHex: "#3FCBFF",
-                            secondaryHex: "#3F105E",
-                            supportingHex: "#B8A9D9",
-                            companyName: "Paradigm Productions Group",
-                            companyTagline: "Boutique Service Built on Trust",
-                            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
-                            companyPhone: "(407) 909 - 1338",
-                            companyEmail: "hello@paradigmproductionsgroup.com",
-                            companyWebsite: "www.paradigmproductionsgroup.com"
-                        },
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkhvbGlkYXkgR3JlZXRpbmc8L3RleHQ+PC9zdmc+",
+                        lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                            {key: "recipientCompany", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: true},
-                            {key: "projectReference", label: "Project Reference", type: "text", placeholder: "Annual Company Meeting 2025", required: true},
-                            {key: "personalMessage", label: "Personal Message", type: "textarea", placeholder: "While we're disappointed we won't be working together this time...", required: true},
-                            {key: "futureOffering", label: "Future Offering", type: "textarea", placeholder: "We'd love to stay connected for future opportunities...", required: true},
-                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Stay Connected", required: true},
-                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/newsletter", required: true}
+                            {key: "holidayType", label: "Holiday/Season", type: "text", placeholder: "Holiday Season", required: true},
+                            {key: "yearReflection", label: "Year Reflection", type: "textarea", placeholder: "What a remarkable year it's been...", required: true},
+                            {key: "gratitudeMessage", label: "Gratitude Message", type: "textarea", placeholder: "We're grateful for clients like you...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "View Our Year in Review", required: false},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/year-review", required: false}
                         ],
-                        htmlTemplate: this.getLossThankYouTemplate()
+                        htmlTemplate: this.getHolidayGreetingTemplate()
+                    },
+                    {
+                        id: "event-anniversary-v1",
+                        name: "Event Anniversary Note",
+                        description: "\"One year ago...\" with throwback photo/stat",
+                        category: "relationship-maintenance",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEFubml2ZXJzYXJ5PC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "eventName", label: "Event Name", type: "text", placeholder: "Annual Company Meeting 2024", required: true},
+                            {key: "anniversaryDate", label: "Anniversary Date", type: "text", placeholder: "One year ago today", required: true},
+                            {key: "eventMemory", label: "Event Memory", type: "textarea", placeholder: "That incredible moment when...", required: true},
+                            {key: "eventStats", label: "Event Stats", type: "textarea", placeholder: "200 attendees|98% satisfaction|Zero technical issues", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Plan This Year's Event", required: false},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg/anniversary-planning", required: false}
+                        ],
+                        htmlTemplate: this.getEventAnniversaryTemplate()
+                    },
+                    {
+                        id: "industry-insight-v1",
+                        name: "Industry Insight Share",
+                        description: "Thought-leadership or trend relevant to the client",
+                        category: "relationship-maintenance",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkluZHVzdHJ5IEluc2lnaHQ8L3RleHQ+PC9zdmc+",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "insightTitle", label: "Insight Title", type: "text", placeholder: "2025 Event Technology Trends", required: true},
+                            {key: "keyInsights", label: "Key Insights", type: "textarea", placeholder: "Three trends reshaping corporate events...", required: true},
+                            {key: "clientRelevance", label: "Client Relevance", type: "textarea", placeholder: "This could be particularly relevant for your upcoming...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Read Full Report", required: true},
+                            {key: "ctaUrl", label: "Report URL", type: "url", placeholder: "https://paradigmproductionsgroup.com/insights/2025-trends", required: true}
+                        ],
+                        htmlTemplate: this.getIndustryInsightTemplate()
+                    },
+                    {
+                        id: "reengagement-v1",
+                        name: "Re-Engagement Email",
+                        description: "Revives dormant clients with new work examples",
+                        category: "relationship-maintenance",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlJlLUVuZ2FnZW1lbnQ8L3RleHQ+PC9zdmc+",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
+                            {key: "lastInteraction", label: "Last Interaction Reference", type: "text", placeholder: "your successful 2023 conference", required: true},
+                            {key: "recentWorkExamples", label: "Recent Work Examples", type: "textarea", placeholder: "Since we last worked together, we've produced...", required: true},
+                            {key: "valueProposition", label: "Updated Value Proposition", type: "textarea", placeholder: "We've expanded our capabilities to include...", required: true},
+                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Reconnect with PPG", required: true},
+                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg/reconnect", required: true}
+                        ],
+                        htmlTemplate: this.getReEngagementTemplate()
                     }
                 ]
             }
@@ -212,6 +297,481 @@ class EmailTemplateBuilder {
         this.templateCategories.forEach(category => {
             this.templates.push(...category.templates);
         });
+    }
+
+    /**
+     * Get standard locked fields for all templates
+     */
+    getLockedFields() {
+        return {
+            logoUrl: "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1753197346051_5re6il8qkxx.png",
+            brandHex: "#1F1633",
+            accentHex: "#3FCBFF",
+            secondaryHex: "#3F105E",
+            supportingHex: "#B8A9D9",
+            companyName: "Paradigm Productions Group",
+            companyTagline: "Boutique Service Built on Trust",
+            companyAddress: "215 E Main Street, Leesburg, Florida 34748",
+            companyPhone: "(407) 909 - 1338",
+            companyEmail: "hello@paradigmproductionsgroup.com",
+            companyWebsite: "www.paradigmproductionsgroup.com"
+        };
+    }
+
+    /**
+     * Get standard prospect outreach template
+     */
+    getProspectOutreachTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Create Something Amazing Together</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{companyTagline}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{introLine}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{portfolioHighlight}}</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get capabilities follow-up template
+     */
+    getCapabilitiesFollowUpTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for Your Time</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Following up on our conversation</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for {{meetingReference}}. It was great learning more about your upcoming needs.</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;"><strong>Our Key Capabilities:</strong></p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{keyCapabilities}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;"><strong>Relevant Experience:</strong><br>{{relevantExperience}}</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get proposal submission template
+     */
+    getProposalSubmissionTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Your Proposal is Ready</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Tailored specifically for {{recipientCompany}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for the opportunity to propose our services for {{projectName}}. We've carefully crafted a proposal that addresses your specific needs and vision.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Proposal Highlights</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{proposalHighlights}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Timeline:</strong> {{projectTimeline}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">We're excited about the possibility of partnering with you to bring this vision to life. Please review the attached proposal and let me know if you have any questions.</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get loss bid thank you template
+     */
+    getLossBidThankYouTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for the Opportunity</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Building relationships for the future</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for considering {{companyName}} for {{projectName}}. While we're disappointed we won't be working together on this project, we truly appreciate the opportunity to propose our services.</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">We understand that choosing the right partner involves many factors, and we respect your decision. We hope the project is a tremendous success!</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{futureOpportunityMessage}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Please don't hesitate to reach out if there's anything we can help with in the future. We'd love to stay connected!</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Stay Connected</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{companyWebsite}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Stay Connected</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get new client welcome template
+     */
+    getNewClientWelcomeTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Welcome to the {{companyName}} Family!</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We're thrilled to partner with you</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}} and the entire {{recipientCompany}} team,</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{welcomeMessage}}</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">What's Next</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{nextSteps}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Our commitment to you goes beyond just delivering excellent events. We're here to be your trusted partner in creating memorable experiences that align with your brand and objectives.</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Thank you for choosing {{companyName}}. We can't wait to get started!</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get client onboarding template
+     */
+    getClientOnboardingTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Get Started</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your onboarding information and next steps</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Welcome to {{companyName}}! We're excited to begin working with {{recipientCompany}} on {{projectName}}.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Onboarding Checklist</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{onboardingSteps}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Key Contacts:</strong></p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{keyContacts}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{projectTimeline}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">If you have any questions or need clarification on any of these steps, please don't hesitate to reach out. We're here to make this process as smooth as possible!</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get post-event thank you template
+     */
+    getPostEventThankYouTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for an Amazing Event!</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{eventName}} wrap-up and highlights</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">What an incredible {{eventName}}! Thank you for trusting {{companyName}} to bring your vision to life. {{eventSuccess}}</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Highlights</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventHighlights}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Final Numbers:</strong></p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{finalMetrics}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{futureCollaboration}}</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get holiday greeting template
+     */
+    getHolidayGreetingTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{holidayTitle}}</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">From the {{companyName}} family to yours</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{holidayMessage}}</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0; text-align: center;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">{{yearReflection}}</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{yearHighlights}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">{{futureExcitement}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Wishing you and your loved ones {{holidayWishes}}!</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Our Portfolio</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{companyWebsite}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Our Portfolio</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
     }
 
     /**
@@ -265,14 +825,74 @@ class EmailTemplateBuilder {
         const container = document.getElementById('templateLibrary');
         if (!container) return;
 
-        // Render templates organized by categories
-        container.innerHTML = this.templateCategories.map(category => `
-            <div class="template-category">
-                <div class="category-header">
-                    <h2 class="category-title">${category.name}</h2>
-                    <p class="category-description">${category.description}</p>
+        // Add search functionality
+        const searchHtml = `
+            <div class="search-container">
+                <input type="text" id="templateSearch" placeholder="Search templates or categories..." class="search-input">
+                <button class="back-to-categories-btn" onclick="emailBuilder.showCategories()" style="display: none;">
+                    ← Back to Categories
+                </button>
+            </div>
+        `;
+
+        // Render category cards view
+        const categoriesHtml = this.templateCategories.map(category => `
+            <div class="category-card" data-category-id="${category.id}" onclick="emailBuilder.showCategoryTemplates('${category.id}')">
+                <div class="category-icon" style="color: ${category.color};">
+                    ${category.icon}
                 </div>
-                <div class="category-templates">
+                <div class="category-info">
+                    <h3 class="category-card-title">${category.name}</h3>
+                    <p class="category-card-description">${category.description}</p>
+                    <div class="category-template-count">
+                        ${category.templates.length} template${category.templates.length !== 1 ? 's' : ''}
+                    </div>
+                </div>
+                <div class="category-arrow">→</div>
+            </div>
+        `).join('');
+
+        container.innerHTML = searchHtml + `
+            <div id="categoryView" class="category-grid">
+                ${categoriesHtml}
+            </div>
+            <div id="templateView" class="template-view" style="display: none;">
+                <!-- Templates will be loaded here -->
+            </div>
+        `;
+
+        // Setup search functionality
+        this.setupSearch();
+    }
+
+    /**
+     * Show templates for a specific category
+     */
+    showCategoryTemplates(categoryId) {
+        const category = this.templateCategories.find(c => c.id === categoryId);
+        if (!category) return;
+
+        const categoryView = document.getElementById('categoryView');
+        const templateView = document.getElementById('templateView');
+        const backButton = document.querySelector('.back-to-categories-btn');
+
+        if (categoryView && templateView && backButton) {
+            categoryView.style.display = 'none';
+            templateView.style.display = 'block';
+            backButton.style.display = 'inline-block';
+
+            // Render templates for this category
+            templateView.innerHTML = `
+                <div class="category-header-detail">
+                    <div class="category-icon-large" style="color: ${category.color};">
+                        ${category.icon}
+                    </div>
+                    <div>
+                        <h2 class="category-title-large">${category.name}</h2>
+                        <p class="category-description-large">${category.description}</p>
+                    </div>
+                </div>
+                <div class="category-templates-grid">
                     ${category.templates.map(template => `
                         <div class="template-card" data-template-id="${template.id}">
                             <div class="template-thumbnail">
@@ -288,8 +908,119 @@ class EmailTemplateBuilder {
                         </div>
                     `).join('')}
                 </div>
-            </div>
-        `).join('');
+            `;
+        }
+    }
+
+    /**
+     * Show categories view
+     */
+    showCategories() {
+        const categoryView = document.getElementById('categoryView');
+        const templateView = document.getElementById('templateView');
+        const backButton = document.querySelector('.back-to-categories-btn');
+
+        if (categoryView && templateView && backButton) {
+            categoryView.style.display = 'grid';
+            templateView.style.display = 'none';
+            backButton.style.display = 'none';
+        }
+    }
+
+    /**
+     * Setup search functionality
+     */
+    setupSearch() {
+        const searchInput = document.getElementById('templateSearch');
+        if (!searchInput) return;
+
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            this.filterContent(searchTerm);
+        });
+    }
+
+    /**
+     * Filter categories and templates based on search term
+     */
+    filterContent(searchTerm) {
+        if (!searchTerm) {
+            this.showCategories();
+            return;
+        }
+
+        const categoryView = document.getElementById('categoryView');
+        const templateView = document.getElementById('templateView');
+        const backButton = document.querySelector('.back-to-categories-btn');
+
+        // Search through all templates across categories
+        const matchingTemplates = [];
+        this.templateCategories.forEach(category => {
+            category.templates.forEach(template => {
+                const templateMatches = 
+                    template.name.toLowerCase().includes(searchTerm) ||
+                    template.description.toLowerCase().includes(searchTerm) ||
+                    category.name.toLowerCase().includes(searchTerm);
+                
+                if (templateMatches) {
+                    matchingTemplates.push({
+                        ...template,
+                        categoryName: category.name,
+                        categoryIcon: category.icon,
+                        categoryColor: category.color
+                    });
+                }
+            });
+        });
+
+        if (matchingTemplates.length > 0) {
+            // Show filtered results
+            if (categoryView && templateView) {
+                categoryView.style.display = 'none';
+                templateView.style.display = 'block';
+                backButton.style.display = 'inline-block';
+
+                templateView.innerHTML = `
+                    <div class="search-results-header">
+                        <h2>Search Results for "${searchTerm}"</h2>
+                        <p>${matchingTemplates.length} template${matchingTemplates.length !== 1 ? 's' : ''} found</p>
+                    </div>
+                    <div class="category-templates-grid">
+                        ${matchingTemplates.map(template => `
+                            <div class="template-card" data-template-id="${template.id}">
+                                <div class="template-category-badge" style="background-color: ${template.categoryColor}20; color: ${template.categoryColor};">
+                                    ${template.categoryIcon} ${template.categoryName}
+                                </div>
+                                <div class="template-thumbnail">
+                                    <img src="${template.thumbnail}" alt="${template.name}" />
+                                </div>
+                                <div class="template-info">
+                                    <h3>${template.name}</h3>
+                                    <p>${template.description}</p>
+                                    <button class="select-template-btn" onclick="emailBuilder.selectTemplate('${template.id}')">
+                                        Select Template
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        } else {
+            // Show no results
+            if (templateView) {
+                categoryView.style.display = 'none';
+                templateView.style.display = 'block';
+                backButton.style.display = 'inline-block';
+
+                templateView.innerHTML = `
+                    <div class="no-results">
+                        <h2>No templates found</h2>
+                        <p>No templates match "${searchTerm}". Try a different search term.</p>
+                    </div>
+                `;
+            }
+        }
     }
 
     /**
@@ -1091,6 +1822,63 @@ class EmailTemplateBuilder {
     </table>
 </body>
 </html>`;
+    }
+
+    /**
+     * Generate thumbnail URL for template
+     */
+    generateThumbnail(templateId) {
+        // Template name mapping for display
+        const templateNames = {
+            'initial_outreach': 'Initial Outreach',
+            'capabilities_follow_up': 'Capabilities Follow-Up', 
+            'proposal_submission': 'Proposal Submission',
+            'loss_bid_thank_you': 'Loss Bid Thank You',
+            'new_client_welcome': 'New Client Welcome',
+            'client_onboarding': 'Client Onboarding',
+            'thank_you_recap': 'Thank You & Recap',
+            'survey_request': 'Survey Request',
+            'case_study_request': 'Case Study Request',
+            'holiday_greeting': 'Holiday Greeting',
+            'event_anniversary': 'Event Anniversary',
+            'industry_insight': 'Industry Insight',
+            're_engagement': 'Re-Engagement'
+        };
+        
+        const templateName = templateNames[templateId] || 'Template';
+        
+        // Generate SVG placeholder with template name
+        const svg = `
+            <svg width="320" height="200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#1F1633;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#3F105E;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect width="320" height="200" fill="url(#bg)"/>
+                <circle cx="160" cy="70" r="20" fill="#3FCBFF" opacity="0.3"/>
+                <rect x="40" y="110" width="240" height="8" rx="4" fill="#3FCBFF" opacity="0.6"/>
+                <rect x="40" y="130" width="180" height="6" rx="3" fill="#B8A9D9" opacity="0.5"/>
+                <rect x="40" y="145" width="200" height="6" rx="3" fill="#B8A9D9" opacity="0.4"/>
+                <text text-anchor="middle" x="160" y="180" style="fill:#3FCBFF;font-family:Arial,sans-serif;font-size:12px;font-weight:600;">${templateName}</text>
+            </svg>
+        `;
+        
+        return 'data:image/svg+xml;base64,' + btoa(svg);
+    }
+
+    /**
+     * Get all templates (flat array for compatibility)
+     */
+    getAllTemplates() {
+        return this.templateCategories.flatMap(category => 
+            category.templates.map(template => ({
+                ...template,
+                categoryName: category.name,
+                categoryId: category.id
+            }))
+        );
     }
 }
 
