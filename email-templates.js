@@ -1284,9 +1284,6 @@ class EmailTemplateBuilder {
                 <div class="category-templates-grid">
                     ${category.templates.map(template => `
                         <div class="template-card" data-template-id="${template.id}">
-                            <div class="template-thumbnail">
-                                <img src="${template.thumbnail}" alt="${template.name}" />
-                            </div>
                             <div class="template-info">
                                 <h3>${template.name}</h3>
                                 <p>${template.description}</p>
@@ -1379,9 +1376,6 @@ class EmailTemplateBuilder {
                             <div class="template-card" data-template-id="${template.id}">
                                 <div class="template-category-badge" style="background-color: ${template.categoryColor}20; color: ${template.categoryColor};">
                                     ${template.categoryIcon} ${template.categoryName}
-                                </div>
-                                <div class="template-thumbnail">
-                                    <img src="${template.thumbnail}" alt="${template.name}" />
                                 </div>
                                 <div class="template-info">
                                     <h3>${template.name}</h3>
