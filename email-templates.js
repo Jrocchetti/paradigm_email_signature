@@ -1581,8 +1581,31 @@ class EmailTemplateBuilder {
 
         try {
             console.log('🏗️ Generating HTML...');
-            const html = this.generateHtml();
-            console.log('✅ HTML generated, length:', html.length);
+            let html = this.generateHtml();
+            
+            // Inject zoom styles into the HTML
+            const zoomScale = this.zoomLevel / 100;
+            const zoomCSS = `
+                <style>
+                    body {
+                        transform: scale(${zoomScale}) !important;
+                        transform-origin: top left !important;
+                        width: ${100 / zoomScale}% !important;
+                        height: ${100 / zoomScale}% !important;
+                    }
+                </style>
+            `;
+            
+            // Insert zoom CSS before closing head tag, or before body if no head
+            if (html.includes('</head>')) {
+                html = html.replace('</head>', zoomCSS + '</head>');
+            } else if (html.includes('<body')) {
+                html = html.replace('<body', zoomCSS + '<body');
+            } else {
+                html = zoomCSS + html;
+            }
+            
+            console.log('✅ HTML generated with zoom, length:', html.length);
             console.log('📝 HTML preview:', html.substring(0, 200) + '...');
             
             // Use data URL to avoid CSP issues with srcdoc
@@ -2488,30 +2511,20 @@ class EmailTemplateBuilder {
      */
     applyZoom() {
         console.log('applyZoom called with level:', this.zoomLevel);
-        const preview = document.getElementById('emailPreview');
         const zoomDisplay = document.getElementById('zoomLevel');
 
-        console.log('Elements found:', {
-            preview: preview,
-            zoomDisplay: zoomDisplay
-        });
-
-        if (preview) {
-            const scale = this.zoomLevel / 100;
-            console.log('Applying scale:', scale);
-            preview.style.transform = `scale(${scale})`;
-            preview.style.width = `${100 / scale}%`;
-            preview.style.height = `${100 / scale}%`;
-            console.log('Transform applied');
-        } else {
-            console.error('Preview iframe not found');
-        }
-
+        // Update zoom display
         if (zoomDisplay) {
             zoomDisplay.textContent = `${this.zoomLevel}%`;
             console.log('Zoom display updated');
         } else {
             console.error('Zoom display not found');
+        }
+
+        // Regenerate the preview with new zoom level
+        if (this.currentTemplate) {
+            console.log('Updating preview with new zoom level');
+            this.updatePreview();
         }
     }
 }
