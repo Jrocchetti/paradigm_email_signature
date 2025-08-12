@@ -1871,6 +1871,7 @@ class EmailTemplateBuilder {
             // Replace dynamic fields
             if (this.currentValues) {
                 console.log('🔄 Processing dynamic fields:', Object.keys(this.currentValues));
+                console.log('📊 Current values:', this.currentValues);
                 Object.entries(this.currentValues).forEach(([key, value]) => {
                     const field = this.currentTemplate.dynamicFields?.find(f => f.key === key);
                     let processedValue = value || '';
@@ -1878,6 +1879,9 @@ class EmailTemplateBuilder {
                     // Special handling for pain point selection
                     if (key === 'specificPainPoint' && value === 'custom') {
                         processedValue = this.currentValues['customPainPoint'] || '';
+                        console.log('🎯 Using custom pain point:', processedValue);
+                    } else if (key === 'specificPainPoint' && value) {
+                        console.log('🎯 Using predefined pain point:', value);
                     }
 
                     // Process list fields
@@ -1886,12 +1890,17 @@ class EmailTemplateBuilder {
                         processedValue = items.map(item => `<li>${item.trim()}</li>`).join('');
                     }
 
+                    console.log(`🔀 Replacing {{${key}}} with: "${processedValue}"`);
                     const regex = new RegExp(`{{${key}}}`, 'g');
                     html = html.replace(regex, processedValue);
                 });
             }
 
             // Clean up any remaining placeholders
+            const remainingPlaceholders = html.match(/{{[^}]+}}/g);
+            if (remainingPlaceholders) {
+                console.warn('⚠️ Remaining unfilled placeholders:', remainingPlaceholders);
+            }
             html = html.replace(/{{[^}]+}}/g, '');
             
             console.log('✅ Final HTML generated, length:', html.length);
