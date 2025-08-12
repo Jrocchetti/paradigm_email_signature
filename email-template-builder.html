@@ -1123,52 +1123,6 @@
                     emailBuilder.saveDraft();
                 }
             }, 30000);
-
-            // Form validation
-            function validateForm() {
-                if (!emailBuilder || !emailBuilder.currentTemplate) return false;
-                
-                const requiredFields = emailBuilder.currentTemplate.dynamicFields
-                    .filter(field => field.required)
-                    .map(field => field.key);
-                
-                for (let fieldKey of requiredFields) {
-                    const value = emailBuilder.currentValues[fieldKey];
-                    if (!value || value.trim().length === 0) {
-                        return false;
-                    }
-                }
-                
-                return true;
-            }
-
-            // Update button states based on form validation
-            function updateButtonStates() {
-                const isValid = validateForm();
-                const copyBtn = document.getElementById('copyToClipboard');
-                const downloadBtn = document.getElementById('downloadHtml');
-                
-                if (copyBtn) {
-                    copyBtn.disabled = !isValid;
-                    copyBtn.style.opacity = isValid ? '1' : '0.5';
-                }
-                
-                if (downloadBtn) {
-                    downloadBtn.disabled = !isValid;
-                    downloadBtn.style.opacity = isValid ? '1' : '0.5';
-                }
-            }
-
-            // Override updateField to include validation
-            setTimeout(() => {
-                if (emailBuilder && emailBuilder.updateField) {
-                    const originalUpdateField = emailBuilder.updateField;
-                    emailBuilder.updateField = function(key, value) {
-                        originalUpdateField.call(this, key, value);
-                        updateButtonStates();
-                    };
-                }
-            }, 500);
         });
     </script>
 </body>
