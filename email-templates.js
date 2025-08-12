@@ -46,7 +46,28 @@ class EmailTemplateBuilder {
                             {key: "firstName", label: "Recipient First Name", type: "text", placeholder: "Jane", required: true},
                             {key: "companyName", label: "Recipient Company", type: "text", placeholder: "Acme Corp", required: false},
                             {key: "industryVertical", label: "Industry/Vertical", type: "text", placeholder: "corporate", required: true},
-                            {key: "specificPainPoint", label: "Specific Pain Point or Context", type: "textarea", placeholder: "complex multi-room presentations", required: true},
+                            {
+                                key: "specificPainPoint", 
+                                label: "Choose Pain Point or Context", 
+                                type: "select",
+                                required: true,
+                                options: [
+                                    {value: "", label: "Select a pain point..."},
+                                    {value: "clarity in AV bids with transparent, line-item breakdowns", label: "Clarity in AV bids with transparent, line-item breakdowns"},
+                                    {value: "flexibility by avoiding rising exclusive in-house AV costs and penalties for outside vendors", label: "Flexibility by avoiding rising in-house AV costs and penalties"},
+                                    {value: "budget protection by eliminating surprise add-on fees for rigging, power, internet, or storage", label: "Budget protection by eliminating surprise add-on fees"},
+                                    {value: "consistent, experienced AV crews for flawless execution", label: "Consistent, experienced AV crews for flawless execution"},
+                                    {value: "adaptability to last-minute schedule or room changes without costly overtime charges", label: "Adaptability to last-minute changes without overtime charges"},
+                                    {value: "hybrid and streaming capabilities without exceeding budgets", label: "Hybrid and streaming capabilities without exceeding budgets"},
+                                    {value: "efficiency in navigating union labor rules and venue restrictions", label: "Efficiency in navigating union labor rules and venue restrictions"},
+                                    {value: "immersive LED, AI-assisted cameras, and advanced tech without breaking the budget", label: "Immersive LED, AI cameras, and advanced tech within budget"},
+                                    {value: "transparency by unbundling pricing for power, rigging, and internet", label: "Transparency by unbundling pricing for power, rigging, and internet"},
+                                    {value: "leverage in negotiating carve-outs to bring preferred AV partners into venues", label: "Leverage in negotiating carve-outs for preferred AV partners"},
+                                    {value: "cost-effective setups that build trust and avoid inflated pricing", label: "Cost-effective setups that build trust and avoid inflated pricing"},
+                                    {value: "custom", label: "Write your own..."}
+                                ]
+                            },
+                            {key: "customPainPoint", label: "Custom Pain Point (if selected above)", type: "textarea", placeholder: "Describe your specific pain point...", required: false, dependsOn: "specificPainPoint", dependsValue: "custom"},
                             {key: "portfolioLink", label: "Portfolio Link", type: "url", placeholder: "https://paradigmproductionsgroup.com/portfolio", required: true},
                             {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
                             {key: "title", label: "Your Title", type: "text", placeholder: "Senior AV Producer", required: true},
@@ -1623,6 +1644,13 @@ class EmailTemplateBuilder {
             const value = this.currentValues[field.key] || '';
             const required = field.required ? 'required' : '';
             
+            // Check if this field depends on another field
+            let style = '';
+            if (field.dependsOn) {
+                const dependsOnValue = this.currentValues[field.dependsOn] || '';
+                style = dependsOnValue === field.dependsValue ? 'display: block;' : 'display: none;';
+            }
+            
             let inputHtml = '';
             
             switch (field.type) {
@@ -1643,6 +1671,16 @@ class EmailTemplateBuilder {
                         ${required}
                         oninput="emailBuilder.updateField('${field.key}', this.value)"
                     />`;
+                    break;
+                case 'select':
+                    const options = field.options.map(option => 
+                        `<option value="${option.value}" ${value === option.value ? 'selected' : ''}>${option.label}</option>`
+                    ).join('');
+                    inputHtml = `<select 
+                        id="field_${field.key}" 
+                        ${required}
+                        onchange="emailBuilder.updateField('${field.key}', this.value); emailBuilder.handleFieldDependency('${field.key}', this.value)"
+                    >${options}</select>`;
                     break;
                 case 'list':
                     inputHtml = `<textarea 
@@ -1666,7 +1704,7 @@ class EmailTemplateBuilder {
             }
 
             return `
-                <div class="field-group">
+                <div class="field-group" style="${style}">
                     <label for="field_${field.key}">
                         ${field.label}
                         ${field.required ? '<span class="required">*</span>' : ''}
@@ -1685,6 +1723,36 @@ class EmailTemplateBuilder {
                 ${fieldsHtml}
             </form>
         `;
+    }
+
+    /**
+     * Handle field dependencies (show/hide fields based on other field values)
+     */
+    handleFieldDependency(changedFieldKey, changedValue) {
+        // Find all fields that depend on the changed field
+        const dependentFields = this.currentTemplate.dynamicFields.filter(field => 
+            field.dependsOn === changedFieldKey
+        );
+
+        dependentFields.forEach(field => {
+            const fieldGroup = document.querySelector(`#field_${field.key}`).closest('.field-group');
+            if (fieldGroup) {
+                if (changedValue === field.dependsValue) {
+                    fieldGroup.style.display = 'block';
+                } else {
+                    fieldGroup.style.display = 'none';
+                    // Clear the value when hiding
+                    this.currentValues[field.key] = '';
+                    const fieldElement = document.getElementById(`field_${field.key}`);
+                    if (fieldElement) {
+                        fieldElement.value = '';
+                    }
+                }
+            }
+        });
+
+        // Update preview to reflect changes
+        this.updatePreview();
     }
 
     /**
@@ -1806,6 +1874,11 @@ class EmailTemplateBuilder {
                 Object.entries(this.currentValues).forEach(([key, value]) => {
                     const field = this.currentTemplate.dynamicFields?.find(f => f.key === key);
                     let processedValue = value || '';
+
+                    // Special handling for pain point selection
+                    if (key === 'specificPainPoint' && value === 'custom') {
+                        processedValue = this.currentValues['customPainPoint'] || '';
+                    }
 
                     // Process list fields
                     if (field && field.type === 'list' && processedValue) {
