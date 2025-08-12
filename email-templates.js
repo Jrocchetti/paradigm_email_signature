@@ -384,8 +384,8 @@ class EmailTemplateBuilder {
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
                         <div style="background: #1F1633; text-align: center; padding: 20px 0;">
                             <!-- Outlook-safe image with correct aspect ratio -->
-                            <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                            <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                             <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700; font-family: Arial, sans-serif;">Bringing Boutique AV Service to Your Next Event</h1>
                             <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px; font-family: Arial, sans-serif;">Precision show calling &bull; Creative previsualizations &bull; Technical mastery</p>
@@ -502,8 +502,8 @@ class EmailTemplateBuilder {
                         <![endif]-->
                         <div style="background: #1F1633;">
                             <!-- Outlook-safe image with correct aspect ratio -->
-                            <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                            <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                             <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
                             <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">High-touch client care • Precision execution • Zero margin for error</p>
@@ -635,8 +635,8 @@ class EmailTemplateBuilder {
                         <![endif]-->
                         <div style="background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);">
                             <!-- Outlook-safe image with correct aspect ratio -->
-                            <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                            <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                             <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
                             <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Proposal Submission – {{eventName}}</p>
@@ -719,8 +719,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for the Opportunity</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Building relationships for the future</p>
@@ -786,8 +786,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Welcome to the {{companyName}} Family!</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We're thrilled to partner with you</p>
@@ -851,8 +851,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Get Started</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your onboarding information and next steps</p>
@@ -918,8 +918,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for an Amazing Event!</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{eventName}} wrap-up and highlights</p>
@@ -984,8 +984,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{holidayTitle}}</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">From the {{companyName}} family to yours</p>
@@ -1049,8 +1049,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Help Us Improve</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your feedback matters to us</p>
@@ -1114,8 +1114,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Share Your Success Story</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Help inspire other clients</p>
@@ -1179,8 +1179,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Remembering {{eventName}}</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{anniversaryDate}}</p>
@@ -1244,8 +1244,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{insightTitle}}</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Industry insights from {{companyName}}</p>
@@ -1310,8 +1310,8 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 120px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 120px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="120" height="60" border="0" vspace="0" hspace="0">
+                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
                         <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Reconnect</h1>
                         <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We've been busy creating amazing events</p>
