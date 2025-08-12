@@ -10,6 +10,7 @@ class EmailTemplateBuilder {
         this.currentTemplate = null;
         this.currentValues = {};
         this.previewElement = null;
+        this.zoomLevel = 100; // Add zoom level tracking
         this.init();
     }
 
@@ -1162,6 +1163,7 @@ class EmailTemplateBuilder {
     setupEventListeners() {
         // Bind UI events immediately since DOM is already loaded
         this.bindUIEvents();
+        this.bindZoomEvents();
     }
 
     /**
@@ -2396,6 +2398,74 @@ class EmailTemplateBuilder {
                 categoryId: category.id
             }))
         );
+    }
+
+    /**
+     * Bind zoom control events
+     */
+    bindZoomEvents() {
+        const zoomInBtn = document.getElementById('zoomIn');
+        const zoomOutBtn = document.getElementById('zoomOut');
+        const zoomResetBtn = document.getElementById('zoomReset');
+
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => this.zoomIn());
+        }
+
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => this.zoomOut());
+        }
+
+        if (zoomResetBtn) {
+            zoomResetBtn.addEventListener('click', () => this.zoomReset());
+        }
+    }
+
+    /**
+     * Zoom in preview
+     */
+    zoomIn() {
+        if (this.zoomLevel < 200) {
+            this.zoomLevel += 25;
+            this.applyZoom();
+        }
+    }
+
+    /**
+     * Zoom out preview
+     */
+    zoomOut() {
+        if (this.zoomLevel > 50) {
+            this.zoomLevel -= 25;
+            this.applyZoom();
+        }
+    }
+
+    /**
+     * Reset zoom to 100%
+     */
+    zoomReset() {
+        this.zoomLevel = 100;
+        this.applyZoom();
+    }
+
+    /**
+     * Apply zoom transformation to preview
+     */
+    applyZoom() {
+        const preview = document.getElementById('emailPreview');
+        const zoomDisplay = document.getElementById('zoomLevel');
+
+        if (preview) {
+            const scale = this.zoomLevel / 100;
+            preview.style.transform = `scale(${scale})`;
+            preview.style.width = `${100 / scale}%`;
+            preview.style.height = `${100 / scale}%`;
+        }
+
+        if (zoomDisplay) {
+            zoomDisplay.textContent = `${this.zoomLevel}%`;
+        }
     }
 }
 
