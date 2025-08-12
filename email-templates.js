@@ -1852,6 +1852,23 @@ class EmailTemplateBuilder {
             console.warn('❌ No HTML template found');
             return '';
         }
+
+        console.log('📊 Current values:', this.currentValues || 'No values set');
+        
+        // Check for required fields but don't block generation
+        const missingRequired = [];
+        if (this.currentTemplate.dynamicFields) {
+            this.currentTemplate.dynamicFields.forEach(field => {
+                if (field.required && (!this.currentValues || !this.currentValues[field.key])) {
+                    missingRequired.push(field.label);
+                }
+            });
+        }
+        
+        if (missingRequired.length > 0) {
+            console.warn('⚠️ Missing required fields:', missingRequired);
+            // Continue generation but warn user
+        }
         
         console.log('📋 Template name:', this.currentTemplate.name);
         console.log('📄 HTML template length:', this.currentTemplate.htmlTemplate.length);
