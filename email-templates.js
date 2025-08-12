@@ -339,7 +339,7 @@ class EmailTemplateBuilder {
         return {
             logoUrl: "https://brandcentral.netlify.app/assets/images/paradigm-logo.png",
             brandHex: "#1F1633",
-            accentHex: "#3FCBFF",
+            accentHex: "#3F105E",
             secondaryHex: "#3F105E",
             supportingHex: "#B8A9D9",
             companyName: "Paradigm Productions Group",
