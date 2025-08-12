@@ -92,7 +92,7 @@
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
@@ -121,8 +121,8 @@
 
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 500px 1fr;
+            gap: 40px;
             height: calc(100vh - 200px);
             min-height: 600px;
             max-height: calc(100vh - 200px);
@@ -694,7 +694,7 @@
             border: 2px solid #3FCBFF;
             border-radius: 8px;
             background: #ffffff;
-            min-height: 400px;
+            min-height: 500px;
         }
 
         /* Action Buttons */
@@ -816,7 +816,34 @@
             }
         }
 
+        /* Large Screen Optimization */
+        @media (min-width: 1600px) {
+            .container {
+                max-width: 1800px;
+            }
+            
+            .main-layout {
+                grid-template-columns: 550px 1fr;
+                gap: 50px;
+            }
+            
+            .preview-container {
+                padding: 30px;
+            }
+            
+            #emailPreview {
+                min-height: 600px;
+            }
+        }
+
         /* Responsive Design */
+        @media (min-width: 1200px) and (max-width: 1599px) {
+            .main-layout {
+                grid-template-columns: 480px 1fr;
+                gap: 35px;
+            }
+        }
+
         @media (max-width: 1024px) {
             .main-layout {
                 grid-template-columns: 1fr;
