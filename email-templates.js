@@ -377,26 +377,14 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <!--[if gte mso 9]>
-                        <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:200px;">
-                        <v:fill type="gradient" color="#1F1633" color2="#3F105E" angle="135" />
-                        <v:textbox inset="0,0,0,0">
-                        <![endif]-->
-                        <div style="background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);">
-                            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 240px; margin: 0 auto 20px auto;">
-                                <tr>
-                                    <td style="text-align: center; width: 240px; height: 60px;">
-                                        <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 240px !important; height: 60px !important; display: block; margin: 0; padding: 0; border: none; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;" width="240" height="60" border="0">
-                                    </td>
-                                </tr>
-                            </table>
-                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique AV Service Built on Trust</h1>
-                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Precision show calling • Creative previsualizations • Technical mastery</p>
+                        <div style="background: #1F1633; text-align: center; padding: 20px 0;">
+                            <!-- Outlook-safe image with fixed dimensions -->
+                            <div style="width: 240px; height: 60px; margin: 0 auto 20px auto; background-color: #1F1633;">
+                                <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 240px; height: 60px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="240" height="60" border="0" vspace="0" hspace="0">
+                            </div>
+                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700; font-family: Arial, sans-serif;">Boutique AV Service Built on Trust</h1>
+                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px; font-family: Arial, sans-serif;">Precision show calling • Creative previsualizations • Technical mastery</p>
                         </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
                     </td>
                 </tr>
                 <tr>
