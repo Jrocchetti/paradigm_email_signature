@@ -1160,9 +1160,8 @@ class EmailTemplateBuilder {
      * Setup event listeners for UI interactions
      */
     setupEventListeners() {
-        document.addEventListener('DOMContentLoaded', () => {
-            this.bindUIEvents();
-        });
+        // Bind UI events immediately since DOM is already loaded
+        this.bindUIEvents();
     }
 
     /**
