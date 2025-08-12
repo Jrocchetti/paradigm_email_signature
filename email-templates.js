@@ -1413,6 +1413,22 @@ class EmailTemplateBuilder {
         this.renderFieldEditor();
         this.updatePreview();
         this.showEditor();
+        
+        // Enable action buttons when template is selected
+        this.enableActionButtons();
+    }
+    
+    /**
+     * Enable action buttons when template is loaded
+     */
+    enableActionButtons() {
+        const buttons = ['copyToClipboard', 'downloadHtml', 'showHtml', 'saveDraft'];
+        buttons.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.disabled = false;
+            }
+        });
     }
 
     /**
@@ -1540,45 +1556,67 @@ class EmailTemplateBuilder {
      * Generate the final HTML from template and values
      */
     generateHtml() {
-        if (!this.currentTemplate) return '';
+        if (!this.currentTemplate) {
+            console.warn('No template selected');
+            return '';
+        }
+
+        if (!this.currentTemplate.htmlTemplate) {
+            console.warn('No HTML template found');
+            return '';
+        }
 
         let html = this.currentTemplate.htmlTemplate;
         
-        // Replace locked fields
-        Object.entries(this.currentTemplate.lockedFields).forEach(([key, value]) => {
-            const regex = new RegExp(`{{${key}}}`, 'g');
-            html = html.replace(regex, value);
-        });
-
-        // Replace dynamic fields
-        Object.entries(this.currentValues).forEach(([key, value]) => {
-            const field = this.currentTemplate.dynamicFields.find(f => f.key === key);
-            let processedValue = value;
-
-            // Process list fields
-            if (field && field.type === 'list' && value) {
-                const items = value.split(/[|\n]/).filter(item => item.trim());
-                processedValue = items.map(item => `<li>${item.trim()}</li>`).join('');
+        try {
+            // Replace locked fields
+            if (this.currentTemplate.lockedFields) {
+                Object.entries(this.currentTemplate.lockedFields).forEach(([key, value]) => {
+                    const regex = new RegExp(`{{${key}}}`, 'g');
+                    html = html.replace(regex, value || '');
+                });
             }
 
-            const regex = new RegExp(`{{${key}}}`, 'g');
-            html = html.replace(regex, processedValue);
-        });
+            // Replace dynamic fields
+            if (this.currentValues) {
+                Object.entries(this.currentValues).forEach(([key, value]) => {
+                    const field = this.currentTemplate.dynamicFields?.find(f => f.key === key);
+                    let processedValue = value || '';
 
-        // Clean up any remaining placeholders
-        html = html.replace(/{{[^}]+}}/g, '');
+                    // Process list fields
+                    if (field && field.type === 'list' && processedValue) {
+                        const items = processedValue.split(/[|\n]/).filter(item => item.trim());
+                        processedValue = items.map(item => `<li>${item.trim()}</li>`).join('');
+                    }
 
-        return html;
+                    const regex = new RegExp(`{{${key}}}`, 'g');
+                    html = html.replace(regex, processedValue);
+                });
+            }
+
+            // Clean up any remaining placeholders
+            html = html.replace(/{{[^}]+}}/g, '');
+
+            return html;
+        } catch (error) {
+            console.error('Error generating HTML:', error);
+            return '';
+        }
     }
 
     /**
      * Copy generated HTML to clipboard
      */
     async copyToClipboard() {
-        const html = this.generateHtml();
-        const plainText = this.htmlToPlainText(html);
-
         try {
+            const html = this.generateHtml();
+            if (!html) {
+                this.showMessage('❌ No content to copy. Please fill in the template fields.', 'error');
+                return;
+            }
+            
+            const plainText = this.htmlToPlainText(html);
+
             // Try to write both HTML and plain text to clipboard
             await navigator.clipboard.write([
                 new ClipboardItem({
@@ -1591,6 +1629,7 @@ class EmailTemplateBuilder {
         } catch (err) {
             // Fallback to plain text only
             try {
+                const html = this.generateHtml();
                 await navigator.clipboard.writeText(html);
                 this.showMessage('✅ HTML copied to clipboard!', 'success');
             } catch (fallbackErr) {
@@ -1604,35 +1643,65 @@ class EmailTemplateBuilder {
      * Download generated HTML as file
      */
     downloadHtml() {
-        const html = this.generateHtml();
-        const blob = new Blob([html], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${this.currentTemplate.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        this.showMessage('✅ HTML file downloaded!', 'success');
+        try {
+            const html = this.generateHtml();
+            if (!html) {
+                this.showMessage('❌ No content to download. Please fill in the template fields.', 'error');
+                return;
+            }
+            
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${this.currentTemplate.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            this.showMessage('✅ HTML file downloaded!', 'success');
+        } catch (error) {
+            this.showMessage('❌ Failed to download HTML file. Please try again.', 'error');
+            console.error('Download error:', error);
+        }
     }
 
     /**
      * Toggle HTML source view
      */
     toggleHtmlView() {
-        const htmlPanel = document.getElementById('htmlSource');
-        const showBtn = document.getElementById('showHtml');
-        
-        if (htmlPanel.style.display === 'none' || !htmlPanel.style.display) {
-            htmlPanel.style.display = 'block';
-            htmlPanel.querySelector('pre').textContent = this.generateHtml();
-            showBtn.textContent = 'Hide HTML';
-        } else {
-            htmlPanel.style.display = 'none';
-            showBtn.textContent = 'Show HTML';
+        try {
+            const htmlPanel = document.getElementById('htmlSource');
+            const showBtn = document.getElementById('showHtml');
+            
+            if (!htmlPanel || !showBtn) {
+                console.error('HTML panel or show button not found');
+                return;
+            }
+            
+            if (htmlPanel.style.display === 'none' || !htmlPanel.style.display) {
+                const html = this.generateHtml();
+                if (!html) {
+                    this.showMessage('❌ No content to show. Please fill in the template fields.', 'error');
+                    return;
+                }
+                
+                htmlPanel.style.display = 'block';
+                const preElement = htmlPanel.querySelector('pre');
+                if (preElement) {
+                    preElement.textContent = html;
+                }
+                showBtn.textContent = 'Hide HTML';
+                this.showMessage('📄 HTML source displayed', 'info');
+            } else {
+                htmlPanel.style.display = 'none';
+                showBtn.textContent = 'Show HTML';
+            }
+        } catch (error) {
+            this.showMessage('❌ Failed to toggle HTML view. Please try again.', 'error');
+            console.error('Toggle HTML view error:', error);
         }
     }
 

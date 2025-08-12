@@ -988,71 +988,66 @@
     <script>
         // Additional UI enhancements
         document.addEventListener('DOMContentLoaded', function() {
-            // Enable action buttons when template is selected
-            function enableActionButtons() {
-                const buttons = ['copyToClipboard', 'downloadHtml', 'showHtml', 'saveDraft'];
-                buttons.forEach(id => {
-                    const btn = document.getElementById(id);
-                    if (btn) {
-                        btn.disabled = false;
+            // Wait for emailBuilder to be initialized
+            function waitForBuilder() {
+                if (typeof emailBuilder !== 'undefined' && emailBuilder) {
+                    setupEnhancements();
+                } else {
+                    setTimeout(waitForBuilder, 100);
+                }
+            }
+            
+            function setupEnhancements() {
+                // Add keyboard shortcuts
+                document.addEventListener('keydown', function(e) {
+                    if (e.ctrlKey || e.metaKey) {
+                        switch(e.key) {
+                            case 's':
+                                e.preventDefault();
+                                if (emailBuilder.currentTemplate) {
+                                    emailBuilder.saveDraft();
+                                }
+                                break;
+                            case 'Enter':
+                                e.preventDefault();
+                                if (emailBuilder.currentTemplate) {
+                                    emailBuilder.copyToClipboard();
+                                }
+                                break;
+                        }
+                    }
+                    
+                    if (e.key === 'Escape') {
+                        if (emailBuilder.currentTemplate) {
+                            emailBuilder.backToLibrary();
+                        }
                     }
                 });
-            }
 
-            // Override the selectTemplate function to enable buttons
-            const originalSelectTemplate = emailBuilder.selectTemplate;
-            emailBuilder.selectTemplate = function(templateId) {
-                originalSelectTemplate.call(this, templateId);
-                enableActionButtons();
-            };
-
-            // Add keyboard shortcuts
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey || e.metaKey) {
-                    switch(e.key) {
-                        case 's':
-                            e.preventDefault();
-                            if (emailBuilder.currentTemplate) {
-                                emailBuilder.saveDraft();
-                            }
-                            break;
-                        case 'Enter':
-                            e.preventDefault();
-                            if (emailBuilder.currentTemplate) {
-                                emailBuilder.copyToClipboard();
-                            }
-                            break;
-                    }
+                // Add tooltips for keyboard shortcuts
+                const copyBtn = document.getElementById('copyToClipboard');
+                if (copyBtn) {
+                    copyBtn.title = 'Copy to Clipboard (Ctrl+Enter)';
                 }
-                
-                if (e.key === 'Escape') {
-                    if (emailBuilder.currentTemplate) {
-                        emailBuilder.backToLibrary();
-                    }
+
+                const saveDraftBtn = document.getElementById('saveDraft');
+                if (saveDraftBtn) {
+                    saveDraftBtn.title = 'Save Draft (Ctrl+S)';
                 }
-            });
-
-            // Add tooltips for keyboard shortcuts
-            const copyBtn = document.getElementById('copyToClipboard');
-            if (copyBtn) {
-                copyBtn.title = 'Copy to Clipboard (Ctrl+Enter)';
             }
-
-            const saveDraftBtn = document.getElementById('saveDraft');
-            if (saveDraftBtn) {
-                saveDraftBtn.title = 'Save Draft (Ctrl+S)';
-            }
+            
+            waitForBuilder();
 
             // Auto-save draft every 30 seconds
             setInterval(() => {
-                if (emailBuilder.currentTemplate && Object.keys(emailBuilder.currentValues).length > 0) {
+                if (emailBuilder && emailBuilder.currentTemplate && Object.keys(emailBuilder.currentValues || {}).length > 0) {
                     emailBuilder.saveDraft();
                 }
             }, 30000);
 
             // Form validation
             function validateForm() {
-                if (!emailBuilder.currentTemplate) return false;
+                if (!emailBuilder || !emailBuilder.currentTemplate) return false;
                 
                 const requiredFields = emailBuilder.currentTemplate.dynamicFields
                     .filter(field => field.required)
@@ -1086,11 +1081,15 @@
             }
 
             // Override updateField to include validation
-            const originalUpdateField = emailBuilder.updateField;
-            emailBuilder.updateField = function(key, value) {
-                originalUpdateField.call(this, key, value);
-                updateButtonStates();
-            };
+            setTimeout(() => {
+                if (emailBuilder && emailBuilder.updateField) {
+                    const originalUpdateField = emailBuilder.updateField;
+                    emailBuilder.updateField = function(key, value) {
+                        originalUpdateField.call(this, key, value);
+                        updateButtonStates();
+                    };
+                }
+            }, 500);
         });
     </script>
 </body>
