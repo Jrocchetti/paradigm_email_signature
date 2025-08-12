@@ -59,17 +59,23 @@ class EmailTemplateBuilder {
                     {
                         id: "capabilities-followup-v1",
                         name: "Capabilities Follow-Up",
-                        description: "Sent after networking or a discovery call",
+                        description: "Follow-up after networking or discovery call highlighting core strengths",
                         category: "prospect",
                         thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcGFiaWxpdGllcyBGb2xsb3ctVXA8L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
-                            {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
-                            {key: "meetingReference", label: "Meeting Reference", type: "text", placeholder: "Our conversation at the trade show", required: true},
-                            {key: "keyCapabilities", label: "Key Capabilities", type: "textarea", placeholder: "Full-service event production, AV design, creative direction...", required: true},
-                            {key: "relevantExperience", label: "Relevant Experience", type: "textarea", placeholder: "Similar events we've produced...", required: true},
-                            {key: "ctaText", label: "Call-to-Action Text", type: "text", placeholder: "Schedule a Consultation", required: true},
-                            {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg", required: true}
+                            {key: "firstName", label: "Recipient First Name", type: "text", placeholder: "Jane", required: true},
+                            {key: "companyEventName", label: "Company/Event Name", type: "text", placeholder: "Acme Corp's Annual Conference", required: true},
+                            {key: "eventDateTimeframe", label: "Event Date or Timeframe", type: "text", placeholder: "yesterday/last Tuesday", required: true},
+                            {key: "eventName", label: "Specific Event Name", type: "text", placeholder: "your annual conference", required: true},
+                            {key: "specificPainPointGoal", label: "Specific Pain Point or Goal Discussed", type: "textarea", placeholder: "seamless multi-room presentations with zero downtime", required: false},
+                            {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
+                            {key: "yourTitle", label: "Your Title", type: "text", placeholder: "Creative Director", required: true},
+                            {key: "portfolioLink", label: "Portfolio Link", type: "url", placeholder: "https://paradigmproductionsgroup.com/capabilities", required: true},
+                            {key: "yourEmail", label: "Your Email", type: "email", placeholder: "john@paradigmproductionsgroup.com", required: true},
+                            {key: "yourPhone", label: "Your Phone", type: "tel", placeholder: "(555) 123-4567", required: true},
+                            {key: "websiteLink", label: "Website Link", type: "url", placeholder: "www.paradigmproductionsgroup.com", required: true},
+                            {key: "personalizedDetail", label: "Personalized Detail from Call", type: "textarea", placeholder: "your focus on creating memorable attendee experiences", required: false}
                         ],
                         htmlTemplate: this.getCapabilitiesFollowUpTemplate()
                     },
@@ -420,26 +426,70 @@ class EmailTemplateBuilder {
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
-                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for Your Time</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Following up on our conversation</p>
+                        <img src="{{logoUrl}}" alt="Paradigm Productions Group Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">High-touch client care • Precision execution • Zero margin for error</p>
                     </td>
                 </tr>
                 <tr>
                     <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for {{meetingReference}}. It was great learning more about your upcoming needs.</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;"><strong>Our Key Capabilities:</strong></p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{keyCapabilities}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;"><strong>Relevant Experience:</strong><br>{{relevantExperience}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{firstName}},</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">It was great speaking with you {{eventDateTimeframe}} and learning more about {{companyEventName}}.</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I wanted to follow up with a quick snapshot of how Paradigm Productions Group can help make your next event run seamlessly — and leave your audience talking for all the right reasons.</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">At PPG, we deliver <strong style="color: #3F105E;">Boutique Service Built on Trust</strong> — pairing high-touch client care with precision execution for events where there's no room for "almost right."</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 15px 0; font-weight: 600;">We focus on four core strengths:</p>
+                        
+                        <div style="margin: 20px 0;">
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
+                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
+                                <div>
+                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Technical Direction</p>
+                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">From gear specs to cue calls, we orchestrate the entire show flow with precision.</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
+                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
+                                <div>
+                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Show Management</p>
+                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">We lead rehearsals, wrangle timelines, and keep every moment running flawlessly.</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
+                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
+                                <div>
+                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">On-Site Execution</p>
+                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">Our team shows up early, stays late, and sweats the details so you don't have to.</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; margin-bottom: 18px;">
+                                <div style="width: 10px; height: 10px; background: #3FCBFF; border-radius: 50%; margin-top: 6px; margin-right: 15px; flex-shrink: 0;"></div>
+                                <div>
+                                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0; font-weight: 600;">Creative Direction</p>
+                                    <p style="color: #666; font-size: 15px; line-height: 1.5; margin: 2px 0 0 0;">From branding to motion design, we ensure every visual is on-message and show-ready.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Our sweet spot? High-stakes productions for pharma, finance, and national associations — where every detail matters, timelines are unforgiving, and the margin for error is zero.</p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Here's a link to our Capabilities Portfolio so you can see exactly how we deliver: <a href="{{portfolioLink}}" style="color: #3FCBFF; text-decoration: none; font-weight: 600;">{{portfolioLink}}</a></p>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Let's continue the conversation and explore how we can make {{eventName}} your most seamless, impactful production yet.</p>
+                        
                         <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:220px;" stroke="f" fillcolor="#3FCBFF">
                         <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Let's Continue the Conversation</center>
                         </v:textbox>
                         </v:roundrect>
                         <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                        <a href="mailto:{{yourEmail}}?subject=Continue Our Conversation - {{eventName}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Continue the Conversation</a>
+                        
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">Warm regards,</p>
                     </td>
                 </tr>
                 <tr>
@@ -447,16 +497,15 @@ class EmailTemplateBuilder {
                         <table role="presentation" style="width: 100%; border-collapse: collapse;">
                             <tr>
                                 <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{yourName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{yourTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">Paradigm Productions Group</p>
                                     <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                        <a href="mailto:{{yourEmail}}" style="color: #3FCBFF; text-decoration: none;">{{yourEmail}}</a> | 
+                                        <a href="tel:{{yourPhone}}" style="color: #3FCBFF; text-decoration: none;">{{yourPhone}}</a>
                                     </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
                                     <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                        <a href="{{websiteLink}}" style="color: #3FCBFF; text-decoration: none;">{{websiteLink}}</a>
                                     </p>
                                 </td>
                             </tr>
