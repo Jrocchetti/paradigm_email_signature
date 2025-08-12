@@ -374,6 +374,11 @@ class EmailTemplateBuilder {
      */
     getProspectOutreachTemplate() {
         return `
+            <!-- Preview Text (hidden) -->
+            <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: transparent;">
+                Bringing boutique AV service to your next event. Hi {{firstName}}, I'm {{yourName}} at Paradigm Productions Group...
+            </div>
+            
             <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
                 <tr>
                     <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
