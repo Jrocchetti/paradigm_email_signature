@@ -775,6 +775,298 @@ class EmailTemplateBuilder {
     }
 
     /**
+     * Get survey request template
+     */
+    getSurveyRequestTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Help Us Improve</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your feedback matters to us</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for choosing {{companyName}} for {{eventName}}. We hope you had an amazing experience!</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">To help us continue delivering exceptional events, we'd love to hear your feedback. The survey takes approximately {{estimatedTime}} to complete.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0; text-align: center;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Survey Incentive</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">Complete the survey and receive {{surveyIncentive}} as a thank you!</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Your honest feedback helps us improve and ensures future events exceed expectations.</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get case study request template
+     */
+    getCaseStudyRequestTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Share Your Success Story</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Help inspire other clients</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{eventName}} was such a tremendous success, and we'd love to share your story to inspire other clients.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Success Metrics</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventSuccessMetrics}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">{{portfolioBenefit}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Would you be willing to let us feature your event as a case study? We'll ensure your approval on all content before publication.</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get event anniversary template
+     */
+    getEventAnniversaryTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Remembering {{eventName}}</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{anniversaryDate}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{anniversaryDate}}, we had the privilege of producing {{eventName}}. {{eventMemory}}</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Highlights</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventStats}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">It was truly a pleasure working with your team, and we hope you're already planning this year's event!</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">If you're ready to start planning, we'd love to discuss how we can make this year even better.</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get industry insight template
+     */
+    getIndustryInsightTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{insightTitle}}</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Industry insights from {{companyName}}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I thought you might find this industry insight interesting and relevant to your upcoming events.</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Key Insights</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{keyInsights}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Relevance to Your Events:</strong></p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{clientRelevance}}</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">I'd love to discuss how these trends might apply to your future events. Feel free to reach out if you'd like to explore any of these ideas further.</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
+     * Get re-engagement template
+     */
+    getReEngagementTemplate() {
+        return `
+            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+                <tr>
+                    <td style="padding: 40px 30px; background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%); text-align: center;">
+                        <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="height: 60px; width: auto; margin-bottom: 20px;">
+                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Reconnect</h1>
+                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We've been busy creating amazing events</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 30px; background: white;">
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I was just thinking about {{lastInteraction}} and wanted to reach out to reconnect.</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{recentWorkExamples}}</p>
+                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #3FCBFF; margin: 20px 0;">
+                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">What's New at {{companyName}}</h3>
+                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{valueProposition}}</p>
+                        </div>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">I'd love to catch up and hear about your current event needs. Are you planning any events in the coming months?</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Let's schedule a quick call to discuss how we can support your goals.</p>
+                        <!--[if mso]>
+                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3FCBFF">
+                        <v:textbox inset="0,0,0,0">
+                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
+                        </v:textbox>
+                        </v:roundrect>
+                        <![endif]-->
+                        <a href="{{ctaUrl}}" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3FCBFF;">
+                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: center;">
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 0;">
+                                        <a href="mailto:{{companyEmail}}" style="color: #3FCBFF; text-decoration: none;">{{companyEmail}}</a> | 
+                                        <a href="tel:{{companyPhone}}" style="color: #3FCBFF; text-decoration: none;">{{companyPhone}}</a>
+                                    </p>
+                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
+                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
+                                        <a href="{{companyWebsite}}" style="color: #3FCBFF; text-decoration: none;">{{companyWebsite}}</a>
+                                    </p>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        `;
+    }
+
+    /**
      * Setup event listeners for UI interactions
      */
     setupEventListeners() {
