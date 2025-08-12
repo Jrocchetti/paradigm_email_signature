@@ -352,6 +352,24 @@ class EmailTemplateBuilder {
     }
 
     /**
+     * Generate Outlook-compatible image HTML
+     */
+    getOutlookCompatibleImage(src = "{{logoUrl}}", alt = "Paradigm Productions Group", width = 240, height = 60) {
+        return `<!--[if gte mso 9]>
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="width: ${width}px; margin: 0 auto 20px auto;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <img src="${src}" alt="${alt}" style="width: ${width}px; height: ${height}px; display: block;" width="${width}" height="${height}" border="0">
+                                    </td>
+                                </tr>
+                            </table>
+                            <![endif]-->
+                            <!--[if !mso]><!-->
+                            <img src="${src}" alt="${alt}" style="height: ${height}px; width: ${width}px; margin: 0 auto 20px auto; display: block; border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; max-width: ${width}px; font-size: 0; line-height: 0;" width="${width}" height="${height}" border="0">
+                            <!--<![endif]-->`;
+    }
+
+    /**
      * Get standard prospect outreach template
      */
     getProspectOutreachTemplate() {
@@ -365,7 +383,18 @@ class EmailTemplateBuilder {
                         <v:textbox inset="0,0,0,0">
                         <![endif]-->
                         <div style="background: linear-gradient(135deg, #1F1633 0%, #3F105E 100%);">
-                            <img src="{{logoUrl}}" alt="Paradigm Productions Group - Boutique AV Service Built on Trust" style="height: 60px; width: auto; margin: 0 auto 20px auto; display: block; border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;" width="240" height="60">
+                            <!--[if gte mso 9]>
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 240px; margin: 0 auto 20px auto;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 240px; height: 60px; display: block;" width="240" height="60" border="0">
+                                    </td>
+                                </tr>
+                            </table>
+                            <![endif]-->
+                            <!--[if !mso]><!-->
+                            <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="height: 60px; width: 240px; margin: 0 auto 20px auto; display: block; border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; max-width: 240px; font-size: 0; line-height: 0;" width="240" height="60" border="0">
+                            <!--<![endif]-->
                             <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique AV Service Built on Trust</h1>
                             <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Precision show calling • Creative previsualizations • Technical mastery</p>
                         </div>
@@ -477,7 +506,18 @@ class EmailTemplateBuilder {
                         <v:textbox inset="0,0,0,0">
                         <![endif]-->
                         <div style="background: #1F1633;">
-                            <img src="{{logoUrl}}" alt="Paradigm Productions Group - Boutique AV Service Built on Trust" style="height: 60px; width: auto; margin: 0 auto 20px auto; display: block; border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;" width="240" height="60">
+                            <!--[if gte mso 9]>
+                            <table role="presentation" cellpadding="0" cellspacing="0" style="width: 240px; margin: 0 auto 20px auto;">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 240px; height: 60px; display: block;" width="240" height="60" border="0">
+                                    </td>
+                                </tr>
+                            </table>
+                            <![endif]-->
+                            <!--[if !mso]><!-->
+                            <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="height: 60px; width: 240px; margin: 0 auto 20px auto; display: block; border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; max-width: 240px; font-size: 0; line-height: 0;" width="240" height="60" border="0">
+                            <!--<![endif]-->
                             <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Boutique Service Built on Trust</h1>
                             <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">High-touch client care • Precision execution • Zero margin for error</p>
                         </div>
