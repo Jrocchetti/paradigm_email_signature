@@ -381,7 +381,7 @@ class EmailTemplateBuilder {
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I'm {{yourName}}, {{title}} at Paradigm Productions Group — an AV partner known for delivering boutique service built on trust for {{industryVertical}} events.</p>
                         
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">We recently partnered with {{relevantEventClient}}, providing {{specificPainPoint}} solutions that kept the show running flawlessly — from rough CAD layouts to conceptual previsualization and precision show calling.</p>
+                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">We recently partnered with {{relevantEventClient}}, providing {{specificPainPoint}}—solutions that kept the show running flawlessly — from rough CAD layouts to conceptual previsualization and precision show calling.</p>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I thought you might be interested in seeing how our approach blends:</p>
                         
