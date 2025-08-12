@@ -443,12 +443,12 @@ class EmailTemplateBuilder {
                         <table role="presentation" cellspacing="0" cellpadding="0" border="0">
                             <tr>
                                 <td style="border-radius: 6px; background: #3FCBFF;">
-                                    <a href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=66787bae-306b-4977-9474-ebeff52a7072&anonymous&ismsaljsauthenabled&ep=mlink" style="background: #3FCBFF; border: 12px solid #3FCBFF; color: #1F1633; font-family: Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 16px; text-decoration: none; text-transform: none; display: block; border-radius: 6px;">Let's Connect</a>
+                                    <a href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=0356a3d9-2920-485d-8f23-b4158915b3ef&anonymous&ismsaljsauthenabled&ep=mlink" style="background: #3FCBFF; border: 12px solid #3FCBFF; color: #1F1633; font-family: Arial, sans-serif; font-size: 16px; font-weight: 600; line-height: 16px; text-decoration: none; text-transform: none; display: block; border-radius: 6px;">Let's Connect</a>
                                 </td>
                             </tr>
                         </table>
                         <![endif]-->
-                        <a href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=66787bae-306b-4977-9474-ebeff52a7072&anonymous&ismsaljsauthenabled&ep=mlink" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Connect</a>
+                        <a href="https://outlook.office.com/bookwithme/user/6a8b03cd92f54e6799528ce21923382a@paradigmproductionsgroup.com/meetingtype/T05Gofwjjkm-ebxNoZkTJQ2?bookingcode=0356a3d9-2920-485d-8f23-b4158915b3ef&anonymous&ismsaljsauthenabled&ep=mlink" style="background: #3FCBFF; color: #1F1633; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Let's Connect</a>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">Warm regards,</p>
                     </td>
