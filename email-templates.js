@@ -2404,20 +2404,45 @@ class EmailTemplateBuilder {
      * Bind zoom control events
      */
     bindZoomEvents() {
+        console.log('bindZoomEvents called');
         const zoomInBtn = document.getElementById('zoomIn');
         const zoomOutBtn = document.getElementById('zoomOut');
         const zoomResetBtn = document.getElementById('zoomReset');
 
+        console.log('Zoom buttons found:', {
+            zoomIn: zoomInBtn,
+            zoomOut: zoomOutBtn,
+            zoomReset: zoomResetBtn
+        });
+
         if (zoomInBtn) {
-            zoomInBtn.addEventListener('click', () => this.zoomIn());
+            console.log('Binding zoom in event');
+            zoomInBtn.addEventListener('click', () => {
+                console.log('Zoom in clicked');
+                this.zoomIn();
+            });
+        } else {
+            console.warn('Zoom in button not found');
         }
 
         if (zoomOutBtn) {
-            zoomOutBtn.addEventListener('click', () => this.zoomOut());
+            console.log('Binding zoom out event');
+            zoomOutBtn.addEventListener('click', () => {
+                console.log('Zoom out clicked');
+                this.zoomOut();
+            });
+        } else {
+            console.warn('Zoom out button not found');
         }
 
         if (zoomResetBtn) {
-            zoomResetBtn.addEventListener('click', () => this.zoomReset());
+            console.log('Binding zoom reset event');
+            zoomResetBtn.addEventListener('click', () => {
+                console.log('Zoom reset clicked');
+                this.zoomReset();
+            });
+        } else {
+            console.warn('Zoom reset button not found');
         }
     }
 
@@ -2425,9 +2450,13 @@ class EmailTemplateBuilder {
      * Zoom in preview
      */
     zoomIn() {
+        console.log('zoomIn called, current level:', this.zoomLevel);
         if (this.zoomLevel < 200) {
             this.zoomLevel += 25;
+            console.log('New zoom level:', this.zoomLevel);
             this.applyZoom();
+        } else {
+            console.log('Max zoom reached');
         }
     }
 
@@ -2435,9 +2464,13 @@ class EmailTemplateBuilder {
      * Zoom out preview
      */
     zoomOut() {
+        console.log('zoomOut called, current level:', this.zoomLevel);
         if (this.zoomLevel > 50) {
             this.zoomLevel -= 25;
+            console.log('New zoom level:', this.zoomLevel);
             this.applyZoom();
+        } else {
+            console.log('Min zoom reached');
         }
     }
 
@@ -2445,6 +2478,7 @@ class EmailTemplateBuilder {
      * Reset zoom to 100%
      */
     zoomReset() {
+        console.log('zoomReset called');
         this.zoomLevel = 100;
         this.applyZoom();
     }
@@ -2453,18 +2487,31 @@ class EmailTemplateBuilder {
      * Apply zoom transformation to preview
      */
     applyZoom() {
+        console.log('applyZoom called with level:', this.zoomLevel);
         const preview = document.getElementById('emailPreview');
         const zoomDisplay = document.getElementById('zoomLevel');
 
+        console.log('Elements found:', {
+            preview: preview,
+            zoomDisplay: zoomDisplay
+        });
+
         if (preview) {
             const scale = this.zoomLevel / 100;
+            console.log('Applying scale:', scale);
             preview.style.transform = `scale(${scale})`;
             preview.style.width = `${100 / scale}%`;
             preview.style.height = `${100 / scale}%`;
+            console.log('Transform applied');
+        } else {
+            console.error('Preview iframe not found');
         }
 
         if (zoomDisplay) {
             zoomDisplay.textContent = `${this.zoomLevel}%`;
+            console.log('Zoom display updated');
+        } else {
+            console.error('Zoom display not found');
         }
     }
 }
