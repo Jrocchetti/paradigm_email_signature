@@ -1117,16 +1117,6 @@ class EmailTemplateBuilder {
         const container = document.getElementById('templateLibrary');
         if (!container) return;
 
-        // Add search functionality
-        const searchHtml = `
-            <div class="search-container">
-                <input type="text" id="templateSearch" placeholder="Search templates or categories..." class="search-input">
-                <button class="back-to-categories-btn" onclick="emailBuilder.showCategories()" style="display: none;">
-                    ← Back to Categories
-                </button>
-            </div>
-        `;
-
         // Render category cards view
         const categoriesHtml = this.templateCategories.map(category => `
             <div class="category-card" data-category-id="${category.id}" onclick="emailBuilder.showCategoryTemplates('${category.id}')">
@@ -1144,7 +1134,7 @@ class EmailTemplateBuilder {
             </div>
         `).join('');
 
-        container.innerHTML = searchHtml + `
+        container.innerHTML = `
             <div id="categoryView" class="category-grid">
                 ${categoriesHtml}
             </div>
