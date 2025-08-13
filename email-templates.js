@@ -388,8 +388,8 @@ class EmailTemplateBuilder {
                             <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
                                 <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                             </div>
-                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700; font-family: Arial, sans-serif;">Bringing Boutique AV Service to Your Next Event</h1>
-                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px; font-family: Arial, sans-serif;">Precision show calling &bull; Creative previsualizations &bull; Technical mastery</p>
+                            <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700; font-family: Arial, sans-serif;">Bringing Boutique AV Service to Your<br>Next Event</h1>
+                            <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px; font-family: Arial, sans-serif;">Technical Direction &bull; Show Management &bull; On-Site Execution &bull; Creative Direction</p>
                         </div>
                     </td>
                 </tr>
