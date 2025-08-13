@@ -69,6 +69,7 @@ class EmailTemplateBuilder {
                             },
                             {key: "customPainPoint", label: "Custom Pain Point (if selected above)", type: "textarea", placeholder: "Describe your specific pain point...", required: false, dependsOn: "specificPainPoint", dependsValue: "custom"},
                             {key: "portfolioLink", label: "Portfolio Link", type: "url", placeholder: "https://paradigmproductionsgroup.com/portfolio", required: true},
+                            {key: "vimeoEmbedCode", label: "Vimeo Video Embed (Optional)", type: "textarea", placeholder: "Paste your Vimeo embed code here...", required: false},
                             {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
                             {key: "title", label: "Your Title", type: "text", placeholder: "Senior AV Producer", required: true},
                             {key: "phone", label: "Your Phone", type: "tel", placeholder: "(555) 123-4567", required: true},
@@ -439,6 +440,11 @@ class EmailTemplateBuilder {
                         </div>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Here's a quick look at our work: <a href="{{portfolioLink}}" style="color: #3F105E; text-decoration: none; font-weight: 600;">{{portfolioLink}}</a></p>
+                        
+                        <!-- Video Section -->
+                        <div style="margin: 25px 0; text-align: center;">
+                            {{vimeoEmbedCode}}
+                        </div>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">If you're planning upcoming events, meetings, or season activities, I'd love to explore how we can make them seamless, impactful, and stress-free.</p>
                         
@@ -2811,6 +2817,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailBuilder.updateField('industryVertical', 'corporate');
                 emailBuilder.updateField('specificPainPoint', 'clarity in AV bids with transparent, line-item breakdowns');
                 emailBuilder.updateField('portfolioLink', 'https://paradigmproductionsgroup.com/portfolio');
+                emailBuilder.updateField('vimeoEmbedCode', '<a style="display: block; text-align:center;" href="https://vimeo.com/1109437645/d250dcd579?embed_email_provider=other"><img src="https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F2046957329-ed7f24e98415e9b32ca5c9cc6e34563e5b012417e7e89a8b0bea836fc5972f71-d_640x360%3F%26region%3Dus&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png" alt="Boutique Service Built on Trust" style=" max-height:100%; max-width:100%;"/></a>');
                 emailBuilder.updateField('yourName', 'John Smith');
                 emailBuilder.updateField('title', 'Senior AV Producer');
                 emailBuilder.updateField('phone', '(555) 123-4567');
