@@ -95,6 +95,7 @@ class EmailTemplateBuilder {
                             {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
                             {key: "yourTitle", label: "Your Title", type: "text", placeholder: "Creative Director", required: true},
                             {key: "portfolioLink", label: "Portfolio Link", type: "url", placeholder: "https://paradigmproductionsgroup.com/capabilities", required: true},
+                            {key: "vimeoEmbedCode", label: "Vimeo Video Embed (Optional)", type: "textarea", placeholder: "Paste your Vimeo embed code here...", required: false},
                             {key: "yourEmail", label: "Your Email", type: "email", placeholder: "john@paradigmproductionsgroup.com", required: true},
                             {key: "yourPhone", label: "Your Phone", type: "tel", placeholder: "(555) 123-4567", required: true},
                             {key: "websiteLink", label: "Website Link", type: "url", placeholder: "www.paradigmproductionsgroup.com", required: true},
@@ -587,6 +588,11 @@ class EmailTemplateBuilder {
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Our sweet spot? High-stakes productions for pharma, finance, and national associations — where every detail matters, timelines are unforgiving, and the margin for error is zero.</p>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Here's a link to our Capabilities Portfolio so you can see exactly how we deliver: <a href="{{portfolioLink}}" style="color: #3F105E; text-decoration: none; font-weight: 600;">{{portfolioLink}}</a></p>
+                        
+                        <!-- Video Section -->
+                        <div style="margin: 25px 0; text-align: center;">
+                            {{vimeoEmbedCode}}
+                        </div>
                         
                         <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Let's continue the conversation and explore how we can make {{eventName}} your most seamless, impactful production yet.</p>
                         
@@ -1972,6 +1978,9 @@ class EmailTemplateBuilder {
             }
             html = html.replace(/{{[^}]+}}/g, '');
             
+            // Remove empty video sections (conditional display)
+            html = html.replace(/<div style="margin: 25px 0; text-align: center;">\s*<\/div>/g, '');
+            
             console.log('✅ Final HTML generated, length:', html.length);
             console.log('📝 HTML preview (first 300 chars):', html.substring(0, 300));
 
@@ -2827,8 +2836,59 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('✅ Test values filled - check preview!');
             }, 500);
         };
+        
+        window.testCapabilitiesFollowUp = () => { // Quick test for Capabilities Follow-Up
+            console.log('🔍 Testing Capabilities Follow-Up template...');
+            emailBuilder.selectTemplate('capabilities-followup-v1');
+            
+            // Fill in test values
+            setTimeout(() => {
+                console.log('📝 Filling test values...');
+                emailBuilder.updateField('firstName', 'Jane');
+                emailBuilder.updateField('companyEventName', 'Acme Corp\'s Annual Conference');
+                emailBuilder.updateField('eventDateTimeframe', 'yesterday');
+                emailBuilder.updateField('eventName', 'your annual conference');
+                emailBuilder.updateField('specificPainPointGoal', 'seamless multi-room presentations with zero downtime');
+                emailBuilder.updateField('portfolioLink', 'https://paradigmproductionsgroup.com/capabilities');
+                emailBuilder.updateField('vimeoEmbedCode', '<a style="display: block; text-align:center;" href="https://vimeo.com/1109437645/d250dcd579?embed_email_provider=other"><img src="https://i.vimeocdn.com/filter/overlay?src0=https%3A%2F%2Fi.vimeocdn.com%2Fvideo%2F2046957329-ed7f24e98415e9b32ca5c9cc6e34563e5b012417e7e89a8b0bea836fc5972f71-d_640x360%3F%26region%3Dus&src1=http%3A%2F%2Ff.vimeocdn.com%2Fp%2Fimages%2Fcrawler_play.png" alt="Boutique Service Built on Trust" style=" max-height:100%; max-width:100%;"/></a>');
+                emailBuilder.updateField('yourName', 'John Smith');
+                emailBuilder.updateField('yourTitle', 'Creative Director');
+                emailBuilder.updateField('yourEmail', 'john@paradigmproductionsgroup.com');
+                emailBuilder.updateField('yourPhone', '(555) 123-4567');
+                emailBuilder.updateField('websiteLink', 'www.paradigmproductionsgroup.com');
+                emailBuilder.updateField('personalizedDetail', 'your focus on creating memorable attendee experiences');
+                console.log('✅ Test values filled - check preview!');
+            }, 500);
+        };
+        
+        window.testCapabilitiesNoVideo = () => { // Test Capabilities Follow-Up WITHOUT video
+            console.log('🔍 Testing Capabilities Follow-Up template WITHOUT video...');
+            emailBuilder.selectTemplate('capabilities-followup-v1');
+            
+            // Fill in test values (no video)
+            setTimeout(() => {
+                console.log('📝 Filling test values (no video)...');
+                emailBuilder.updateField('firstName', 'Jane');
+                emailBuilder.updateField('companyEventName', 'Acme Corp\'s Annual Conference');
+                emailBuilder.updateField('eventDateTimeframe', 'yesterday');
+                emailBuilder.updateField('eventName', 'your annual conference');
+                emailBuilder.updateField('specificPainPointGoal', 'seamless multi-room presentations with zero downtime');
+                emailBuilder.updateField('portfolioLink', 'https://paradigmproductionsgroup.com/capabilities');
+                // Intentionally leave vimeoEmbedCode empty
+                emailBuilder.updateField('vimeoEmbedCode', '');
+                emailBuilder.updateField('yourName', 'John Smith');
+                emailBuilder.updateField('yourTitle', 'Creative Director');
+                emailBuilder.updateField('yourEmail', 'john@paradigmproductionsgroup.com');
+                emailBuilder.updateField('yourPhone', '(555) 123-4567');
+                emailBuilder.updateField('websiteLink', 'www.paradigmproductionsgroup.com');
+                emailBuilder.updateField('personalizedDetail', 'your focus on creating memorable attendee experiences');
+                console.log('✅ Test values filled (no video) - check preview!');
+            }, 500);
+        };
         console.log('✅ EmailTemplateBuilder initialized successfully');
         console.log('💡 You can call testProspectOutreach() to auto-fill test data');
+        console.log('💡 You can call testCapabilitiesFollowUp() to test with video');
+        console.log('💡 You can call testCapabilitiesNoVideo() to test without video');
     } catch (error) {
         console.error('Failed to initialize EmailTemplateBuilder:', error);
     }
