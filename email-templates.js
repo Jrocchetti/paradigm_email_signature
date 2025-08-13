@@ -2798,6 +2798,30 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
         emailBuilder = new EmailTemplateBuilder();
         window.emailBuilder = emailBuilder; // Make it globally accessible
+        window.debugEmailBuilder = () => emailBuilder.debugState(); // Debug helper
+        window.testProspectOutreach = () => { // Quick test for Prospect Outreach
+            console.log('🔍 Testing Prospect Outreach template...');
+            emailBuilder.selectTemplate('prospect-outreach-v1');
+            
+            // Fill in test values
+            setTimeout(() => {
+                console.log('📝 Filling test values...');
+                emailBuilder.updateField('firstName', 'Jane');
+                emailBuilder.updateField('companyName', 'Acme Corp');
+                emailBuilder.updateField('industryVertical', 'corporate');
+                emailBuilder.updateField('specificPainPoint', 'clarity in AV bids with transparent, line-item breakdowns');
+                emailBuilder.updateField('portfolioLink', 'https://paradigmproductionsgroup.com/portfolio');
+                emailBuilder.updateField('yourName', 'John Smith');
+                emailBuilder.updateField('title', 'Senior AV Producer');
+                emailBuilder.updateField('phone', '(555) 123-4567');
+                emailBuilder.updateField('email', 'john@paradigmproductionsgroup.com');
+                emailBuilder.updateField('website', 'www.paradigmproductionsgroup.com');
+                emailBuilder.updateField('relevantEventClient', 'Microsoft\'s annual conference');
+                console.log('✅ Test values filled - check preview!');
+            }, 500);
+        };
+        console.log('✅ EmailTemplateBuilder initialized successfully');
+        console.log('💡 You can call testProspectOutreach() to auto-fill test data');
     } catch (error) {
         console.error('Failed to initialize EmailTemplateBuilder:', error);
     }
