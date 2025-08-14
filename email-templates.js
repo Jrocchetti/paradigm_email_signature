@@ -2846,7 +2846,7 @@ ${html}
 }
 
 EmailTemplateBuilder.prototype.getCustomBrandedTemplate = function() {
-        return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -2862,28 +2862,34 @@ EmailTemplateBuilder.prototype.getCustomBrandedTemplate = function() {
     <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f8f9fa;">
         <tr>
             <td align="center" style="padding:20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color:#ffffff;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color:#23163a;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
                     <tr>
-                        <td style="padding:28px 40px 8px;text-align:center;background-color:{{brandHex}};border-radius:8px 8px 0 0;">
+                        <td style="padding:40px 40px 24px;text-align:center;border-radius:8px 8px 0 0;">
                             <img src="{{logoUrl}}" alt="{{companyName}}" style="max-height:50px;height:auto;" />
-                            <div style="margin-top:10px;font-size:14px;color:{{accentHex}};font-weight:400;">{{companyTagline}}</div>
+                            <div style="margin-top:8px;font-size:15px;color:#fff;opacity:0.85;font-style:italic;">{{companyTagline}}</div>
                         </td>
                     </tr>
                     <tr>
-                        <td style="padding:28px 40px;">
-                            <h1 style="margin:0 0 12px;font-size:24px;color:{{brandHex}};font-weight:600;">{{header}}</h1>
-                            <h3 style="margin:0 0 18px;font-size:16px;color:#555;font-weight:500;">{{subheader}}</h3>
-
-                            <div style="font-size:16px;line-height:1.6;color:#333;margin-bottom:18px;">{{bodyTop}}</div>
-
+                        <td style="padding:0 40px 0 40px;text-align:center;">
+                            <h1 style="margin:0 0 12px;font-size:2.1em;line-height:1.15;color:#2ed0ff;font-weight:700;font-family:'Manrope',Arial,sans-serif;">{{header}}</h1>
+                            <div style="margin:0 0 24px 0;font-size:15px;color:#e0e0e0;font-weight:400;line-height:1.3;">
+                                {{subheader}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:0 40px 28px 40px;">
+                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;">{{bodyTop}}</div>
                             <!-- Fixed photo spot -->
                             <div style="text-align:center;margin:20px 0;">
                                 <img src="{{customPhotoDataUrl}}" alt="Photo" style="max-width:100%;height:auto;border-radius:6px;display:block;margin:0 auto;" />
                             </div>
-
-                            <div style="font-size:16px;line-height:1.6;color:#333;margin-bottom:18px;">{{bodyBottom}}</div>
-
-                            <p style="margin:20px 0 0;font-size:16px;color:#333;">Best regards,<br><strong>{{yourName}}</strong><br><a href="mailto:{{email}}" style="color:{{accentHex}};text-decoration:none;">{{email}}</a> | <a href="https://{{website}}" style="color:{{accentHex}};text-decoration:none;">{{website}}</a></p>
+                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;">{{bodyBottom}}</div>
+                            <p style="margin:32px 0 0;font-size:16px;">
+                                <strong>{{yourName}}</strong><br>
+                                <a href="mailto:{{email}}" style="color:#3F105E;text-decoration:none;font-weight:600;">{{email}}</a> |
+                                <a href="https://{{website}}" style="color:#3F105E;text-decoration:none;font-weight:600;">{{website}}</a>
+                            </p>
                         </td>
                     </tr>
                     <tr>
@@ -2903,7 +2909,7 @@ EmailTemplateBuilder.prototype.getCustomBrandedTemplate = function() {
     </table>
 </body>
 </html>`;
-};
+}
 
 /**
  * Handle image file uploads by converting to base64 data URL and storing in currentValues
