@@ -29,6 +29,34 @@ class EmailTemplateBuilder {
     loadTemplates() {
         this.templateCategories = [
             {
+                id: "custom",
+                name: "Custom",
+                description: "Templates for fully custom branded emails and advanced personalization",
+                icon: "✨",
+                color: "#FFD700",
+                templates: [
+                    {
+                        id: "custom-branded-v1",
+                        name: "Custom Branded Email",
+                        description: "Fully customizable branded email with single fixed photo spot and required signature",
+                        category: "custom",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGY4YmY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkN1c3RvbSBCcmFuZGVkPC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "header", label: "Header", type: "text", placeholder: "Bringing Boutique AV Service to Your Next Event", required: true},
+                            {key: "subheader", label: "Subheader", type: "text", placeholder: "Technical Direction • Show Management • On-Site Execution • Creative Direction", required: false},
+                            {key: "bodyTop", label: "Body Top", type: "textarea", placeholder: "Opening paragraph...", required: true},
+                            {key: "customPhotoDataUrl", label: "Photo (single upload)", type: "image", placeholder: "Upload a single photo", required: false},
+                            {key: "bodyBottom", label: "Body Bottom", type: "textarea", placeholder: "Closing paragraph...", required: false},
+                            {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
+                            {key: "email", label: "Your Email", type: "email", placeholder: "john@paradigmproductionsgroup.com", required: true},
+                            {key: "website", label: "Website", type: "url", placeholder: "www.paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getCustomBrandedTemplate()
+                    }
+                ]
+            },
+            {
                 id: "prospect",
                 name: "Prospect",
                 description: "Templates for initial outreach and sales activities",
@@ -1750,6 +1778,15 @@ class EmailTemplateBuilder {
                     >${value}</textarea>
                     <small>Enter each item on a new line or separated by |</small>`;
                     break;
+                case 'image':
+                    // Single image upload with preview. Stores base64 data URL in currentValues[field.key]
+                    inputHtml = `
+                        <input type="file" accept="image/*" id="field_${field.key}" onchange="emailBuilder.handleImageUpload('${field.key}', this.files)" />
+                        <div style="margin-top:8px;">
+                            <img id="preview_${field.key}" src="${value || ''}" style="max-width:200px;max-height:120px;display:${value ? 'block' : 'none'};border-radius:4px;border:1px solid #ddd;padding:4px;" alt="Preview" />
+                        </div>
+                    `;
+                    break;
                 default: // text
                     inputHtml = `<input 
                         type="text" 
@@ -1980,6 +2017,9 @@ class EmailTemplateBuilder {
             
             // Remove empty video sections (conditional display)
             html = html.replace(/<div style="margin: 25px 0; text-align: center;">\s*<\/div>/g, '');
+            // Remove image tags with empty src and their empty containers
+            html = html.replace(/<img[^>]+src=""[^>]*>/g, '');
+            html = html.replace(/<div style="text-align:center;margin:20px 0;">\s*<\/div>/g, '');
             
             console.log('✅ Final HTML generated, length:', html.length);
             console.log('📝 HTML preview (first 300 chars):', html.substring(0, 300));
@@ -2805,6 +2845,97 @@ ${html}
     }
 }
 
+EmailTemplateBuilder.prototype.getCustomBrandedTemplate = function() {
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{header}}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
+    <!--[if mso]>
+    <nxml:namespace xmlns:nxml="urn:schemas-microsoft-com:office:office" />
+    <nxml:namespace xmlns:w="urn:schemas-microsoft-com:office:word" />
+    <![endif]-->
+</head>
+<body style="margin:0;padding:0;font-family:'Manrope', Arial, sans-serif;background-color:#f8f9fa;">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f8f9fa;">
+        <tr>
+            <td align="center" style="padding:20px 0;">
+                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color:#ffffff;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+                    <tr>
+                        <td style="padding:28px 40px 8px;text-align:center;background-color:{{brandHex}};border-radius:8px 8px 0 0;">
+                            <img src="{{logoUrl}}" alt="{{companyName}}" style="max-height:50px;height:auto;" />
+                            <div style="margin-top:10px;font-size:14px;color:{{accentHex}};font-weight:400;">{{companyTagline}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:28px 40px;">
+                            <h1 style="margin:0 0 12px;font-size:24px;color:{{brandHex}};font-weight:600;">{{header}}</h1>
+                            <h3 style="margin:0 0 18px;font-size:16px;color:#555;font-weight:500;">{{subheader}}</h3>
+
+                            <div style="font-size:16px;line-height:1.6;color:#333;margin-bottom:18px;">{{bodyTop}}</div>
+
+                            <!-- Fixed photo spot -->
+                            <div style="text-align:center;margin:20px 0;">
+                                <img src="{{customPhotoDataUrl}}" alt="Photo" style="max-width:100%;height:auto;border-radius:6px;display:block;margin:0 auto;" />
+                            </div>
+
+                            <div style="font-size:16px;line-height:1.6;color:#333;margin-bottom:18px;">{{bodyBottom}}</div>
+
+                            <p style="margin:20px 0 0;font-size:16px;color:#333;">Best regards,<br><strong>{{yourName}}</strong><br><a href="mailto:{{email}}" style="color:{{accentHex}};text-decoration:none;">{{email}}</a> | <a href="https://{{website}}" style="color:{{accentHex}};text-decoration:none;">{{website}}</a></p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding:20px 40px 30px;background-color:#f8f9fa;border-radius:0 0 8px 8px;">
+                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                                <tr>
+                                    <td style="text-align:center;font-size:14px;color:#666;">
+                                        <strong>{{companyName}}</strong><br>{{companyAddress}}<br>Phone: {{companyPhone}} | Email: {{companyEmail}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+};
+
+/**
+ * Handle image file uploads by converting to base64 data URL and storing in currentValues
+ */
+EmailTemplateBuilder.prototype.handleImageUpload = function(fieldKey, files) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        this.currentValues[fieldKey] = dataUrl;
+        // update preview image in the editor if present
+        const preview = document.getElementById(`preview_${fieldKey}`);
+        if (preview) {
+            preview.src = dataUrl;
+            preview.style.display = 'block';
+        }
+        this.updatePreview();
+    };
+    reader.onerror = (err) => {
+        console.error('Image read error:', err);
+        this.showMessage('❌ Failed to read image file. Please try a different file.', 'error');
+    };
+    // Limit file size to avoid huge emails (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        this.showMessage('❌ Image too large. Please use an image smaller than 5MB.', 'error');
+        return;
+    }
+    reader.readAsDataURL(file);
+};
+
+
 // Global instance
 let emailBuilder;
 
@@ -2884,6 +3015,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailBuilder.updateField('personalizedDetail', 'your focus on creating memorable attendee experiences');
                 console.log('✅ Test values filled (no video) - check preview!');
             }, 500);
+        };
+
+        window.testCustomBranded = () => {
+            console.log('🔍 Testing Custom Branded template...');
+            emailBuilder.selectTemplate('custom-branded-v1');
+            setTimeout(() => {
+                emailBuilder.updateField('header', 'Bringing Boutique AV Service to Your Next Event');
+                emailBuilder.updateField('subheader', 'Technical Direction • Show Management • On-Site Execution • Creative Direction');
+                emailBuilder.updateField('bodyTop', 'We design and execute unforgettable event experiences with attention to every technical detail.');
+                // leave photo empty so you can test upload or programmatically set it
+                emailBuilder.updateField('bodyBottom', 'If this sounds interesting, let’s schedule a quick call to discuss your needs.');
+                emailBuilder.updateField('yourName', 'John Smith');
+                emailBuilder.updateField('email', 'john@paradigmproductionsgroup.com');
+                emailBuilder.updateField('website', 'www.paradigmproductionsgroup.com');
+                console.log('✅ Test values filled for Custom Branded - check preview!');
+            }, 400);
         };
         console.log('✅ EmailTemplateBuilder initialized successfully');
         console.log('💡 You can call testProspectOutreach() to auto-fill test data');
