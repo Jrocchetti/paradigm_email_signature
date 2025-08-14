@@ -2872,19 +2872,17 @@ EmailTemplateBuilder.prototype.getCustomBrandedTemplate = function() {
                     <tr>
                         <td style="padding:0 40px 0 40px;text-align:center;">
                             <h1 style="margin:0 0 12px;font-size:2.1em;line-height:1.15;color:#2ed0ff;font-weight:700;font-family:'Manrope',Arial,sans-serif;">{{header}}</h1>
-                            <div style="margin:0 0 24px 0;font-size:15px;color:#e0e0e0;font-weight:400;line-height:1.3;">
-                                {{subheader}}
-                            </div>
+                            <div style="margin:0 0 24px 0;font-size:15px;color:#e0e0e0;font-weight:400;line-height:1.3;">{{subheader}}</div>
                         </td>
                     </tr>
                     <tr>
                         <td style="padding:0 40px 28px 40px;">
-                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;">{{bodyTop}}</div>
+                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;text-align:left;">{{bodyTop}}</div>
                             <!-- Fixed photo spot -->
                             <div style="text-align:center;margin:20px 0;">
                                 <img src="{{customPhotoDataUrl}}" alt="Photo" style="max-width:100%;height:auto;border-radius:6px;display:block;margin:0 auto;" />
                             </div>
-                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;">{{bodyBottom}}</div>
+                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;text-align:left;">{{bodyBottom}}</div>
                             <p style="margin:32px 0 0;font-size:16px;">
                                 <strong>{{yourName}}</strong><br>
                                 <a href="mailto:{{email}}" style="color:#3F105E;text-decoration:none;font-weight:600;">{{email}}</a> |
