@@ -708,10 +708,7 @@
             // Start with a reasonable size that can accommodate logo, tagline, and button
             canvas.width = Math.max(bannerWidth + 160, 500); // Extra space for logo, tagline, and button
             canvas.height = 75; // Increased height to prevent button cutoff
-            
-            // Clear canvas with white background
-            ctx.fillStyle = "#FFFFFF";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // Do NOT fill with white, keep transparent
             
             // Load the Paradigm logo
             const logoImg = new Image();
