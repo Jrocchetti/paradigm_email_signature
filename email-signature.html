@@ -1032,13 +1032,13 @@
 
             // Helper to convert a DOM node to an <img> element using html2canvas
             function nodeToImage(node, callback) {
-                html2canvas(node, {backgroundColor: null, scale: 4}).then(canvas => {
-                    // Use JPEG for higher quality and smaller size, quality 0.95
+                html2canvas(node, {backgroundColor: null, scale: 8}).then(canvas => {
                     const img = document.createElement('img');
                     img.src = canvas.toDataURL("image/jpeg", 0.95);
                     img.style.display = 'block';
-                    img.style.maxWidth = '100%';
+                    img.style.width = '400px'; // Fixed width for Outlook
                     img.style.height = 'auto';
+                    img.setAttribute('width', '400'); // Also set HTML width attribute
                     callback(img);
                 });
             }
