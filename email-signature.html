@@ -1034,11 +1034,11 @@
             function nodeToImage(node, callback) {
                 html2canvas(node, {backgroundColor: null, scale: 8}).then(canvas => {
                     const img = document.createElement('img');
-                    img.src = canvas.toDataURL("image/jpeg", 0.95);
+                    img.src = canvas.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
-                    img.style.width = '400px'; // Fixed width for Outlook
+                    img.style.width = '700px'; // Fixed width for Outlook and other clients
                     img.style.height = 'auto';
-                    img.setAttribute('width', '400'); // Also set HTML width attribute
+                    img.setAttribute('width', '700'); // Also set HTML width attribute
                     callback(img);
                 });
             }
