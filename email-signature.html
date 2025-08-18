@@ -660,8 +660,9 @@
             
             // Find the widest text and add padding
             const maxTextWidth = Math.max(nameWidth, titleWidth, companyWidth);
-            const requiredWidth = Math.max(220, maxTextWidth + 32); // 16px padding on each side, minimum 220px
-            
+            // Only add minimal padding: 8px left, 8px right
+            const requiredWidth = Math.max(220, maxTextWidth + 16); // 8px padding each side, minimum 220px
+
             // Resize canvas to fit content
             canvas.width = requiredWidth;
             canvas.height = 70;
@@ -673,10 +674,10 @@
             ctx.save();
             ctx.beginPath();
             ctx.moveTo(0, 0); // top left
-            ctx.lineTo(canvas.width - 16, 0); // top edge
+            ctx.lineTo(canvas.width - 8, 0); // top edge
             ctx.quadraticCurveTo(canvas.width, 0, canvas.width, 16); // top right corner (rounded)
             ctx.lineTo(canvas.width, canvas.height); // right edge
-            ctx.lineTo(16, canvas.height); // bottom edge
+            ctx.lineTo(8, canvas.height); // bottom edge
             ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - 16); // bottom left corner (rounded)
             ctx.lineTo(0, 0); // left edge
             ctx.closePath();
@@ -688,13 +689,13 @@
             ctx.font = "bold 18px 'Manrope', Arial, sans-serif";
             ctx.fillStyle = "#fff";
             ctx.textBaseline = "top";
-            ctx.fillText(name, 16, 14);
+            ctx.fillText(name, 8, 14);
 
             ctx.font = "14px 'Manrope', Arial, sans-serif";
-            ctx.fillText(title, 16, 35);
+            ctx.fillText(title, 8, 35);
 
             ctx.font = "13px 'Manrope', Arial, sans-serif";
-            ctx.fillText("Paradigm Productions Group", 16, 51);
+            ctx.fillText("Paradigm Productions Group", 8, 51);
 
             // Return PNG data URL and width
             callback(canvas.toDataURL("image/png"), requiredWidth);
@@ -1033,9 +1034,9 @@
                     const img = document.createElement('img');
                     img.src = canvas.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
-                    img.style.width = '700px'; // Fixed width for Outlook and other clients
+                    img.style.width = '100%'; // Fully responsive for mobile and desktop
                     img.style.height = 'auto';
-                    img.setAttribute('width', '700'); // Also set HTML width attribute
+                    // No width attribute or maxWidth for best scaling
                     callback(img);
                 });
             }
