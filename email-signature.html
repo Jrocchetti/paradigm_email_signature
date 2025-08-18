@@ -1032,9 +1032,10 @@
 
             // Helper to convert a DOM node to an <img> element using html2canvas
             function nodeToImage(node, callback) {
-                html2canvas(node, {backgroundColor: null, scale: 2}).then(canvas => {
+                html2canvas(node, {backgroundColor: null, scale: 4}).then(canvas => {
+                    // Use JPEG for higher quality and smaller size, quality 0.95
                     const img = document.createElement('img');
-                    img.src = canvas.toDataURL("image/png");
+                    img.src = canvas.toDataURL("image/jpeg", 0.95);
                     img.style.display = 'block';
                     img.style.maxWidth = '100%';
                     img.style.height = 'auto';
