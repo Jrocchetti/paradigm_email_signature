@@ -912,24 +912,27 @@
             const currentHeadshotDataUrl = window.headshotDataUrl || headshotDataUrl || "";
 
             renderNameTitleBoxAsImage(name, title, function (nameTitleBoxDataUrl, bannerWidth) {
+
                 // Store banner width globally for copy function
                 window.currentBannerWidth = bannerWidth;
-                
+
                 // Generate a visible placeholder for the combined logo
                 generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
                     // Headshot + name/title/company in a styled box, side by side, bottom-aligned
                     let headshotNameTitle = `
-                                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
-                                                <tr>
-                                                    <td style="vertical-align:bottom; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
-                                                        ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0px 16px 0px; display:block;">` : ""}
-                                                    </td>
-                                                    <td style="vertical-align:bottom;">
-                                                        <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        `;
+                        <div id="sig-block-headshot-name-title">
+                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
+                                <tr>
+                                    <td style="vertical-align:bottom; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
+                                        ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0px 16px 0px; display:block;">` : ""}
+                                    </td>
+                                    <td style="vertical-align:bottom;">
+                                        <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
 
                     // Phone numbers (show nothing if empty)
                     let phoneBlock = "";
@@ -941,43 +944,45 @@
 
                     // Signature layout with generated combined logo
                     const signatureHTML = `
-                                            <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; box-sizing: border-box;">
-                                                <!-- Top row: Headshot and Name/Title Banner -->
-                                                <tr>
-                                                    <td style="vertical-align:bottom; padding: 20px; padding-bottom: 12px;">
-                                                        ${headshotNameTitle}
-                                                    </td>
-                                                </tr>
-                                                <!-- Contact info row -->
-                                                <tr>
-                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
-                                                        ${phoneBlock}
-                                                        <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                                            <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
-                                                        </div>
-                                                        <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                                            <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <!-- Address row -->
-                                                <tr>
-                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px;">
-                                                        <div style="font-size:12px; color:#222;">
-                                                            215 E Main Street, Leesburg, Florida 34748
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <!-- Combined Logo/Tagline/Button PNG row -->
-                                                <tr>
-                                                    <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
-                                                        <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
-                                                            <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Boutique Service Built on Trust - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
-                                                        </a>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        `;
+                        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; box-sizing: border-box;">
+                            <!-- Top row: Headshot and Name/Title Banner -->
+                            <tr>
+                                <td style="vertical-align:bottom; padding: 20px; padding-bottom: 12px;">
+                                    ${headshotNameTitle}
+                                </td>
+                            </tr>
+                            <!-- Contact info row -->
+                            <tr>
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
+                                    ${phoneBlock}
+                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
+                                        <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
+                                    </div>
+                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
+                                        <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Address row -->
+                            <tr>
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px;">
+                                    <div style="font-size:12px; color:#222;">
+                                        215 E Main Street, Leesburg, Florida 34748
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Combined Logo/Tagline/Button PNG row -->
+                            <tr>
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
+                                    <div id="sig-block-logo-button">
+                                        <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
+                                            <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Boutique Service Built on Trust - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    `;
 
                     document.getElementById("preview").innerHTML = signatureHTML;
                     document.getElementById("copyBtn").style.display = "inline-block";
@@ -1025,42 +1030,68 @@
             const preview = document.getElementById("preview");
             if (!preview.innerHTML.trim()) return;
 
-            // Generate the combined logo with current banner width
-            const bannerWidth = window.currentBannerWidth || 220;
-            generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
-                // Create a temporary element to select and copy HTML
-                const tempDiv = document.createElement("div");
-                tempDiv.innerHTML = preview.innerHTML;
-                
-                // Replace the placeholder with the actual combined logo and ensure no borders
-                const placeholderImg = tempDiv.querySelector("#combinedLogoPlaceholder");
-                if (placeholderImg) {
-                    placeholderImg.src = combinedLogoDataUrl;
-                    placeholderImg.removeAttribute("id"); // Remove ID to avoid conflicts
-                    placeholderImg.style.border = "0";
-                    placeholderImg.style.outline = "none";
-                    placeholderImg.style.textDecoration = "none";
-                    placeholderImg.setAttribute("border", "0");
-                }
-                
-                // Also ensure the link has no borders
-                const linkElement = tempDiv.querySelector("a[href*='paradigmproductionsgroup.com']");
-                if (linkElement) {
-                    linkElement.style.border = "none";
-                    linkElement.style.outline = "none";
-                    linkElement.style.textDecoration = "none";
-                }
-                
-                document.body.appendChild(tempDiv);
+            // Helper to convert a DOM node to an <img> element using html2canvas
+            function nodeToImage(node, callback) {
+                html2canvas(node, {backgroundColor: null, scale: 2}).then(canvas => {
+                    const img = document.createElement('img');
+                    img.src = canvas.toDataURL("image/png");
+                    img.style.display = 'block';
+                    img.style.maxWidth = '100%';
+                    img.style.height = 'auto';
+                    callback(img);
+                });
+            }
 
-                // Create a range and select the node
+            // Find the two key blocks in the preview
+            const headshotBlock = preview.querySelector('#sig-block-headshot-name-title');
+            const logoBlock = preview.querySelector('#sig-block-logo-button');
+
+            // Clone the preview HTML for manipulation
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = preview.innerHTML;
+
+            // Find the corresponding blocks in the clone
+            const tempHeadshotBlock = tempDiv.querySelector('#sig-block-headshot-name-title');
+            const tempLogoBlock = tempDiv.querySelector('#sig-block-logo-button');
+
+            // Render both blocks as images, then replace in tempDiv, then copy
+            if (headshotBlock && logoBlock && tempHeadshotBlock && tempLogoBlock && window.html2canvas) {
+                nodeToImage(headshotBlock, function(headshotImg) {
+                    nodeToImage(logoBlock, function(logoImg) {
+                        // Replace the blocks with images
+                        tempHeadshotBlock.parentNode.replaceChild(headshotImg, tempHeadshotBlock);
+                        tempLogoBlock.parentNode.replaceChild(logoImg, tempLogoBlock);
+
+                        // Remove IDs from the images to avoid conflicts
+                        headshotImg.removeAttribute('id');
+                        logoImg.removeAttribute('id');
+
+                        // Copy the HTML to clipboard
+                        document.body.appendChild(tempDiv);
+                        const range = document.createRange();
+                        range.selectNodeContents(tempDiv);
+                        const selection = window.getSelection();
+                        selection.removeAllRanges();
+                        selection.addRange(range);
+                        try {
+                            document.execCommand('copy');
+                            document.getElementById("copyMsg").style.display = "inline";
+                            setTimeout(() => document.getElementById("copyMsg").style.display = "none", 3000);
+                        } catch (err) {
+                            alert('Copy failed. Please select and copy manually.');
+                        }
+                        document.body.removeChild(tempDiv);
+                        selection.removeAllRanges();
+                    });
+                });
+            } else {
+                // Fallback: just copy as before
+                document.body.appendChild(tempDiv);
                 const range = document.createRange();
                 range.selectNodeContents(tempDiv);
-
                 const selection = window.getSelection();
                 selection.removeAllRanges();
                 selection.addRange(range);
-
                 try {
                     document.execCommand('copy');
                     document.getElementById("copyMsg").style.display = "inline";
@@ -1068,11 +1099,9 @@
                 } catch (err) {
                     alert('Copy failed. Please select and copy manually.');
                 }
-
-                // Cleanup
                 document.body.removeChild(tempDiv);
                 selection.removeAllRanges();
-            });
+            }
         }
 
         // Save signature handler (calls Supabase function)
@@ -1687,5 +1716,7 @@
             checkAuthReady();
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 </body>
 </html>
