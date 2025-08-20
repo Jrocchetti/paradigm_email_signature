@@ -1058,7 +1058,8 @@
                     const img = document.createElement('img');
                     img.src = cropped.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
-                    img.style.width = '100%';
+                    img.style.width = '400px'; // Fixed width for email compatibility
+                    img.style.maxWidth = '100%';
                     img.style.height = 'auto';
                     callback(img);
                 });
