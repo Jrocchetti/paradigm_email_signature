@@ -921,10 +921,10 @@
                         <div id="sig-block-headshot-name-title">
                             <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
                                 <tr>
-                                    <td style="vertical-align:bottom; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
+                                    <td style="vertical-align:top; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
                                         ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0px 16px 0px; display:block;">` : ""}
                                     </td>
-                                    <td style="vertical-align:bottom;">
+                                    <td style="vertical-align:top;">
                                         <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
                                     </td>
                                 </tr>
@@ -942,16 +942,16 @@
 
                     // Signature layout with generated combined logo
                     const signatureHTML = `
-                        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; box-sizing: border-box;">
+                        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; max-width: 520px; box-sizing: border-box;">
                             <!-- Top row: Headshot and Name/Title Banner -->
                             <tr>
-                                <td style="vertical-align:bottom; padding: 20px; padding-bottom: 12px;">
+                                <td style="vertical-align:top; padding: 20px; padding-bottom: 12px;">
                                     ${headshotNameTitle}
                                 </td>
                             </tr>
                             <!-- Contact info row -->
                             <tr>
-                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px;">
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 4px; max-width: 320px; width: 320px;">
                                     ${phoneBlock}
                                     <div style="font-size:12px; color:#222; margin-bottom:4px;">
                                         <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
@@ -963,7 +963,7 @@
                             </tr>
                             <!-- Address row -->
                             <tr>
-                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px;">
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 12px; max-width: 320px; width: 320px;">
                                     <div style="font-size:12px; color:#222;">
                                         215 E Main Street, Leesburg, Florida 34748
                                     </div>
@@ -971,7 +971,7 @@
                             </tr>
                             <!-- Combined Logo/Tagline/Button PNG row -->
                             <tr>
-                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px;">
+                                <td style="vertical-align:top; padding-left: 20px; padding-right: 20px; padding-bottom: 20px; max-width: 320px; width: 320px;">
                                     <div id="sig-block-logo-button">
                                         <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
                                             <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Boutique Service Built on Trust - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
