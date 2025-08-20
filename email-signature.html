@@ -1030,8 +1030,8 @@
 
             // Helper to convert a DOM node to an <img> element using html2canvas
             function nodeToImage(node, callback) {
-                const targetWidth = 400;
-                const scale = 4;
+                const targetWidth = 250;
+                const scale = 8;
                 html2canvas(node, {backgroundColor: null, scale: scale, width: node.offsetWidth * scale, height: node.offsetHeight * scale}).then(canvas => {
                     // Analyze canvas pixel data to find the rightmost and bottommost non-transparent pixel
                     const ctx = canvas.getContext('2d');
@@ -1062,8 +1062,9 @@
                     img.src = cropped.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
                     img.style.width = targetWidth + 'px'; // Display width
-                    img.width = targetWidth;
+                    img.setAttribute('width', targetWidth);
                     img.style.height = 'auto';
+                    img.setAttribute('height', 'auto');
                     img.style.removeProperty('max-width');
                     callback(img);
                 });
