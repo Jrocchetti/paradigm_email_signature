@@ -1031,12 +1031,35 @@
             // Helper to convert a DOM node to an <img> element using html2canvas
             function nodeToImage(node, callback) {
                 html2canvas(node, {backgroundColor: null, scale: 8}).then(canvas => {
+                    // Analyze canvas pixel data to find the rightmost and bottommost non-transparent pixel
+                    const ctx = canvas.getContext('2d');
+                    const w = canvas.width;
+                    const h = canvas.height;
+                    const imageData = ctx.getImageData(0, 0, w, h).data;
+                    let maxX = 0, maxY = 0;
+                    for (let y = 0; y < h; y++) {
+                        for (let x = w - 1; x >= 0; x--) {
+                            const idx = (y * w + x) * 4 + 3; // alpha channel
+                            if (imageData[idx] !== 0) { // not transparent
+                                if (x > maxX) maxX = x;
+                                if (y > maxY) maxY = y;
+                                break;
+                            }
+                        }
+                    }
+                    // Add a small right/bottom padding (e.g., 8px)
+                    const cropWidth = Math.min(maxX + 9, w);
+                    const cropHeight = Math.min(maxY + 9, h);
+                    // Crop the canvas
+                    const cropped = document.createElement('canvas');
+                    cropped.width = cropWidth;
+                    cropped.height = cropHeight;
+                    cropped.getContext('2d').drawImage(canvas, 0, 0, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
                     const img = document.createElement('img');
-                    img.src = canvas.toDataURL("image/png"); // Use PNG for transparency
+                    img.src = cropped.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
-                    img.style.width = '100%'; // Fully responsive for mobile and desktop
+                    img.style.width = '100%';
                     img.style.height = 'auto';
-                    // No width attribute or maxWidth for best scaling
                     callback(img);
                 });
             }
