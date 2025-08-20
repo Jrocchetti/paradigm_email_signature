@@ -5,6 +5,42 @@
  */
 
 class EmailTemplateBuilder {
+    /**
+     * Copy generated HTML to clipboard (mobile-friendly)
+     */
+    async copyHtmlToClipboard() {
+        try {
+            const html = this.generateHtml();
+            if (!html) {
+                this.showMessage('❌ No content to copy. Please fill in the template fields.', 'error');
+                return;
+            }
+            // Try to use the modern Clipboard API (works on most mobile/desktop browsers)
+            if (navigator.clipboard && window.isSecureContext) {
+                await navigator.clipboard.writeText(html);
+                this.showMessage('✅ HTML copied to clipboard!', 'success');
+            } else {
+                // Fallback for older browsers: create a temporary textarea
+                const textarea = document.createElement('textarea');
+                textarea.value = html;
+                textarea.setAttribute('readonly', '');
+                textarea.style.position = 'absolute';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    this.showMessage('✅ HTML copied to clipboard!', 'success');
+                } catch (err) {
+                    this.showMessage('❌ Copy failed. Please copy manually.', 'error');
+                }
+                document.body.removeChild(textarea);
+            }
+        } catch (error) {
+            this.showMessage('❌ Copy to clipboard failed.', 'error');
+            console.error('Clipboard error:', error);
+        }
+    }
     constructor() {
         this.templates = [];
         this.currentTemplate = null;
@@ -28,34 +64,6 @@ class EmailTemplateBuilder {
      */
     loadTemplates() {
         this.templateCategories = [
-            {
-                id: "custom",
-                name: "Custom",
-                description: "Templates for fully custom branded emails and advanced personalization",
-                icon: "✨",
-                color: "#FFD700",
-                templates: [
-                    {
-                        id: "custom-branded-v1",
-                        name: "Custom Branded Email",
-                        description: "Fully customizable branded email with single fixed photo spot and required signature",
-                        category: "custom",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGY4YmY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkN1c3RvbSBCcmFuZGVkPC90ZXh0Pjwvc3ZnPg==",
-                        lockedFields: this.getLockedFields(),
-                        dynamicFields: [
-                            {key: "header", label: "Header", type: "text", placeholder: "Bringing Boutique AV Service to Your Next Event", required: true},
-                            {key: "subheader", label: "Subheader", type: "text", placeholder: "Technical Direction • Show Management • On-Site Execution • Creative Direction", required: false},
-                            {key: "bodyTop", label: "Body Top", type: "textarea", placeholder: "Opening paragraph...", required: true},
-                            {key: "customPhotoDataUrl", label: "Photo (single upload)", type: "image", placeholder: "Upload a single photo", required: false},
-                            {key: "bodyBottom", label: "Body Bottom", type: "textarea", placeholder: "Closing paragraph...", required: false},
-                            {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
-                            {key: "email", label: "Your Email", type: "email", placeholder: "john@paradigmproductionsgroup.com", required: true},
-                            {key: "website", label: "Website", type: "url", placeholder: "www.paradigmproductionsgroup.com", required: true}
-                        ],
-                        htmlTemplate: this.getCustomBrandedTemplate()
-                    }
-                ]
-            },
             {
                 id: "prospect",
                 name: "Prospect",
@@ -112,7 +120,7 @@ class EmailTemplateBuilder {
                         name: "Capabilities Follow-Up",
                         description: "Follow-up after networking or discovery call highlighting core strengths",
                         category: "prospect",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcGFiaWxpdGllcyBGb2xsb3ctVXA8L3RleHQ+PC9zdmc+",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZWZmNmZmIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhcGFiaWxpdGllcyBGb2xsb3ctVXA8L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "firstName", label: "Recipient First Name", type: "text", placeholder: "Jane", required: true},
@@ -136,7 +144,7 @@ class EmailTemplateBuilder {
                         name: "Proposal Submission Cover Email",
                         description: "Sets expectations, confirms timeline",
                         category: "prospect",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb3Bvc2FsIFN1Ym1pc3Npb248L3RleHQ+PC9zdmc+",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlByb3Bvc2FsIFN1Ym1pc3Npb248L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientFirstName", label: "Recipient First Name", type: "text", placeholder: "Jane", required: true},
@@ -154,7 +162,7 @@ class EmailTemplateBuilder {
                         name: "Loss of Bid Thank You",
                         description: "Polite closeout, keeps door open",
                         category: "prospect",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgQmlkIFRoYW5rIFlvdTwvdGV4dD48L3N2Zz4=",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkxvc3MgQmlkIFRoYW5rIFlvdTwvdGV4dD48L3N2Zz4=",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -180,7 +188,7 @@ class EmailTemplateBuilder {
                         name: "New Client Welcome",
                         description: "Celebrates partnership, shares points of contact",
                         category: "acquisition",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5ldyBDbGllbnQgV2VsY29tZTwvdGV4dD48L3N2Zz4=",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPk5ldyBDbGllbnQgV2VsY29tZTwvdGV4dD48L3N2Zz4=",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -199,7 +207,7 @@ class EmailTemplateBuilder {
                         name: "Client Onboarding",
                         description: "Event questionnaire, file-sharing links, kickoff schedule",
                         category: "acquisition",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBmZGY0Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNsaWVudCBPbmJvYXJkaW5nPC90ZXh0Pjwvc3ZnPg==",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -226,7 +234,7 @@ class EmailTemplateBuilder {
                         name: "Post-Event Thank You & Recap",
                         description: "Quick wins, warm wrap-up",
                         category: "post-event",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgVGhhbmsgWW91PC90ZXh0Pjwvc3ZnPg==",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlBvc3QtRXZlbnQgVGhhbmsgWW91PC90ZXh0Pjwvc3ZnPg==",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -244,7 +252,7 @@ class EmailTemplateBuilder {
                         name: "Survey Request",
                         description: "Short, branded feedback request",
                         category: "post-event",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlN1cnZleSBSZXF1ZXN0PC90ZXh0Pjwvc3ZnPg==",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPlN1cnZleSBSZXF1ZXN0PC90ZXh0Pjwvc3ZnPg==",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -261,7 +269,7 @@ class EmailTemplateBuilder {
                         name: "Case Study Request",
                         description: "Permission to feature the event in PPG's portfolio",
                         category: "post-event",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkNhc2UgU3R1ZHkgUmVxdWVzdDwvdGV4dD48L3N2Zz4=",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmM2MwIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPkNhc2UgU3R1ZHkgUmVxdWVzdDwvdGV4dD48L3N2Zz4=",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -287,7 +295,7 @@ class EmailTemplateBuilder {
                         name: "Holiday / Year-End Greeting",
                         description: "Seasonal, warm, non-salesy",
                         category: "relationship-maintenance",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkhvbGlkYXkgR3JlZXRpbmc8L3RleHQ+PC9zdmc+",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPkhvbGlkYXkgR3JlZXRpbmc8L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -304,7 +312,7 @@ class EmailTemplateBuilder {
                         name: "Event Anniversary Note",
                         description: "\"One year ago...\" with throwback photo/stat",
                         category: "relationship-maintenance",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkV2ZW50IEFubml2ZXJzYXJ5PC90ZXh0Pjwvc3ZnPg==",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPkV2ZW50IEFubml2ZXJzYXJ5PC90ZXh0Pjwvc3ZnPg==",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -322,7 +330,7 @@ class EmailTemplateBuilder {
                         name: "Industry Insight Share",
                         description: "Thought-leadership or trend relevant to the client",
                         category: "relationship-maintenance",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkluZHVzdHJ5IEluc2lnaHQ8L3RleHQ+PC9zdmc+",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPkluZHVzdHJ5IEluc2lnaHQ8L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -339,7 +347,7 @@ class EmailTemplateBuilder {
                         name: "Re-Engagement Email",
                         description: "Revives dormant clients with new work examples",
                         category: "relationship-maintenance",
-                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPlJlLUVuZ2FnZW1lbnQ8L3RleHQ+PC9zdmc+",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZmVmMmY5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPlJlLUVuZ2FnZW1lbnQ8L3RleHQ+PC9zdmc+",
                         lockedFields: this.getLockedFields(),
                         dynamicFields: [
                             {key: "recipientName", label: "Recipient Name", type: "text", placeholder: "Jane Doe", required: true},
@@ -350,6 +358,31 @@ class EmailTemplateBuilder {
                             {key: "ctaUrl", label: "Call-to-Action URL", type: "url", placeholder: "https://calendly.com/ppg/reconnect", required: true}
                         ],
                         htmlTemplate: this.getReEngagementTemplate()
+                    }
+                ]
+            },
+            {
+                id: "custom",
+                name: "Custom Templates",
+                description: "Templates for various custom purposes",
+                icon: "✏️",
+                color: "#FFAA00",
+                templates: [
+                    {
+                        id: "custom-message-v1",
+                        name: "Custom Message",
+                        description: "Fully customizable message with your own headline, sub-headline, and paragraph, styled with PPG branding.",
+                        category: "custom",
+                        thumbnail: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjYjhhOWQ5Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzM3NDE1MSIgdGV4dC1hbmNob3I9Im1pZGRzZSIgZHk9Ii4zZW0iPkN1c3RvbSBNZXNzYWdlPC90ZXh0Pjwvc3ZnPg==",
+                        lockedFields: this.getLockedFields(),
+                        dynamicFields: [
+                            {key: "headerText", label: "Header Text", type: "text", placeholder: "Enter your main headline...", required: true},
+                            {key: "subHeaderText", label: "Secondary Header Text", type: "text", placeholder: "Enter your sub-headline...", required: false},
+                            {key: "mainMessage", label: "Main Message", type: "textarea", placeholder: "Write your message here...", required: true},
+                            {key: "yourName", label: "Your Name", type: "text", placeholder: "John Smith", required: true},
+                            {key: "yourEmail", label: "Your Email", type: "email", placeholder: "john@paradigmproductionsgroup.com", required: true}
+                        ],
+                        htmlTemplate: this.getCustomMessageTemplate()
                     }
                 ]
             }
@@ -500,7 +533,7 @@ class EmailTemplateBuilder {
                                 <td style="text-align: center;">
                                     <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{yourName}}</p>
                                     <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{title}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">Paradigm Productions Group</p>
+                                    <p style="color: #666; font-size: 14px, margin: 0 0 15px 0;">Paradigm Productions Group</p>
                                     <p style="color: #666; font-size: 14px; margin: 0;">
                                         <a href="tel:{{phone}}" style="color: #3F105E; text-decoration: none;">{{phone}}</a> | 
                                         <a href="mailto:{{email}}" style="color: #3F105E; text-decoration: none;">{{email}}</a>
@@ -643,13 +676,13 @@ class EmailTemplateBuilder {
                                 <td style="text-align: center;">
                                     <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{yourName}}</p>
                                     <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{yourTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">Paradigm Productions Group</p>
+                                    <p style="color: #666; font-size: 14px, margin: 0 0 15px 0;">Paradigm Productions Group</p>
                                     <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{yourEmail}}" style="color: #3F105E; text-decoration: none;">{{yourEmail}}</a> | 
-                                        <a href="tel:{{yourPhone}}" style="color: #3F105E; text-decoration: none;">{{yourPhone}}</a>
+                                        <a href="tel:{{phone}}" style="color: #3F105E; text-decoration: none;">{{phone}}</a> | 
+                                        <a href="mailto:{{email}}" style="color: #3F105E; text-decoration: none;">{{email}}</a>
                                     </p>
                                     <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{websiteLink}}" style="color: #3F105E; text-decoration: none;">{{websiteLink}}</a>
+                                        <a href="{{website}}" style="color: #3F105E; text-decoration: none;">{{website}}</a>
                                     </p>
                                 </td>
                             </tr>
@@ -734,7 +767,7 @@ class EmailTemplateBuilder {
                             <tr>
                                 <td style="text-align: center;">
                                     <p style="color: #1F1633; font-size: 16px; margin: 0 0 5px 0;">Warm regards,</p>
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 5px 0;">{{senderName}}</p>
+                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600, margin: 0 0 5px 0;">{{senderName}}</p>
                                     <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">Creative Director</p>
                                     <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
                                     <p style="color: #666; font-size: 14px; margin: 0;">
@@ -814,598 +847,45 @@ class EmailTemplateBuilder {
     }
 
     /**
-     * Get new client welcome template
+     * Custom Message Template: User-defined headline, sub-headline, and message
      */
-    getNewClientWelcomeTemplate() {
+    getCustomMessageTemplate() {
         return `
-            <!-- Preview Text (hidden) -->
-            <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: transparent;">
-                Welcome to the Paradigm Productions Group family! We're thrilled to partner with you and excited to get started...
-            </div>
-            
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+        <!-- Preview Text (hidden) -->
+        <div style="display: none; max-height: 0; overflow: hidden; font-size: 1px; line-height: 1px; color: transparent;">
+            {{headerText}} - {{subHeaderText}}
+        </div>
+        <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
+            <tr>
+                <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
+                    <div style="background: #1F1633; text-align: center; padding: 20px 0;">
                         <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Welcome to the {{companyName}} Family!</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We're thrilled to partner with you</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}} and the entire {{recipientCompany}} team,</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{welcomeMessage}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">What's Next</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{nextSteps}}</p>
+                            <img src="{{logoUrl}}" alt="Paradigm Productions Group" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
                         </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">Our commitment to you goes beyond just delivering excellent events. We're here to be your trusted partner in creating memorable experiences that align with your brand and objectives.</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Thank you for choosing {{companyName}}. We can't wait to get started!</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get client onboarding template
-     */
-    getClientOnboardingTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Get Started</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your onboarding information and next steps</p>
+                        <h1 style="color: #3F105E; font-size: 28px; margin: 0 0 10px 0; font-weight: 700;">{{headerText}}</h1>
+                        <h2 style="color: #B8A9D9; font-size: 20px; margin: 0 0 20px 0; font-weight: 400;">{{subHeaderText}}</h2>
                     </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Welcome to {{companyName}}! We're excited to begin working with {{recipientCompany}} on {{projectName}}.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Onboarding Checklist</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{onboardingSteps}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Key Contacts:</strong></p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{keyContacts}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{projectTimeline}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">If you have any questions or need clarification on any of these steps, please don't hesitate to reach out. We're here to make this process as smooth as possible!</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get post-event thank you template
-     */
-    getPostEventThankYouTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Thank You for an Amazing Event!</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{eventName}} wrap-up and highlights</p>
+                    <div style="background: #fff; border-radius: 8px; padding: 30px 20px; margin: 0 auto 20px auto; box-shadow: 0 2px 8px rgba(63,16,94,0.04);">
+                        <p style="color: #1F1633; font-size: 18px; line-height: 1.7; margin: 0;">{{mainMessage}}</p>
                     </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">What an incredible {{eventName}}! Thank you for trusting {{companyName}} to bring your vision to life. {{eventSuccess}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Highlights</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventHighlights}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Final Numbers:</strong></p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{finalMetrics}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{futureCollaboration}}</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get holiday greeting template
-     */
-    getHolidayGreetingTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{holidayTitle}}</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">From the {{companyName}} family to yours</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{holidayMessage}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0; text-align: center;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">{{yearReflection}}</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{yearHighlights}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">{{futureExcitement}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Wishing you and your loved ones {{holidayWishes}}!</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">Our Portfolio</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{companyWebsite}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">Our Portfolio</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get survey request template
-     */
-    getSurveyRequestTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Help Us Improve</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Your feedback matters to us</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Thank you for choosing {{companyName}} for {{eventName}}. We hope you had an amazing experience!</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">To help us continue delivering exceptional events, we'd love to hear your feedback. The survey takes approximately {{estimatedTime}} to complete.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0; text-align: center;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Survey Incentive</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">Complete the survey and receive {{surveyIncentive}} as a thank you!</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Your honest feedback helps us improve and ensures future events exceed expectations.</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get case study request template
-     */
-    getCaseStudyRequestTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Share Your Success Story</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Help inspire other clients</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Dear {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{eventName}} was such a tremendous success, and we'd love to share your story to inspire other clients.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Success Metrics</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventSuccessMetrics}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">{{portfolioBenefit}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Would you be willing to let us feature your event as a case study? We'll ensure your approval on all content before publication.</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get event anniversary template
-     */
-    getEventAnniversaryTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Remembering {{eventName}}</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">{{anniversaryDate}}</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{anniversaryDate}}, we had the privilege of producing {{eventName}}. {{eventMemory}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Event Highlights</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{eventStats}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">It was truly a pleasure working with your team, and we hope you're already planning this year's event!</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">If you're ready to start planning, we'd love to discuss how we can make this year even better.</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get industry insight template
-     */
-    getIndustryInsightTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">{{insightTitle}}</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">Industry insights from {{companyName}}</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I thought you might find this industry insight interesting and relevant to your upcoming events.</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">Key Insights</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{keyInsights}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;"><strong>Relevance to Your Events:</strong></p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">{{clientRelevance}}</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">I'd love to discuss how these trends might apply to your future events. Feel free to reach out if you'd like to explore any of these ideas further.</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
-    }
-
-    /**
-     * Get re-engagement template
-     */
-    getReEngagementTemplate() {
-        return `
-            <table role="presentation" style="width: 100%; max-width: 600px; margin: 0 auto; border-collapse: collapse; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;">
-                <tr>
-                    <td style="padding: 40px 30px; background: #1F1633; text-align: center;">
-                        <div style="width: 180px; height: 90px; margin: 0 auto 20px auto; background-color: #1F1633;">
-                                <img src="{{logoUrl}}" alt="{{companyName}} Logo" style="width: 180px; height: 90px; display: block; margin: 0; padding: 0; border: 0; outline: none; vertical-align: top; -ms-interpolation-mode: bicubic;" width="180" height="90" border="0" vspace="0" hspace="0">
-                            </div>
-                        <h1 style="color: #3FCBFF; margin: 0; font-size: 28px; font-weight: 700;">Let's Reconnect</h1>
-                        <p style="color: #B8A9D9; margin: 15px 0 0 0; font-size: 16px;">We've been busy creating amazing events</p>
-                    </div>
-                        <!--[if gte mso 9]>
-                        </v:textbox>
-                        </v:rect>
-                        <![endif]-->
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 30px; background: white;">
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">Hi {{recipientName}},</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">I was just thinking about {{lastInteraction}} and wanted to reach out to reconnect.</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 20px 0;">{{recentWorkExamples}}</p>
-                        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; mso-border-radius-alt: 0; border-left: 4px solid #3F105E; margin: 20px 0;">
-                            <h3 style="color: #1F1633; margin: 0 0 15px 0; font-size: 18px;">What's New at {{companyName}}</h3>
-                            <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0;">{{valueProposition}}</p>
-                        </div>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 20px 0;">I'd love to catch up and hear about your current event needs. Are you planning any events in the coming months?</p>
-                        <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 0 0 25px 0;">Let's schedule a quick call to discuss how we can support your goals.</p>
-                        <!--[if mso]>
-                        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" style="height:45px;v-text-anchor:middle;width:200px;" stroke="f" fillcolor="#3F105E">
-                        <v:textbox inset="0,0,0,0">
-                        <center style="color:#1F1633;font-family:Arial,sans-serif;font-size:16px;font-weight:600;">{{ctaText}}</center>
-                        </v:textbox>
-                        </v:roundrect>
-                        <![endif]-->
-                        <a href="{{ctaUrl}}" style="background: #3F105E; color: #ffffff; text-decoration: none; padding: 12px 25px; border-radius: 6px; mso-border-radius-alt: 0; font-weight: 600; font-size: 16px; display: inline-block; mso-hide: all;">{{ctaText}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
-                        <table role="presentation" style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="text-align: center;">
-                                    <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{senderName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{senderTitle}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0;">{{companyName}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 0;">
-                                        <a href="mailto:{{companyEmail}}" style="color: #3F105E; text-decoration: none;">{{companyEmail}}</a> | 
-                                        <a href="tel:{{companyPhone}}" style="color: #3F105E; text-decoration: none;">{{companyPhone}}</a>
-                                    </p>
-                                    <p style="color: #666; font-size: 14px; margin: 5px 0;">{{companyAddress}}</p>
-                                    <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">
-                                        <a href="{{companyWebsite}}" style="color: #3F105E; text-decoration: none;">{{companyWebsite}}</a>
-                                    </p>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
-        `;
+                    <p style="color: #1F1633; font-size: 16px; line-height: 1.6; margin: 25px 0 0 0;">Warm regards,</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 25px 30px; background: #f8f9fa; border-top: 3px solid #3F105E;">
+                    <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="text-align: center;">
+                                <p style="color: #1F1633; font-size: 16px; font-weight: 600; margin: 0 0 10px 0;">{{yourName}}</p>
+                                <p style="color: #666; font-size: 14px; margin: 0 0 5px 0;">{{yourEmail}}</p>
+                                <p style="color: #666; font-size: 14px; margin: 10px 0 0 0;">Paradigm Productions Group</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    `;
     }
 
     /**
@@ -1778,14 +1258,533 @@ class EmailTemplateBuilder {
                     >${value}</textarea>
                     <small>Enter each item on a new line or separated by |</small>`;
                     break;
-                case 'image':
-                    // Single image upload with preview. Stores base64 data URL in currentValues[field.key]
-                    inputHtml = `
-                        <input type="file" accept="image/*" id="field_${field.key}" onchange="emailBuilder.handleImageUpload('${field.key}', this.files)" />
-                        <div style="margin-top:8px;">
-                            <img id="preview_${field.key}" src="${value || ''}" style="max-width:200px;max-height:120px;display:${value ? 'block' : 'none'};border-radius:4px;border:1px solid #ddd;padding:4px;" alt="Preview" />
-                        </div>
-                    `;
+                default: // text
+                    inputHtml = `<input 
+                        type="text" 
+                        id="field_${field.key}" 
+                        placeholder="${field.placeholder}" 
+                        value="${value}"
+                        ${required}
+                        oninput="emailBuilder.updateField('${field.key}', this.value)"
+                    />`;
+            }
+
+            return `
+                <div class="field-group" style="${style}">
+                    <label for="field_${field.key}">
+                        ${field.label}
+                        ${field.required ? '<span class="required">*</span>' : ''}
+                    </label>
+                    ${inputHtml}
+                </div>
+            `;
+        }).join('');
+
+        container.innerHTML = `
+            <div class="editor-header">
+                <h3>${this.currentTemplate.name}</h3>
+                <button onclick="emailBuilder.backToLibrary()" class="back-btn">← Back to Templates</button>
+            </div>
+            <form id="templateForm" onsubmit="return false;">
+                ${fieldsHtml}
+            </form>
+        `;
+    }
+
+    /**
+     * Handle field dependencies (show/hide fields based on other field values)
+     */
+    handleFieldDependency(changedFieldKey, changedValue) {
+        // Find all fields that depend on the changed field
+        const dependentFields = this.currentTemplate.dynamicFields.filter(field => 
+            field.dependsOn === changedFieldKey
+        );
+
+        dependentFields.forEach(field => {
+            const fieldGroup = document.querySelector(`#field_${field.key}`).closest('.field-group');
+            if (fieldGroup) {
+                if (changedValue === field.dependsValue) {
+                    fieldGroup.style.display = 'block';
+                } else {
+                    fieldGroup.style.display = 'none';
+                    // Clear the value when hiding
+                    this.currentValues[field.key] = '';
+                    const fieldElement = document.getElementById(`field_${field.key}`);
+                    if (fieldElement) {
+                        fieldElement.value = '';
+                    }
+                }
+            }
+        });
+
+        // Update preview to reflect changes
+        this.updatePreview();
+    }
+
+    /**
+     * Update a field value and refresh preview
+     */
+    updateField(key, value) {
+        this.currentValues[key] = value;
+        this.updatePreview();
+    }
+
+    /**
+     * Update the live preview
+     */
+    updatePreview() {
+        console.log('🖼️ updatePreview called');
+        console.log('📄 Current template:', this.currentTemplate ? this.currentTemplate.name : 'null');
+        
+        if (!this.currentTemplate) {
+            console.warn('⚠️ No current template, exiting updatePreview');
+            return;
+        }
+
+        const preview = document.getElementById('emailPreview');
+        if (!preview) {
+            console.error('❌ Preview iframe not found');
+            return;
+        }
+        console.log('✅ Preview iframe found:', preview);
+
+        try {
+            console.log('🏗️ Generating HTML...');
+            let html = this.generateHtml();
+            
+            // Inject zoom styles into the HTML
+            const zoomScale = this.zoomLevel / 100;
+            const zoomCSS = `
+                <style>
+                    body {
+                        transform: scale(${zoomScale}) !important;
+                        transform-origin: top left !important;
+                        width: ${100 / zoomScale}% !important;
+                        height: ${100 / zoomScale}% !important;
+                    }
+                </style>
+            `;
+            
+            // Insert zoom CSS before closing head tag, or before body if no head
+            if (html.includes('</head>')) {
+                html = html.replace('</head>', zoomCSS + '</head>');
+            } else if (html.includes('<body')) {
+                html = html.replace('<body', zoomCSS + '<body');
+            } else {
+                html = zoomCSS + html;
+            }
+            
+            console.log('✅ HTML generated with zoom, length:', html.length);
+            console.log('📝 HTML preview:', html.substring(0, 200) + '...');
+            
+            // Use data URL to avoid CSP issues with srcdoc
+            const dataUrl = 'data:text/html;charset=utf-8,' + encodeURIComponent(html);
+            console.log('🔗 Data URL created, length:', dataUrl.length);
+            
+            preview.src = dataUrl;
+            console.log('✅ Preview src set to data URL');
+            
+            // Also try srcdoc as backup
+            preview.srcdoc = html;
+            console.log('✅ Preview srcdoc also set as backup');
+            
+        } catch (error) {
+            console.error('❌ Error updating preview:', error);
+            console.error('Stack trace:', error.stack);
+            
+            // Fallback: try srcdoc
+            try {
+                const html = this.generateHtml();
+                preview.srcdoc = html;
+                console.log('🔄 Fallback: Preview updated with srcdoc');
+            } catch (fallbackError) {
+                console.error('❌ Fallback preview error:', fallbackError);
+                this.showMessage('❌ Preview update failed. Please refresh the page.', 'error');
+            }
+        }
+    }
+
+    /**
+     * Generate the final HTML from template and values
+     */
+    generateHtml() {
+        console.log('🏗️ generateHtml called');
+        if (!this.currentTemplate) {
+            console.warn('❌ No template selected');
+            return '';
+        }
+
+        if (!this.currentTemplate.htmlTemplate) {
+            console.warn('❌ No HTML template found');
+            return '';
+        }
+
+        console.log('📊 Current values:', this.currentValues || 'No values set');
+        
+        // Check for required fields but don't block generation
+        const missingRequired = [];
+        if (this.currentTemplate.dynamicFields) {
+            this.currentTemplate.dynamicFields.forEach(field => {
+                if (field.required && (!this.currentValues || !this.currentValues[field.key])) {
+                    missingRequired.push(field.label);
+                }
+            });
+        }
+        
+        if (missingRequired.length > 0) {
+            console.warn('⚠️ Missing required fields:', missingRequired);
+            // Continue generation but warn user
+        }
+        
+        console.log('📋 Template name:', this.currentTemplate.name);
+        console.log('📄 HTML template length:', this.currentTemplate.htmlTemplate.length);
+
+        let html = this.currentTemplate.htmlTemplate;
+        
+        try {
+            // Replace locked fields
+            if (this.currentTemplate.lockedFields) {
+                console.log('🔒 Processing locked fields:', Object.keys(this.currentTemplate.lockedFields));
+                Object.entries(this.currentTemplate.lockedFields).forEach(([key, value]) => {
+                    const regex = new RegExp(`{{${key}}}`, 'g');
+                    html = html.replace(regex, value || '');
+                });
+            }
+
+            // Replace dynamic fields
+            if (this.currentValues) {
+                console.log('🔄 Processing dynamic fields:', Object.keys(this.currentValues));
+                console.log('📊 Current values:', this.currentValues);
+                Object.entries(this.currentValues).forEach(([key, value]) => {
+                    const field = this.currentTemplate.dynamicFields?.find(f => f.key === key);
+                    let processedValue = value || '';
+
+                    // Special handling for pain point selection
+                    if (key === 'specificPainPoint' && value === 'custom') {
+                        processedValue = this.currentValues['customPainPoint'] || '';
+                        console.log('🎯 Using custom pain point:', processedValue);
+                    } else if (key === 'specificPainPoint' && value) {
+                        console.log('🎯 Using predefined pain point:', value);
+                    }
+
+                    // Process list fields
+                    if (field && field.type === 'list' && processedValue) {
+                        const items = processedValue.split(/[|\n]/).filter(item => item.trim());
+                        processedValue = items.map(item => `<li>${item.trim()}</li>`).join('');
+                    }
+
+                    console.log(`🔀 Replacing {{${key}}} with: "${processedValue}"`);
+                    const regex = new RegExp(`{{${key}}}`, 'g');
+                    html = html.replace(regex, processedValue);
+                });
+            }
+
+            // Clean up any remaining placeholders
+            const remainingPlaceholders = html.match(/{{[^}]+}}/g);
+            if (remainingPlaceholders) {
+                console.warn('⚠️ Remaining unfilled placeholders:', remainingPlaceholders);
+            }
+            html = html.replace(/{{[^}]+}}/g, '');
+            
+            // Remove empty video sections (conditional display)
+            html = html.replace(/<div style="margin: 25px 0; text-align: center;">\s*<\/div>/g, '');
+            
+            console.log('✅ Final HTML generated, length:', html.length);
+            console.log('📝 HTML preview (first 300 chars):', html.substring(0, 300));
+
+            return html;
+        } catch (error) {
+            console.error('❌ Error generating HTML:', error);
+            console.error('Stack trace:', error.stack);
+            return '';
+        }
+    }
+
+    /**
+     * Copy generated HTML to clipboard
+     */
+    /**
+     * Download generated HTML as file
+     */
+    downloadHtml() {
+        try {
+            const html = this.generateHtml();
+            if (!html) {
+                this.showMessage('❌ No content to download. Please fill in the template fields.', 'error');
+                return;
+            }
+            
+            // Wrap in proper HTML document with UTF-8 encoding
+            const fullHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Template</title>
+</head>
+<body>
+${html}
+</body>
+</html>`;
+            
+            const blob = new Blob([fullHtml], { type: 'text/html; charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${this.currentTemplate.name.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            this.showMessage('✅ HTML file downloaded!', 'success');
+        } catch (error) {
+            this.showMessage('❌ Failed to download HTML file. Please try again.', 'error');
+            console.error('Download error:', error);
+        }
+    }
+
+    /**
+     * Toggle HTML source view
+     */
+    toggleHtmlView() {
+        try {
+            const htmlPanel = document.getElementById('htmlSource');
+            const showBtn = document.getElementById('showHtml');
+            
+            if (!htmlPanel || !showBtn) {
+                console.error('HTML panel or show button not found');
+                return;
+            }
+            
+            if (htmlPanel.style.display === 'none' || !htmlPanel.style.display) {
+                const html = this.generateHtml();
+                if (!html) {
+                    this.showMessage('❌ No content to show. Please fill in the template fields.', 'error');
+                    return;
+                }
+                
+                htmlPanel.style.display = 'block';
+                const preElement = htmlPanel.querySelector('pre');
+                if (preElement) {
+                    preElement.textContent = html;
+                }
+                showBtn.textContent = 'Hide HTML';
+                this.showMessage('📄 HTML source displayed', 'info');
+            } else {
+                htmlPanel.style.display = 'none';
+                showBtn.textContent = 'Show HTML';
+            }
+        } catch (error) {
+            this.showMessage('❌ Failed to toggle HTML view. Please try again.', 'error');
+            console.error('Toggle HTML view error:', error);
+        }
+    }
+
+    /**
+     * Save current draft to localStorage
+     */
+    saveDraft() {
+        if (!this.currentTemplate) {
+            this.showMessage('❌ No template selected to save as draft.', 'error');
+            return;
+        }
+
+        try {
+            const draft = {
+                templateId: this.currentTemplate.id,
+                values: { ...this.currentValues },
+                owner: 'current-user', // TODO: Get from auth system
+                updatedAt: new Date().toISOString()
+            };
+
+            localStorage.setItem('emailBuilderDraft', JSON.stringify(draft));
+            this.showMessage('✅ Draft saved locally!', 'success');
+        } catch (error) {
+            console.error('Error saving draft:', error);
+            this.showMessage('❌ Failed to save draft. Please try again.', 'error');
+        }
+    }
+
+    /**
+     * Load draft from localStorage
+     */
+    loadDraft() {
+        const draftData = localStorage.getItem('emailBuilderDraft');
+        if (!draftData) {
+            this.showMessage('ℹ️ No saved draft found.', 'info');
+            return;
+        }
+
+        try {
+            const draft = JSON.parse(draftData);
+            this.selectTemplate(draft.templateId);
+            
+            // Populate fields with draft values
+            Object.entries(draft.values).forEach(([key, value]) => {
+                this.currentValues[key] = value;
+                const fieldElement = document.getElementById(`field_${key}`);
+                if (fieldElement) {
+                    fieldElement.value = value;
+                }
+            });
+            
+            this.updatePreview();
+            this.showMessage('✅ Draft loaded!', 'success');
+        } catch (err) {
+            this.showMessage('❌ Failed to load draft.', 'error');
+            console.error('Draft loading error:', err);
+        }
+    }
+
+    /**
+     * Convert HTML to plain text for clipboard
+     */
+    htmlToPlainText(html) {
+        const div = document.createElement('div');
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
+    }
+
+    /**
+     * Show user feedback message
+     */
+    showMessage(message, type = 'info') {
+        const messageContainer = document.getElementById('messageContainer');
+        }
+    }
+
+    /**
+     * Select a template and render the editor
+     */
+    selectTemplate(templateId) {
+        console.log('🎯 selectTemplate called with:', templateId);
+        this.currentTemplate = this.templates.find(t => t.id === templateId);
+        if (!this.currentTemplate) {
+            console.error('❌ Template not found:', templateId);
+            return;
+        }
+
+        console.log('✅ Found template:', this.currentTemplate.name);
+        // Reset current values
+        this.currentValues = {};
+        
+        // Initialize with default values
+        this.currentTemplate.dynamicFields.forEach(field => {
+            this.currentValues[field.key] = '';
+        });
+        console.log('📝 Current values initialized:', this.currentValues);
+
+        this.renderFieldEditor();
+        console.log('📋 Field editor rendered');
+        
+        this.updatePreview();
+        console.log('🖼️ Preview update called');
+        
+        this.showEditor();
+        console.log('👁️ Editor shown');
+        
+        // Enable action buttons when template is selected
+        this.enableActionButtons();
+    }
+    
+    /**
+     * Enable action buttons when template is loaded
+     */
+    enableActionButtons() {
+        const buttons = ['downloadHtml', 'showHtml', 'saveDraft'];
+        buttons.forEach(id => {
+            const btn = document.getElementById(id);
+            if (btn) {
+                btn.disabled = false;
+            }
+        });
+    }
+
+    /**
+     * Show the editor panel
+     */
+    showEditor() {
+        const editorPanel = document.getElementById('editorPanel');
+        const templateLibraryPanel = document.getElementById('templateLibraryPanel');
+        
+        if (editorPanel) editorPanel.style.display = 'block';
+        if (templateLibraryPanel) templateLibraryPanel.style.display = 'none';
+    }
+
+    /**
+     * Go back to template library
+     */
+    backToLibrary() {
+        const editorPanel = document.getElementById('editorPanel');
+        const templateLibraryPanel = document.getElementById('templateLibraryPanel');
+        
+        if (editorPanel) editorPanel.style.display = 'none';
+        if (templateLibraryPanel) templateLibraryPanel.style.display = 'block';
+        
+        this.currentTemplate = null;
+        this.currentValues = {};
+    }
+
+    /**
+     * Render the dynamic field editor
+     */
+    renderFieldEditor() {
+        const container = document.getElementById('fieldEditor');
+        if (!container || !this.currentTemplate) return;
+
+        const fieldsHtml = this.currentTemplate.dynamicFields.map(field => {
+            const value = this.currentValues[field.key] || '';
+            const required = field.required ? 'required' : '';
+            
+            // Check if this field depends on another field
+            let style = '';
+            if (field.dependsOn) {
+                const dependsOnValue = this.currentValues[field.dependsOn] || '';
+                style = dependsOnValue === field.dependsValue ? 'display: block;' : 'display: none;';
+            }
+            
+            let inputHtml = '';
+            
+            switch (field.type) {
+                case 'textarea':
+                    inputHtml = `<textarea 
+                        id="field_${field.key}" 
+                        placeholder="${field.placeholder}" 
+                        ${required}
+                        oninput="emailBuilder.updateField('${field.key}', this.value)"
+                    >${value}</textarea>`;
+                    break;
+                case 'url':
+                    inputHtml = `<input 
+                        type="url" 
+                        id="field_${field.key}" 
+                        placeholder="${field.placeholder}" 
+                        value="${value}"
+                        ${required}
+                        oninput="emailBuilder.updateField('${field.key}', this.value)"
+                    />`;
+                    break;
+                case 'select':
+                    const options = field.options.map(option => 
+                        `<option value="${option.value}" ${value === option.value ? 'selected' : ''}>${option.label}</option>`
+                    ).join('');
+                    inputHtml = `<select 
+                        id="field_${field.key}" 
+                        ${required}
+                        onchange="emailBuilder.updateField('${field.key}', this.value); emailBuilder.handleFieldDependency('${field.key}', this.value)"
+                    >${options}</select>`;
+                    break;
+                case 'list':
+                    inputHtml = `<textarea 
+                        id="field_${field.key}" 
+                        placeholder="${field.placeholder}" 
+                        ${required}
+                        oninput="emailBuilder.updateField('${field.key}', this.value)"
+                        title="Enter each item on a new line or separated by |"
+                    >${value}</textarea>
+                    <small>Enter each item on a new line or separated by |</small>`;
                     break;
                 default: // text
                     inputHtml = `<input 
@@ -2017,9 +2016,6 @@ class EmailTemplateBuilder {
             
             // Remove empty video sections (conditional display)
             html = html.replace(/<div style="margin: 25px 0; text-align: center;">\s*<\/div>/g, '');
-            // Remove image tags with empty src and their empty containers
-            html = html.replace(/<img[^>]+src=""[^>]*>/g, '');
-            html = html.replace(/<div style="text-align:center;margin:20px 0;">\s*<\/div>/g, '');
             
             console.log('✅ Final HTML generated, length:', html.length);
             console.log('📝 HTML preview (first 300 chars):', html.substring(0, 300));
@@ -2845,101 +2841,6 @@ ${html}
     }
 }
 
-EmailTemplateBuilder.prototype.getCustomBrandedTemplate = function() {
-    return `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{header}}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600&display=swap" rel="stylesheet">
-    <!--[if mso]>
-    <nxml:namespace xmlns:nxml="urn:schemas-microsoft-com:office:office" />
-    <nxml:namespace xmlns:w="urn:schemas-microsoft-com:office:word" />
-    <![endif]-->
-</head>
-<body style="margin:0;padding:0;font-family:'Manrope', Arial, sans-serif;background-color:#f8f9fa;">
-    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f8f9fa;">
-        <tr>
-            <td align="center" style="padding:20px 0;">
-                <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color:#23163a;border-radius:8px;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
-                    <tr>
-                        <td style="padding:40px 40px 24px;text-align:center;border-radius:8px 8px 0 0;">
-                            <img src="{{logoUrl}}" alt="{{companyName}}" style="max-height:50px;height:auto;" />
-                            <div style="margin-top:8px;font-size:15px;color:#fff;opacity:0.85;font-style:italic;">{{companyTagline}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:0 40px 0 40px;text-align:center;">
-                            <h1 style="margin:0 0 12px;font-size:2.1em;line-height:1.15;color:#2ed0ff;font-weight:700;font-family:'Manrope',Arial,sans-serif;">{{header}}</h1>
-                            <div style="margin:0 0 24px 0;font-size:15px;color:#e0e0e0;font-weight:400;line-height:1.3;">{{subheader}}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:0 40px 28px 40px;">
-                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;text-align:left;">{{bodyTop}}</div>
-                            <!-- Fixed photo spot -->
-                            <div style="text-align:center;margin:20px 0;">
-                                <img src="{{customPhotoDataUrl}}" alt="Photo" style="max-width:100%;height:auto;border-radius:6px;display:block;margin:0 auto;" />
-                            </div>
-                            <div style="font-size:16px;line-height:1.6;color:#e0e0e0;margin-bottom:18px;text-align:left;">{{bodyBottom}}</div>
-                            <p style="margin:32px 0 0;font-size:16px;">
-                                <strong>{{yourName}}</strong><br>
-                                <a href="mailto:{{email}}" style="color:#3F105E;text-decoration:none;font-weight:600;">{{email}}</a> |
-                                <a href="https://{{website}}" style="color:#3F105E;text-decoration:none;font-weight:600;">{{website}}</a>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="padding:20px 40px 30px;background-color:#f8f9fa;border-radius:0 0 8px 8px;">
-                            <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                                <tr>
-                                    <td style="text-align:center;font-size:14px;color:#666;">
-                                        <strong>{{companyName}}</strong><br>{{companyAddress}}<br>Phone: {{companyPhone}} | Email: {{companyEmail}}
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body>
-</html>`;
-}
-
-/**
- * Handle image file uploads by converting to base64 data URL and storing in currentValues
- */
-EmailTemplateBuilder.prototype.handleImageUpload = function(fieldKey, files) {
-    if (!files || files.length === 0) return;
-    const file = files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const dataUrl = e.target.result;
-        this.currentValues[fieldKey] = dataUrl;
-        // update preview image in the editor if present
-        const preview = document.getElementById(`preview_${fieldKey}`);
-        if (preview) {
-            preview.src = dataUrl;
-            preview.style.display = 'block';
-        }
-        this.updatePreview();
-    };
-    reader.onerror = (err) => {
-        console.error('Image read error:', err);
-        this.showMessage('❌ Failed to read image file. Please try a different file.', 'error');
-    };
-    // Limit file size to avoid huge emails (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-        this.showMessage('❌ Image too large. Please use an image smaller than 5MB.', 'error');
-        return;
-    }
-    reader.readAsDataURL(file);
-};
-
-
 // Global instance
 let emailBuilder;
 
@@ -3019,22 +2920,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailBuilder.updateField('personalizedDetail', 'your focus on creating memorable attendee experiences');
                 console.log('✅ Test values filled (no video) - check preview!');
             }, 500);
-        };
-
-        window.testCustomBranded = () => {
-            console.log('🔍 Testing Custom Branded template...');
-            emailBuilder.selectTemplate('custom-branded-v1');
-            setTimeout(() => {
-                emailBuilder.updateField('header', 'Bringing Boutique AV Service to Your Next Event');
-                emailBuilder.updateField('subheader', 'Technical Direction • Show Management • On-Site Execution • Creative Direction');
-                emailBuilder.updateField('bodyTop', 'We design and execute unforgettable event experiences with attention to every technical detail.');
-                // leave photo empty so you can test upload or programmatically set it
-                emailBuilder.updateField('bodyBottom', 'If this sounds interesting, let’s schedule a quick call to discuss your needs.');
-                emailBuilder.updateField('yourName', 'John Smith');
-                emailBuilder.updateField('email', 'john@paradigmproductionsgroup.com');
-                emailBuilder.updateField('website', 'www.paradigmproductionsgroup.com');
-                console.log('✅ Test values filled for Custom Branded - check preview!');
-            }, 400);
         };
         console.log('✅ EmailTemplateBuilder initialized successfully');
         console.log('💡 You can call testProspectOutreach() to auto-fill test data');
