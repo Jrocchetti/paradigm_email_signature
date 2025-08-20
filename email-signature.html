@@ -1030,7 +1030,9 @@
 
             // Helper to convert a DOM node to an <img> element using html2canvas
             function nodeToImage(node, callback) {
-                html2canvas(node, {backgroundColor: null, scale: 8}).then(canvas => {
+                const targetWidth = 400;
+                const scale = 4;
+                html2canvas(node, {backgroundColor: null, scale: scale, width: node.offsetWidth * scale, height: node.offsetHeight * scale}).then(canvas => {
                     // Analyze canvas pixel data to find the rightmost and bottommost non-transparent pixel
                     const ctx = canvas.getContext('2d');
                     const w = canvas.width;
@@ -1050,18 +1052,18 @@
                     // Add a small right/bottom padding (e.g., 8px)
                     const cropWidth = Math.min(maxX + 9, w);
                     const cropHeight = Math.min(maxY + 9, h);
-                    // Crop the canvas
+                    // Crop the canvas at high resolution
                     const cropped = document.createElement('canvas');
                     cropped.width = cropWidth;
                     cropped.height = cropHeight;
                     cropped.getContext('2d').drawImage(canvas, 0, 0, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+                    // Downscale for display but keep high-res data
                     const img = document.createElement('img');
                     img.src = cropped.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
-                    img.style.width = '400px'; // Fixed width for email compatibility
-                    img.width = 400;
+                    img.style.width = targetWidth + 'px'; // Display width
+                    img.width = targetWidth;
                     img.style.height = 'auto';
-                    // Remove maxWidth to avoid style override
                     img.style.removeProperty('max-width');
                     callback(img);
                 });
