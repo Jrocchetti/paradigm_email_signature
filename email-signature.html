@@ -1059,8 +1059,10 @@
                     img.src = cropped.toDataURL("image/png"); // Use PNG for transparency
                     img.style.display = 'block';
                     img.style.width = '400px'; // Fixed width for email compatibility
-                    img.style.maxWidth = '100%';
+                    img.width = 400;
                     img.style.height = 'auto';
+                    // Remove maxWidth to avoid style override
+                    img.style.removeProperty('max-width');
                     callback(img);
                 });
             }
