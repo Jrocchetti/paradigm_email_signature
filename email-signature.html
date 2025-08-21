@@ -707,64 +707,46 @@
             
             // Set initial canvas dimensions - increase width to prevent logo clipping
             // Add more space for the new logo's aspect ratio
-            canvas.width = Math.max(bannerWidth + 260, 600); // Extra space for wide logo, tagline, and button
-            canvas.height = 90; // Increased height to prevent button cutoff
+            const logoMaxWidth = 180;
+            const logoMaxHeight = 48;
+            const taglineFont = "italic 13px Arial, sans-serif";
+            ctx.font = taglineFont;
+            const taglineText = "Boutique Service Built on Trust";
+            const taglineWidth = ctx.measureText(taglineText).width;
+            const logoWidth = Math.max(logoMaxWidth, taglineWidth);
+            const logoHeight = logoMaxHeight;
+            const buttonWidth = 80;
+            const buttonHeight = logoHeight + 22; // allow for tagline below logo
+            const padding = 16;
+            // Calculate total width needed: headshot offset + bannerWidth (name/title box) is the right edge for the button
+            // The leftmost edge is 0, the rightmost is headshotOffset + bannerWidth
+            const headshotOffset = window.headshotDataUrl ? 76 : 0;
+            const totalWidth = headshotOffset + bannerWidth;
+            // Ensure enough space for the logo as well
+            canvas.width = Math.max(totalWidth, logoWidth) + padding;
+            canvas.height = buttonHeight + padding * 2;
             // Do NOT fill with white, keep transparent
             
             // Load the Paradigm logo
             const logoImg = new Image();
             logoImg.crossOrigin = "anonymous";
             logoImg.onload = function() {
-                // Draw the logo at its natural aspect ratio, using most of the available width
-                ctx.fillStyle = "#444444";
-                ctx.font = "italic 13px Arial, sans-serif";
-                ctx.textAlign = "left";
-                ctx.textBaseline = "top";
-                const taglineText = "Boutique Service Built on Trust";
-                const taglineWidth = ctx.measureText(taglineText).width;
+                // Draw logo at natural aspect ratio, max width/height
+                const logoX = 0;
+                const logoY = padding;
+                // Scale logo so its height matches the button height, preserving aspect ratio
+                let logoDrawHeight = buttonHeight;
+                let logoDrawWidth = logoImg.width * (logoDrawHeight / logoImg.height);
+                ctx.drawImage(logoImg, logoX, logoY, logoDrawWidth, logoDrawHeight);
 
-                // Set a max logo width, but allow it to be wide
-                const maxLogoWidth = Math.max(taglineWidth, 220);
-                const logoWidth = Math.min(logoImg.width, maxLogoWidth);
-                const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
-                const logoY = 5;
-                ctx.drawImage(logoImg, 0, logoY, logoWidth, logoHeight);
+                // Tagline is now part of the logo image, so do not render it separately
 
-                // Draw the tagline
-                const taglineY = logoY + logoHeight + 6;
-                ctx.fillText(taglineText, 0, taglineY);
-                
-                // Calculate total height of logo + gap + tagline for button height
-                const totalContentHeight = logoHeight + 6 + 15; // logo + gap + tagline height (approx 15px for 13px font)
-                
-                // Position button to align with the right edge of the name/title/company section
+
+                // Draw button so its right edge aligns with the right edge of the name/title banner, factoring in headshot
+                const buttonY = logoY;
                 const headshotOffset = window.headshotDataUrl ? 76 : 0;
-                const buttonWidth = 80;
-                const bannerRightEdge = headshotOffset + bannerWidth;
-                const buttonX = bannerRightEdge - buttonWidth; // Align with right edge of name/title banner
-                const buttonY = logoY; // Start at same Y as logo
-                const buttonHeight = totalContentHeight;
+                const buttonX = headshotOffset + bannerWidth - buttonWidth;
                 const cornerRadius = 8;
-                
-                // Ensure canvas is wide enough for the button
-                if (buttonX + buttonWidth > canvas.width) {
-                    const newWidth = buttonX + buttonWidth + 10; // Add 10px padding
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    canvas.width = newWidth;
-                    ctx.fillStyle = "#FFFFFF";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.putImageData(imageData, 0, 0);
-                    
-                    // Redraw logo and tagline
-                    ctx.drawImage(logoImg, 0, logoY, logoWidth, logoHeight);
-                    ctx.fillStyle = "#444444";
-                    ctx.font = "italic 13px Arial, sans-serif";
-                    ctx.textAlign = "left";
-                    ctx.textBaseline = "top";
-                    ctx.fillText(taglineText, 0, taglineY);
-                }
-                
-                // Draw rounded rectangle for button (top-left and bottom-right corners only)
                 ctx.save();
                 ctx.beginPath();
                 ctx.moveTo(buttonX + cornerRadius, buttonY); // start at top-left rounded corner
@@ -775,125 +757,54 @@
                 ctx.lineTo(buttonX, buttonY + cornerRadius); // left edge
                 ctx.quadraticCurveTo(buttonX, buttonY, buttonX + cornerRadius, buttonY); // top-left corner (rounded)
                 ctx.closePath();
-                
-                // Fill button background (white)
                 ctx.fillStyle = "#FFFFFF";
                 ctx.fill();
-                
-                // Button border (deep magenta)
                 ctx.strokeStyle = "#3F105E";
                 ctx.lineWidth = 1;
                 ctx.stroke();
                 ctx.restore();
-                
+
                 // Button text
                 ctx.fillStyle = "#222222";
                 ctx.font = "bold 8px Arial, sans-serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
-                
-                // Multi-line button text
                 const lines = ["GET STARTED", "WITH", "PARADIGM"];
-                const lineHeight = Math.max(8, buttonHeight / 5); // Adjust line height based on button height
+                const lineHeight = 12;
                 const startY = buttonY + buttonHeight/2 - (lines.length-1) * lineHeight/2;
-                
                 lines.forEach((line, index) => {
                     ctx.fillText(line, buttonX + buttonWidth/2, startY + index * lineHeight);
                 });
-                
-                // Return the canvas as data URL
-                callback(canvas.toDataURL("image/png"));
-            };
-            
-            logoImg.onerror = function() {
-                // If logo fails to load, create a simplified version
-                ctx.fillStyle = "#444444";
-                ctx.font = "bold 16px Arial, sans-serif";
-                ctx.textAlign = "left";
-                ctx.textBaseline = "top";
-                
-                // Measure tagline width first
-                ctx.font = "italic 13px Arial, sans-serif";
-                const taglineText = "Boutique Service Built on Trust";
-                const taglineWidth = ctx.measureText(taglineText).width;
-                
-                // Draw PARADIGM text to match tagline width
-                ctx.font = "bold 16px Arial, sans-serif";
-                const paradigmText = "PARADIGM";
-                const paradigmWidth = ctx.measureText(paradigmText).width;
-                const scaleFactor = taglineWidth / paradigmWidth;
-                const adjustedFontSize = Math.max(12, 16 * scaleFactor); // Minimum 12px font
-                ctx.font = `bold ${adjustedFontSize}px Arial, sans-serif`;
-                ctx.fillText(paradigmText, 0, 10);
-                
-                ctx.font = "italic 13px Arial, sans-serif";
-                const taglineY = 40;
-                ctx.fillText(taglineText, 0, taglineY);
-                
-                // Position button to align with the right edge of the name/title/company section
-                const headshotOffset = window.headshotDataUrl ? 76 : 0;
-                const buttonWidth = 80;
-                const bannerRightEdge = headshotOffset + (window.currentBannerWidth || 220);
-                const buttonX = bannerRightEdge - buttonWidth; // Align with right edge of name/title banner
-                const buttonY = 10; // Start at same Y as PARADIGM text
-                const buttonHeight = taglineY + 15 - buttonY; // Align button bottom with tagline bottom
-                const cornerRadius = 8;
-                
-                // Ensure canvas is wide enough for the button
-                if (buttonX + buttonWidth > canvas.width) {
-                    const newWidth = buttonX + buttonWidth + 10; // Add 10px padding
-                    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    canvas.width = newWidth;
-                    ctx.fillStyle = "#FFFFFF";
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    ctx.putImageData(imageData, 0, 0);
-                    
-                    // Redraw text
-                    ctx.fillStyle = "#444444";
-                    ctx.font = `bold ${adjustedFontSize}px Arial, sans-serif`;
-                    ctx.textAlign = "left";
-                    ctx.textBaseline = "top";
-                    ctx.fillText(paradigmText, 0, 10);
-                    ctx.font = "italic 13px Arial, sans-serif";
-                    ctx.fillText(taglineText, 0, taglineY);
+
+                // Crop the canvas to the outermost non-transparent pixels
+                const ctx2d = canvas.getContext('2d');
+                const w = canvas.width;
+                const h = canvas.height;
+                const imageData = ctx2d.getImageData(0, 0, w, h).data;
+                let minX = w, minY = h, maxX = 0, maxY = 0;
+                for (let y = 0; y < h; y++) {
+                    for (let x = 0; x < w; x++) {
+                        const idx = (y * w + x) * 4 + 3; // alpha channel
+                        if (imageData[idx] !== 0) {
+                            if (x < minX) minX = x;
+                            if (x > maxX) maxX = x;
+                            if (y < minY) minY = y;
+                            if (y > maxY) maxY = y;
+                        }
+                    }
                 }
-                
-                // Draw rounded rectangle for button (top-left and bottom-right corners only)
-                ctx.save();
-                ctx.beginPath();
-                ctx.moveTo(buttonX + cornerRadius, buttonY); // start at top-left rounded corner
-                ctx.lineTo(buttonX + buttonWidth, buttonY); // top edge (no rounding on top-right)
-                ctx.lineTo(buttonX + buttonWidth, buttonY + buttonHeight - cornerRadius); // right edge
-                ctx.quadraticCurveTo(buttonX + buttonWidth, buttonY + buttonHeight, buttonX + buttonWidth - cornerRadius, buttonY + buttonHeight); // bottom-right corner (rounded)
-                ctx.lineTo(buttonX, buttonY + buttonHeight); // bottom edge (no rounding on bottom-left)
-                ctx.lineTo(buttonX, buttonY + cornerRadius); // left edge
-                ctx.quadraticCurveTo(buttonX, buttonY, buttonX + cornerRadius, buttonY); // top-left corner (rounded)
-                ctx.closePath();
-                
-                // Fill button background (white)
-                ctx.fillStyle = "#FFFFFF";
-                ctx.fill();
-                
-                // Button border (deep magenta)
-                ctx.strokeStyle = "#3F105E";
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                ctx.restore();
-                
-                ctx.fillStyle = "#222222";
-                ctx.font = "bold 8px Arial, sans-serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                
-                const lines = ["GET STARTED", "WITH", "PARADIGM"];
-                const lineHeight = Math.max(8, buttonHeight / 5); // Adjust line height based on button height
-                const startY = buttonY + buttonHeight/2 - (lines.length-1) * lineHeight/2;
-                
-                lines.forEach((line, index) => {
-                    ctx.fillText(line, buttonX + buttonWidth/2, startY + index * lineHeight);
-                });
-                
-                callback(canvas.toDataURL("image/png"));
+                // Add a small padding (e.g., 4px)
+                minX = Math.max(0, minX - 4);
+                minY = Math.max(0, minY - 4);
+                maxX = Math.min(w, maxX + 5);
+                maxY = Math.min(h, maxY + 5);
+                const cropWidth = maxX - minX;
+                const cropHeight = maxY - minY;
+                const cropped = document.createElement('canvas');
+                cropped.width = cropWidth;
+                cropped.height = cropHeight;
+                cropped.getContext('2d').drawImage(canvas, minX, minY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+                callback(cropped.toDataURL("image/png"));
             };
             
             logoImg.src = "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1755741701919_7tcg0nq4lq.png";
