@@ -705,30 +705,31 @@
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
             
-            // Set initial canvas dimensions - we'll resize if needed
-            // Start with a reasonable size that can accommodate logo, tagline, and button
-            canvas.width = Math.max(bannerWidth + 160, 500); // Extra space for logo, tagline, and button
-            canvas.height = 75; // Increased height to prevent button cutoff
+            // Set initial canvas dimensions - increase width to prevent logo clipping
+            // Add more space for the new logo's aspect ratio
+            canvas.width = Math.max(bannerWidth + 260, 600); // Extra space for wide logo, tagline, and button
+            canvas.height = 90; // Increased height to prevent button cutoff
             // Do NOT fill with white, keep transparent
             
             // Load the Paradigm logo
             const logoImg = new Image();
             logoImg.crossOrigin = "anonymous";
             logoImg.onload = function() {
-                // First, measure the tagline width to size the logo accordingly
+                // Draw the logo at its natural aspect ratio, using most of the available width
                 ctx.fillStyle = "#444444";
                 ctx.font = "italic 13px Arial, sans-serif";
                 ctx.textAlign = "left";
                 ctx.textBaseline = "top";
                 const taglineText = "Boutique Service Built on Trust";
                 const taglineWidth = ctx.measureText(taglineText).width;
-                
-                // Size the logo to match the tagline width
-                const logoWidth = taglineWidth;
+
+                // Set a max logo width, but allow it to be wide
+                const maxLogoWidth = Math.max(taglineWidth, 220);
+                const logoWidth = Math.min(logoImg.width, maxLogoWidth);
                 const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
                 const logoY = 5;
                 ctx.drawImage(logoImg, 0, logoY, logoWidth, logoHeight);
-                
+
                 // Draw the tagline
                 const taglineY = logoY + logoHeight + 6;
                 ctx.fillText(taglineText, 0, taglineY);
