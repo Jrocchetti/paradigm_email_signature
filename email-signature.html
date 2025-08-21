@@ -481,12 +481,8 @@
                     <div class="preview-header">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                             <h2 style="margin: 0;">Live Preview</h2>
-                            <button id="copyBtn" onclick="copySignature()" style="display:none;">📋 Copy to Clipboard</button>
                         </div>
                         <p style="margin: 5px 0 0 0; color: rgba(255,255,255,0.8); font-size: 14px;">This is how your signature will appear in emails</p>
-                        <div style="margin-top: 8px;">
-                            <span id="copyMsg" style="color: #B8A9D9; font-size: 13px; display: none; font-weight: 500;">✅ Copied to clipboard!</span>
-                        </div>
                     </div>
                     <div id="preview"></div>
                 </div>
@@ -821,84 +817,78 @@
             // Get the current headshot data URL
             const currentHeadshotDataUrl = window.headshotDataUrl || headshotDataUrl || "";
 
-            renderNameTitleBoxAsImage(name, title, function (nameTitleBoxDataUrl, bannerWidth) {
-
-                // Store banner width globally for copy function
+            // Render headshot and name/title as a single combined image
+            renderHeadshotNameTitleAsImage(name, title, currentHeadshotDataUrl, function(headshotNameTitleDataUrl, bannerWidth) {
                 window.currentBannerWidth = bannerWidth;
-
-                // Generate a visible placeholder for the combined logo
                 generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
-                    // Headshot + name/title/company in a styled box, side by side, bottom-aligned
-                    let headshotNameTitle = `
-                        <div id="sig-block-headshot-name-title">
-                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse; width:100%;">
+                    let phoneBlock = "";
+                    if (phone) {
+                        phoneBlock += `<div style=\"font-size:12px; color:#222; margin-bottom:4px;\">Cell: ${formatPhoneNumber(phone)}</div>`;
+                    }
+                    phoneBlock += `<div style=\"font-size:12px; color:#222; margin-bottom:4px;\">Office: (407) 909 - 1338</div>`;
+
+                    const signatureHTML = `
+                        <div style=\"font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; max-width: 520px; box-sizing: border-box; padding: 20px; border-radius: 12px;\">
+                            <div id=\"sig-block-headshot-name-title\" style=\"margin-bottom: 20px;\">
+                                <img src=\"${headshotNameTitleDataUrl}\" alt=\"Headshot and Name/Title\" style=\"width:${bannerWidth + (currentHeadshotDataUrl ? 78 : 0)}px; height:70px; display:block;\">
+                            </div>
+                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-size:12px; color:#222; line-height:1.4; margin-bottom:12px; max-width:320px; width:320px; height:70px;\">
                                 <tr>
-                                    <td style="vertical-align:top; padding-right:6px; width:${currentHeadshotDataUrl ? '76px' : '0px'};">
-                                        ${currentHeadshotDataUrl ? `<img src="${currentHeadshotDataUrl}" alt="Headshot" style="width:70px; height:70px; object-fit:cover; border-radius:16px 0px 16px 0px; display:block;">` : ""}
-                                    </td>
-                                    <td style="vertical-align:top;">
-                                        <img src="${nameTitleBoxDataUrl}" alt="Name and Title" style="width:${bannerWidth}px; height:70px; display:block;">
+                                    <td style=\"padding-bottom:0; vertical-align:top; height:70px;\">
+                                        ${phone ? `Cell: ${formatPhoneNumber(phone)}<br>` : ''}
+                                        Office: (407) 909 - 1338<br>
+                                        <a href=\"mailto:${emailFull}\" style=\"color:#1F1633; text-decoration:none;\">${emailFull}</a><br>
+                                        <a href=\"https://paradigmproductionsgroup.com\" style=\"color:#1F1633; text-decoration:none;\">www.paradigmproductionsgroup.com</a><br>
+                                        215 E Main Street, Leesburg, Florida 34748
                                     </td>
                                 </tr>
                             </table>
+                            <div id=\"sig-block-logo-button\" style=\"margin-top: 8px;\">
+                                <a href=\"https://www.paradigmproductionsgroup.com\" target=\"_blank\" style=\"text-decoration:none; border:none; outline:none;\">
+                                    <img id=\"combinedLogoPlaceholder\" alt=\"Paradigm Logo - Boutique Service Built on Trust - Get Started with Paradigm\" style=\"display:block; border:0; outline:none; text-decoration:none;\" src=\"${combinedLogoDataUrl}\">
+                                </a>
+                            </div>
                         </div>
                     `;
-
-                    // Phone numbers (show nothing if empty)
-                    let phoneBlock = "";
-                    if (phone) {
-                        phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Cell: ${formatPhoneNumber(phone)}</div>`;
-                    }
-                    // Always show office number
-                    phoneBlock += `<div style="font-size:12px; color:#222; margin-bottom:4px;">Office: (407) 909 - 1338</div>`;
-
-                    // Signature layout with generated combined logo
-                    const signatureHTML = `
-                        <table cellpadding="0" cellspacing="0" border="0" style="font-family: 'Manrope', Arial, sans-serif; background: #FFFFFF; color: #222222; border-collapse:collapse; width: 100%; max-width: 520px; box-sizing: border-box;">
-                            <!-- Top row: Headshot and Name/Title Banner -->
-                            <tr>
-                                <td style="vertical-align:top; padding: 20px; padding-bottom: 12px; padding-left: 0;">
-                                    ${headshotNameTitle}
-                                </td>
-                            </tr>
-                            <!-- Contact info row -->
-                            <tr>
-                                <td style="vertical-align:top; padding-left: 0; padding-right: 20px; padding-bottom: 4px; max-width: 320px; width: 320px;">
-                                    ${phoneBlock}
-                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                        <a href="mailto:${emailFull}" style="color:#1F1633; text-decoration:none;">${emailFull}</a>
-                                    </div>
-                                    <div style="font-size:12px; color:#222; margin-bottom:4px;">
-                                        <a href="https://paradigmproductionsgroup.com" style="color:#1F1633; text-decoration:none;">www.paradigmproductionsgroup.com</a>
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Address row -->
-                            <tr>
-                                <td style="vertical-align:top; padding-left: 0; padding-right: 20px; padding-bottom: 12px; max-width: 320px; width: 320px;">
-                                    <div style="font-size:12px; color:#222;">
-                                        215 E Main Street, Leesburg, Florida 34748
-                                    </div>
-                                </td>
-                            </tr>
-                            <!-- Combined Logo/Tagline/Button PNG row -->
-                            <tr>
-                                <td style="vertical-align:top; padding-left: 0; padding-right: 20px; padding-bottom: 20px; max-width: 320px; width: 320px;">
-                                    <div id="sig-block-logo-button">
-                                        <a href="https://www.paradigmproductionsgroup.com" target="_blank" style="text-decoration:none; border:none; outline:none;">
-                                            <img id="combinedLogoPlaceholder" alt="Paradigm Logo - Boutique Service Built on Trust - Get Started with Paradigm" style="display:block; border:0; outline:none; text-decoration:none;" src="${combinedLogoDataUrl}">
-                                        </a>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    `;
-
                     document.getElementById("preview").innerHTML = signatureHTML;
                     document.getElementById("copyBtn").style.display = "inline-block";
                     document.getElementById("copyMsg").style.display = "none";
                 });
             });
+// Render headshot and name/title as a single image
+function renderHeadshotNameTitleAsImage(name, title, headshotUrl, callback) {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    const headshotWidth = headshotUrl ? 70 : 0;
+    const headshotMargin = headshotUrl ? 8 : 0;
+    // Render name/title box to get width
+    renderNameTitleBoxAsImage(name, title, function(nameTitleBoxDataUrl, bannerWidth) {
+        const totalWidth = headshotWidth + headshotMargin + bannerWidth;
+        canvas.width = totalWidth;
+        canvas.height = 70;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (headshotUrl) {
+            const headshotImg = new window.Image();
+            headshotImg.onload = function() {
+                ctx.drawImage(headshotImg, 0, 0, headshotWidth, 70);
+                const nameTitleImg = new window.Image();
+                nameTitleImg.onload = function() {
+                    ctx.drawImage(nameTitleImg, headshotWidth + headshotMargin, 0, bannerWidth, 70);
+                    callback(canvas.toDataURL("image/png"), bannerWidth);
+                };
+                nameTitleImg.src = nameTitleBoxDataUrl;
+            };
+            headshotImg.src = headshotUrl;
+        } else {
+            const nameTitleImg = new window.Image();
+            nameTitleImg.onload = function() {
+                ctx.drawImage(nameTitleImg, 0, 0, bannerWidth, 70);
+                callback(canvas.toDataURL("image/png"), bannerWidth);
+            };
+            nameTitleImg.src = nameTitleBoxDataUrl;
+        }
+    });
+}
         }
 
         // Make generateSignature globally accessible
@@ -936,113 +926,6 @@
             icon.classList.toggle("rotated");
         }
 
-        function copySignature() {
-            const preview = document.getElementById("preview");
-            if (!preview.innerHTML.trim()) return;
-
-            // Helper to convert a DOM node to an <img> element using html2canvas
-            function nodeToImage(node, callback) {
-                const targetWidth = 250;
-                const scale = 4;
-                html2canvas(node, {backgroundColor: null, scale: scale, width: node.offsetWidth * scale, height: node.offsetHeight * scale}).then(canvas => {
-                    // Analyze canvas pixel data to find the rightmost and bottommost non-transparent pixel
-                    const ctx = canvas.getContext('2d');
-                    const w = canvas.width;
-                    const h = canvas.height;
-                    const imageData = ctx.getImageData(0, 0, w, h).data;
-                    let maxX = 0, maxY = 0;
-                    for (let y = 0; y < h; y++) {
-                        for (let x = w - 1; x >= 0; x--) {
-                            const idx = (y * w + x) * 4 + 3; // alpha channel
-                            if (imageData[idx] !== 0) { // not transparent
-                                if (x > maxX) maxX = x;
-                                if (y > maxY) maxY = y;
-                                break;
-                            }
-                        }
-                    }
-                    // Add a small right/bottom padding (e.g., 8px)
-                    const cropWidth = Math.min(maxX + 9, w);
-                    const cropHeight = Math.min(maxY + 9, h);
-                    // Crop the canvas at high resolution
-                    const cropped = document.createElement('canvas');
-                    cropped.width = cropWidth;
-                    cropped.height = cropHeight;
-                    cropped.getContext('2d').drawImage(canvas, 0, 0, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
-                    // Downscale for display but keep high-res data
-                    const img = document.createElement('img');
-                    img.src = cropped.toDataURL("image/png"); // Use PNG for transparency
-                    img.style.display = 'block';
-                    img.style.width = targetWidth + 'px'; // Display width
-                    img.setAttribute('width', targetWidth);
-                    img.style.height = 'auto';
-                    img.setAttribute('height', 'auto');
-                    img.style.removeProperty('max-width');
-                    callback(img);
-                });
-            }
-
-            // Find the two key blocks in the preview
-            const headshotBlock = preview.querySelector('#sig-block-headshot-name-title');
-            const logoBlock = preview.querySelector('#sig-block-logo-button');
-
-            // Clone the preview HTML for manipulation
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = preview.innerHTML;
-
-            // Find the corresponding blocks in the clone
-            const tempHeadshotBlock = tempDiv.querySelector('#sig-block-headshot-name-title');
-            const tempLogoBlock = tempDiv.querySelector('#sig-block-logo-button');
-
-            // Render both blocks as images, then replace in tempDiv, then copy
-            if (headshotBlock && logoBlock && tempHeadshotBlock && tempLogoBlock && window.html2canvas) {
-                nodeToImage(headshotBlock, function(headshotImg) {
-                    nodeToImage(logoBlock, function(logoImg) {
-                        // Replace the blocks with images
-                        tempHeadshotBlock.parentNode.replaceChild(headshotImg, tempHeadshotBlock);
-                        tempLogoBlock.parentNode.replaceChild(logoImg, tempLogoBlock);
-
-                        // Remove IDs from the images to avoid conflicts
-                        headshotImg.removeAttribute('id');
-                        logoImg.removeAttribute('id');
-
-                        // Copy the HTML to clipboard
-                        document.body.appendChild(tempDiv);
-                        const range = document.createRange();
-                        range.selectNodeContents(tempDiv);
-                        const selection = window.getSelection();
-                        selection.removeAllRanges();
-                        selection.addRange(range);
-                        try {
-                            document.execCommand('copy');
-                            document.getElementById("copyMsg").style.display = "inline";
-                            setTimeout(() => document.getElementById("copyMsg").style.display = "none", 3000);
-                        } catch (err) {
-                            alert('Copy failed. Please select and copy manually.');
-                        }
-                        document.body.removeChild(tempDiv);
-                        selection.removeAllRanges();
-                    });
-                });
-            } else {
-                // Fallback: just copy as before
-                document.body.appendChild(tempDiv);
-                const range = document.createRange();
-                range.selectNodeContents(tempDiv);
-                const selection = window.getSelection();
-                selection.removeAllRanges();
-                selection.addRange(range);
-                try {
-                    document.execCommand('copy');
-                    document.getElementById("copyMsg").style.display = "inline";
-                    setTimeout(() => document.getElementById("copyMsg").style.display = "none", 3000);
-                } catch (err) {
-                    alert('Copy failed. Please select and copy manually.');
-                }
-                document.body.removeChild(tempDiv);
-                selection.removeAllRanges();
-            }
-        }
 
         // Save signature handler (calls Supabase function)
         document.getElementById("saveBtn").addEventListener("click", async function () {
