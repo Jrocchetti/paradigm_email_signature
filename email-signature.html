@@ -644,54 +644,69 @@
             const canvas = document.getElementById("nameTitleCanvas");
             const ctx = canvas.getContext("2d");
 
-            // Calculate required width based on text content
+            // Set font and measure text widths
             ctx.font = "bold 18px 'Manrope', Arial, sans-serif";
-            const nameWidth = ctx.measureText(name).width;
-            
+            let nameWidth = ctx.measureText(name).width;
             ctx.font = "14px 'Manrope', Arial, sans-serif";
-            const titleWidth = ctx.measureText(title).width;
-            
+            let titleWidth = ctx.measureText(title).width;
             ctx.font = "13px 'Manrope', Arial, sans-serif";
-            const companyWidth = ctx.measureText("Paradigm Productions Group").width;
-            
-            // Find the widest text and add padding
-            const maxTextWidth = Math.max(nameWidth, titleWidth, companyWidth);
-            // Only add minimal padding: 8px left, 8px right
-            const requiredWidth = Math.max(220, maxTextWidth + 16); // 8px padding each side, minimum 220px
+            let companyWidth = ctx.measureText("Paradigm Productions Group").width;
 
-            // Resize canvas to fit content
+            // Find the widest text and add padding
+            let maxTextWidth = Math.max(nameWidth, titleWidth, companyWidth);
+            // Add 16px padding on each side for the rounded corners
+            let requiredWidth = Math.max(220, maxTextWidth + 32); // 16px padding each side, minimum 220px
+            let requiredHeight = 70; // Match headshot height exactly
+            let cornerRadius = 14; // Slightly smaller radius to fit in 70px
+
+            // Resize canvas to fit content BEFORE any drawing or font setting
             canvas.width = requiredWidth;
-            canvas.height = 70;
+            canvas.height = requiredHeight;
+
+            // Reset font and other context properties after resizing
+            ctx.font = "bold 18px 'Manrope', Arial, sans-serif";
+            nameWidth = ctx.measureText(name).width;
+            ctx.font = "14px 'Manrope', Arial, sans-serif";
+            titleWidth = ctx.measureText(title).width;
+            ctx.font = "13px 'Manrope', Arial, sans-serif";
+            companyWidth = ctx.measureText("Paradigm Productions Group").width;
+            maxTextWidth = Math.max(nameWidth, titleWidth, companyWidth);
 
             // Clear
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw rounded rectangle (top right and bottom left rounded)
+            // Draw rounded rectangle (top right and bottom left rounded, radius fits in 70px)
             ctx.save();
             ctx.beginPath();
-            ctx.moveTo(0, 0); // top left
-            ctx.lineTo(canvas.width - 8, 0); // top edge
-            ctx.quadraticCurveTo(canvas.width, 0, canvas.width, 16); // top right corner (rounded)
-            ctx.lineTo(canvas.width, canvas.height); // right edge
-            ctx.lineTo(8, canvas.height); // bottom edge
-            ctx.quadraticCurveTo(0, canvas.height, 0, canvas.height - 16); // bottom left corner (rounded)
-            ctx.lineTo(0, 0); // left edge
+            ctx.moveTo(0, 0);
+            ctx.lineTo(requiredWidth - cornerRadius, 0);
+            ctx.quadraticCurveTo(requiredWidth, 0, requiredWidth, cornerRadius);
+            ctx.lineTo(requiredWidth, requiredHeight);
+            ctx.lineTo(cornerRadius, requiredHeight);
+            ctx.quadraticCurveTo(0, requiredHeight, 0, requiredHeight - cornerRadius);
+            ctx.lineTo(0, 0);
             ctx.closePath();
             ctx.fillStyle = "#3F105E";
             ctx.fill();
             ctx.restore();
 
-            // Draw text with perfectly symmetrical vertical spacing
+            // Center the text block vertically
+            const textBlockHeight = 18 + 4 + 14 + 4 + 13; // font sizes + spacing
+            const startY = Math.round((requiredHeight - textBlockHeight) / 2);
+            let y = startY;
+
             ctx.font = "bold 18px 'Manrope', Arial, sans-serif";
             ctx.fillStyle = "#fff";
             ctx.textBaseline = "top";
-            ctx.fillText(name, 8, 14);
+            ctx.fillText(name, 16, y);
+            y += 18 + 4;
 
             ctx.font = "14px 'Manrope', Arial, sans-serif";
-            ctx.fillText(title, 8, 35);
+            ctx.fillText(title, 16, y);
+            y += 14 + 4;
 
             ctx.font = "13px 'Manrope', Arial, sans-serif";
-            ctx.fillText("Paradigm Productions Group", 8, 51);
+            ctx.fillText("Paradigm Productions Group", 16, y);
 
             // Return PNG data URL and width
             callback(canvas.toDataURL("image/png"), requiredWidth);
@@ -851,8 +866,10 @@
                         </div>
                     `;
                     document.getElementById("preview").innerHTML = signatureHTML;
-                    document.getElementById("copyBtn").style.display = "inline-block";
-                    document.getElementById("copyMsg").style.display = "none";
+                    const copyBtn = document.getElementById("copyBtn");
+                    if (copyBtn) copyBtn.style.display = "inline-block";
+                    const copyMsg = document.getElementById("copyMsg");
+                    if (copyMsg) copyMsg.style.display = "none";
                 });
             });
 // Render headshot and name/title as a single image
@@ -1461,7 +1478,8 @@ function renderHeadshotNameTitleAsImage(name, title, headshotUrl, callback) {
         // Function to generate signature HTML from data
         function generateSignatureHTML(name, title, phone, email, headshot) {
             const logoUrl = "https://gijhfdjsmlgivjhvbtve.supabase.co/storage/v1/object/public/assets/brand-assets/1755741701919_7tcg0nq4lq.png";
-            const headshotHtml = headshot ? `<img src="${headshot}" alt="Headshot" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-right: 20px;">` : '';
+            // Match the headshot border radius to the name/title plate: 16px top-right, 0px bottom-right, 16px bottom-left, 0px top-left
+            const headshotHtml = headshot ? `<img src="${headshot}" alt="Headshot" style="width: 80px; height: 80px; border-radius: 0px 16px 0px 16px; object-fit: cover; margin-right: 20px;">` : '';
             
             return `
 <table cellpadding="0" cellspacing="0" border="0" style="font-family: Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #333;">
