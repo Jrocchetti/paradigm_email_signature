@@ -838,7 +838,7 @@
                 generateCombinedLogoImage(bannerWidth, function(combinedLogoDataUrl) {
                     let phoneBlock = "";
                     if (phone) {
-                        phoneBlock += `<div style=\"font-size:12px; color:#222; margin-bottom:4px;\">Cell: ${formatPhoneNumber(phone)}</div>`;
+                        phoneBlock += `Cell: ${formatPhoneNumber(phone)}<br>`;
                     }
                     phoneBlock += `<div style=\"font-size:12px; color:#222; margin-bottom:4px;\">Office: (407) 909 - 1338</div>`;
 
@@ -847,7 +847,7 @@
                             <div id=\"sig-block-headshot-name-title\" style=\"margin-bottom: 20px;\">
                                 <img src=\"${headshotNameTitleDataUrl}\" alt=\"Headshot and Name/Title\" style=\"width:${bannerWidth + (currentHeadshotDataUrl ? 78 : 0)}px; height:70px; display:block;\">
                             </div>
-                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-size:12px; color:#222; line-height:1.4; margin-bottom:12px; max-width:320px; width:320px; height:70px;\">
+                            <table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"font-size:12px; color:#222; line-height:1.4; margin-bottom:12px; max-width:320px; width:320px; height:70px; margin-top:16px;\">
                                 <tr>
                                     <td style=\"padding-bottom:0; vertical-align:top; height:70px;\">
                                         ${phone ? `Cell: ${formatPhoneNumber(phone)}<br>` : ''}
